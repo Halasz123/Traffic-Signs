@@ -1,4 +1,4 @@
-package com.example.trafficsigns
+package com.example.trafficsigns.data
 
 data class TrafficSign(
         var name: String? = null,
