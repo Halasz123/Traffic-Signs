@@ -63,7 +63,6 @@ class SplashScreen: AppCompatActivity() {
             .setStartDelay(500)
             .start()
 
-
         binding.warningImageview.translationX = -1500f
         binding.warningImageview.animate()
             .translationX(0f)
