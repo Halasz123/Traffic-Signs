@@ -32,6 +32,9 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    buildFeatures {
+        dataBinding true
+    }
 }
 
 dependencies {
@@ -70,4 +73,6 @@ dependencies {
     testImplementation "androidx.room:room-testing:$room_version"
 
     api 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-beta01'
+
+    implementation "androidx.transition:transition-ktx:1.4.0-beta01"
 }
