@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.example.trafficsigns.R
+import com.example.trafficsigns.data.TrafficSign
+import com.example.trafficsigns.data.TrafficSignsCollection
 
 const val ARG_OBJECT = "object"
 
@@ -28,14 +30,22 @@ class SampleListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
             val textView = view.findViewById<TextView>(R.id.text1)
-            textView.text = getInt(ARG_OBJECT).toString()
+            textView.text = getSerializable(ARG_OBJECT).toString()
         }
     }
 
     companion object {
 
         @JvmStatic
-        fun newInstance() = SampleListFragment()
+        fun newInstance( trafficSignList: List<TrafficSign>): SampleListFragment? {
+            val fragment = SampleListFragment()
+
+            // Supply index input as an argument.
+            val args = Bundle()
+            args.putSerializable("trafficList", trafficSignList as ArrayList)
+            fragment.arguments = args
+            return fragment
+        }
 
     }
 }

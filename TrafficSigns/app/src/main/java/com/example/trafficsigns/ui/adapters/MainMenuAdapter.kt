@@ -1,12 +1,10 @@
 package com.example.trafficsigns.ui.adapters
 
-import android.app.Activity
-import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.example.trafficsigns.MainActivity
 import com.example.trafficsigns.R
@@ -44,8 +42,12 @@ class MainMenuAdapter(parent: FragmentManager) : RecyclerView.Adapter<MainMenuAd
         holder.itemView.text_view_list_item.text = currentItem.groupId
 
         holder.itemView.setOnClickListener {
-            val myFragment = CollectionListFragment()
-            mFragmentManager.beginTransaction().replace(R.id.main_framelayout, myFragment).addToBackStack(null).commit()
+            val myFragment = CollectionListFragment.newInstance(position, collectionList)
+            myFragment?.let { it1 ->
+                mFragmentManager.beginTransaction().replace(R.id.main_framelayout,
+                    it1
+                ).addToBackStack(null).commit()
+            }
         }
     }
 
