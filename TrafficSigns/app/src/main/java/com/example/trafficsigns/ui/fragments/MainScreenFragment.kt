@@ -21,7 +21,7 @@ import com.example.trafficsigns.ui.adapters.MainMenuAdapter
 class MainScreenFragment : Fragment() {
 
     lateinit var mTrafficViewModel: TrafficSignsCollectionViewModel
-    private lateinit var foodRecyclerView: RecyclerView
+    private lateinit var trafficRecyclerView: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,12 +36,14 @@ class MainScreenFragment : Fragment() {
                 false
             )
 
-        val mAdapter = MainMenuAdapter()
-        foodRecyclerView = binding.recyclerview.apply {
+
+        val mAdapter = MainMenuAdapter(parentFragmentManager)
+        trafficRecyclerView = binding.recyclerview.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())
             adapter = mAdapter
         }
+
 
         mTrafficViewModel = ViewModelProvider(this).get(TrafficSignsCollectionViewModel::class.java)
         mTrafficViewModel.readAllData.observe(viewLifecycleOwner, Observer { collection ->

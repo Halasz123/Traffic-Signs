@@ -13,7 +13,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/black"
         >
 
         <ImageView
@@ -24,6 +23,7 @@
             android:scaleType="fitCenter"
             android:layout_marginStart="100dp"
             android:src="@drawable/ic_stop_splash"
+            android:background="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
