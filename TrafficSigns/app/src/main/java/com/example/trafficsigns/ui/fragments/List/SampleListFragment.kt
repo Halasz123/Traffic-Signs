@@ -1,18 +1,29 @@
 package com.example.trafficsigns.ui.fragments.List
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.trafficsigns.R
 import com.example.trafficsigns.data.TrafficSign
 import com.example.trafficsigns.data.TrafficSignsCollection
+import com.example.trafficsigns.databinding.FragmentSampleListBinding
+import com.example.trafficsigns.ui.adapters.MainMenuAdapter
+import com.example.trafficsigns.ui.adapters.SampleListAdapter
 
 const val ARG_OBJECT = "object"
 
 class SampleListFragment : Fragment() {
+
+    private lateinit var binding: FragmentSampleListBinding
+    private lateinit var trafficSignList: List<TrafficSign>
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,26 +34,40 @@ class SampleListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sample_list, container, false)
+        binding = DataBindingUtil
+            .inflate(
+                inflater,
+                R.layout.fragment_sample_list,
+                container,
+                false
+            )
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
-            val textView = view.findViewById<TextView>(R.id.text1)
-            textView.text = getSerializable(ARG_OBJECT).toString()
+            trafficSignList= getSerializable(ARG_OBJECT) as List<TrafficSign>
         }
+        Log.d("List", trafficSignList.toString())
+
+        val mAdapter = SampleListAdapter(trafficSignList)
+        recyclerView = binding.recyclerview.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = mAdapter
+        }
+
     }
 
     companion object {
 
         @JvmStatic
-        fun newInstance( trafficSignList: List<TrafficSign>): SampleListFragment? {
+        fun newInstance( trafficSignList: List<TrafficSign>): SampleListFragment {
             val fragment = SampleListFragment()
 
             // Supply index input as an argument.
             val args = Bundle()
-            args.putSerializable("trafficList", trafficSignList as ArrayList)
+            args.putSerializable(ARG_OBJECT, trafficSignList as ArrayList)
             fragment.arguments = args
             return fragment
         }

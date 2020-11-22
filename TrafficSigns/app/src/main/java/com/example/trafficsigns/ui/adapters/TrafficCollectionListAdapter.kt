@@ -14,12 +14,7 @@ class TrafficCollectionListAdapter(fragment: Fragment, collectionList: List<Traf
 
     override fun createFragment(position: Int): Fragment {
         // Return a NEW fragment instance in createFragment(int)
-        val fragment = SampleListFragment()
-        fragment.arguments = Bundle().apply {
-            // Our object is just an integer :-P
-            putSerializable(ARG_OBJECT, collectionList[position].trafficSigns as ArrayList)
-        }
-        return fragment
+        return SampleListFragment.newInstance(collectionList[position].trafficSigns)
     }
 
 }
