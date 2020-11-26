@@ -45,7 +45,7 @@ class CollectionListFragment() : Fragment() {
         return binding.root
     }
 
-
+    @Suppress("UNCHECKED_CAST")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val bundle = this.arguments
         if (bundle != null){

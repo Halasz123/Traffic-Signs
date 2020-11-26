@@ -35,7 +35,8 @@ class SampleListAdapter(trafficList: List<TrafficSign>): RecyclerView.Adapter<Sa
         val  currentItem = mTrafficList[position]
 
         holder.itemView.name_textView.text = currentItem.name
-        Glide.with(holder.itemView).load(currentItem.image).into(holder.itemView.sign_imageView)
+
+        Glide.with(holder.itemView).load(currentItem.image).override(holder.itemView.width,holder.itemView.height).into(holder.itemView.sign_imageView);
 
     }
 }

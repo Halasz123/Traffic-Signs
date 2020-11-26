@@ -44,6 +44,7 @@ class SampleListFragment : Fragment() {
         return binding.root
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
             trafficSignList= getSerializable(ARG_OBJECT) as List<TrafficSign>
