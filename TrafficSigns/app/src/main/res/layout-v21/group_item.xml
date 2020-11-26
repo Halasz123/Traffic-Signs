@@ -8,12 +8,12 @@
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
     app:cardUseCompatPadding="true"
-    android:background="@null">
+    android:background="@color/purple_700">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/black"
+        android:background="@color/purple_700"
         >
 
         <ImageView
@@ -24,6 +24,7 @@
             android:scaleType="fitCenter"
             android:layout_marginStart="100dp"
             android:src="@drawable/ic_stop_splash"
+            android:background="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
