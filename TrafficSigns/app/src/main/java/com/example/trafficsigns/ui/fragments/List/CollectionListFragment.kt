@@ -15,14 +15,13 @@ import com.example.trafficsigns.databinding.FragmentCollectionListBinding
 import com.example.trafficsigns.ui.adapters.TrafficCollectionListAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 
-class CollectionListFragment() : Fragment() {
+class CollectionListFragment : Fragment() {
 
     private lateinit var trafficCollectionAdapter: TrafficCollectionListAdapter
     private lateinit var viewPager: ViewPager2
     private lateinit var binding: FragmentCollectionListBinding
     private var startPosition: Int = 1
 
-    private lateinit var mTrafficViewModel: TrafficSignsCollectionViewModel
     private lateinit var mCollectionList: List<TrafficSignsCollection>
 
 
