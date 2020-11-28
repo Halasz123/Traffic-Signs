@@ -48,6 +48,7 @@ class SplashScreen: AppCompatActivity() {
             //while (!downloaded)
 
             startActivity(intent)
+            overridePendingTransition(R.anim.fade_out,R.anim.splash_anim);
             finish()
         }
 

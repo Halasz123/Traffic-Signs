@@ -12,7 +12,15 @@
         android:label="MainScreenFragment" >
         <action
             android:id="@+id/action_mainScreenFragment_to_collectionListFragment"
-            app:destination="@id/collectionListFragment" />
+            app:destination="@id/collectionListFragment"
+            app:enterAnim="@anim/fade_out"
+            app:exitAnim="@anim/fad_in"
+            app:popEnterAnim="@anim/fade_out"
+            app:popExitAnim="@anim/fad_in"
+            app:popUpTo="@id/mainScreenFragment" />
+        <action
+            android:id="@+id/action_mainScreenFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
     <fragment
         android:id="@+id/collectionListFragment"
@@ -22,11 +30,17 @@
         <action
             android:id="@+id/action_collectionListFragment_to_mainScreenFragment"
             app:destination="@id/mainScreenFragment"
+            app:enterAnim="@anim/fade_out"
+            app:exitAnim="@anim/fad_in"
             app:popUpTo="@id/mainScreenFragment"
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_collectionListFragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
+            app:destination="@id/detailFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
@@ -36,13 +50,22 @@
         <action
             android:id="@+id/action_detailFragment_to_collectionListFragment"
             app:destination="@id/collectionListFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
             app:launchSingleTop="false"
             app:popUpTo="@id/collectionListFragment"
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_detailFragment_to_mainScreenFragment"
             app:destination="@id/mainScreenFragment"
+            app:enterAnim="@anim/from_up"
+            app:exitAnim="@anim/to_down"
             app:popUpTo="@id/mainScreenFragment"
             app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.trafficsigns.ui.fragments.Profile.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
 </navigation>

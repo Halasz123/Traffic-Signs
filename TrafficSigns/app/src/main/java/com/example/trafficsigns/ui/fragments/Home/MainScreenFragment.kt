@@ -3,12 +3,16 @@ package com.example.trafficsigns.ui.fragments.Home
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.NavigationUI.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.trafficsigns.R
@@ -18,9 +22,11 @@ import com.example.trafficsigns.databinding.FragmentMainScreenBinding
 import com.example.trafficsigns.ui.adapters.MainMenuAdapter
 import com.example.trafficsigns.ui.fragments.List.CollectionListFragment
 import com.example.trafficsigns.ui.interfaces.ItemClickListener
+import com.google.android.material.navigation.NavigationView
 
 
-class MainScreenFragment : Fragment(), ItemClickListener {
+class MainScreenFragment : Fragment(), ItemClickListener,
+    NavigationView.OnNavigationItemSelectedListener {
 
     lateinit var mTrafficViewModel: TrafficSignsCollectionViewModel
     private lateinit var trafficRecyclerView: RecyclerView
@@ -38,6 +44,10 @@ class MainScreenFragment : Fragment(), ItemClickListener {
                 container,
                 false
             )
+        binding.navView.setNavigationItemSelectedListener(this)
+        binding.imageButton.setOnClickListener {
+            binding.drawerLayout.openDrawer(GravityCompat.START)
+        }
 
         return binding.root
     }
@@ -63,6 +73,16 @@ class MainScreenFragment : Fragment(), ItemClickListener {
 
     override fun onItemClickListener(trafficSign: TrafficSign) {
         //do nothing
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId){
+            R.id.profileFragment -> {
+                binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_profileFragment)
+            }
+        }
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
+        return true
     }
 
 }
