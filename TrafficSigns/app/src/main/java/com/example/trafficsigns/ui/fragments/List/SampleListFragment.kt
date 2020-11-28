@@ -51,7 +51,12 @@ class SampleListFragment : Fragment() {
         }
         Log.d("List", trafficSignList.toString())
 
-        val mAdapter = SampleListAdapter(trafficSignList)
+      //  activity?.supportFragmentManager
+        val mAdapter = activity?.supportFragmentManager?.let {
+            SampleListAdapter(trafficSignList,
+                it
+            )
+        }
         recyclerView = binding.recyclerview.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())

@@ -8,19 +8,47 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.list.ListFragment"
-        android:background="@color/purple_700">
+        android:background="@color/blue_gray_700">
 
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@null"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/ic_menu_sort_by_size"
+            tools:srcCompat="@drawable/ic_baseline_menu_24" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/traffic_signs"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif"
+            app:layout_constraintBottom_toBottomOf="@+id/imageButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageButton"
+            app:layout_constraintTop_toTopOf="@+id/imageButton" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/group_item"
+            android:layout_height="0dp"
             android:background="@null"
+            android:layout_marginTop="30dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/imageButton"
+            tools:listitem="@layout/group_item" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
