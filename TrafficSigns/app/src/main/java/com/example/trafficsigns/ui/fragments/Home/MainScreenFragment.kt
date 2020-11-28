@@ -24,21 +24,25 @@ class MainScreenFragment : Fragment(), ItemClickListener {
 
     lateinit var mTrafficViewModel: TrafficSignsCollectionViewModel
     private lateinit var trafficRecyclerView: RecyclerView
+    private lateinit var binding: FragmentMainScreenBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = DataBindingUtil
-            .inflate<FragmentMainScreenBinding>(
+        binding = DataBindingUtil
+            .inflate(
                 inflater,
                 R.layout.fragment_main_screen,
                 container,
                 false
             )
 
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val mAdapter = MainMenuAdapter(this)
         trafficRecyclerView = binding.recyclerview.apply {
             setHasFixedSize(true)
@@ -51,12 +55,10 @@ class MainScreenFragment : Fragment(), ItemClickListener {
         mTrafficViewModel.readAllData.observe(viewLifecycleOwner, Observer { collection ->
             mAdapter.setData(collection)
         })
-
-        return binding.root
     }
 
     override fun onItemClickListener(position: Int) {
-        view?.findNavController()?.navigate(R.id.action_mainScreenFragment_to_collectionListFragment, CollectionListFragment.newInstanceBundle(position))
+        binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_collectionListFragment, CollectionListFragment.newInstanceBundle(position))
     }
 
     override fun onItemClickListener(trafficSign: TrafficSign) {
