@@ -12,12 +12,15 @@
         android:id="@+id/back_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
         android:background="@null"
+        android:contentDescription="@string/back_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/abc_vector_test"
-        tools:srcCompat="@drawable/ic_baseline_arrow_back_24"
-        android:contentDescription="@string/back_button" />
+        tools:srcCompat="@drawable/ic_baseline_arrow_back_24" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
