@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_mainScreenFragment_to_collectionListFragment"
             app:destination="@id/collectionListFragment" />
+        <action
+            android:id="@+id/action_mainScreenFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
     <fragment
         android:id="@+id/collectionListFragment"
@@ -45,4 +48,9 @@
             app:popUpTo="@id/mainScreenFragment"
             app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.trafficsigns.ui.fragments.Profile.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
 </navigation>
