@@ -8,17 +8,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.trafficsigns.R
 import com.example.trafficsigns.data.TrafficSign
+import com.example.trafficsigns.data.TrafficSignsCollection
 import com.example.trafficsigns.ui.fragments.Detail.DetailFragment
+import com.example.trafficsigns.ui.interfaces.ItemClickListener
 import kotlinx.android.synthetic.main.sample_list_item.view.*
 
-class SampleListAdapter(trafficList: List<TrafficSign>, parentFragmentManager: FragmentManager): RecyclerView.Adapter<SampleListAdapter.MyViewHolder>() {
+class SampleListAdapter(private val itemClickListener: ItemClickListener): RecyclerView.Adapter<SampleListAdapter.MyViewHolder>() {
 
-    class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
-    }
-
-    private val mTrafficList = trafficList
-    private val parentFragmentManager = parentFragmentManager
+    private var mTrafficList = emptyList<TrafficSign>()
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -42,14 +41,13 @@ class SampleListAdapter(trafficList: List<TrafficSign>, parentFragmentManager: F
         Glide.with(holder.itemView).load(currentItem.image).override(holder.itemView.width,holder.itemView.height).into(holder.itemView.sign_imageView);
 
         holder.itemView.setOnClickListener {
-            val myFragment = DetailFragment.newInstance()
-            myFragment.let { it1 ->
-                parentFragmentManager.beginTransaction().replace(
-                        R.id.main_framelayout,
-                        it1
-                ).addToBackStack(null).commit()
-            }
+            itemClickListener.onItemClickListener(currentItem)
         }
 
+    }
+
+    fun setData(collection: List<TrafficSign>){
+        this.mTrafficList = collection
+        notifyDataSetChanged()
     }
 }

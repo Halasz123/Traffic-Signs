@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/mainScreenFragment">
+
+    <fragment
+        android:id="@+id/mainScreenFragment"
+        tools:layout="@layout/fragment_main_screen"
+        android:name="com.example.trafficsigns.ui.fragments.Home.MainScreenFragment"
+        android:label="MainScreenFragment" >
+        <action
+            android:id="@+id/action_mainScreenFragment_to_collectionListFragment"
+            app:destination="@id/collectionListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/collectionListFragment"
+        tools:layout="@layout/fragment_collection_list"
+        android:name="com.example.trafficsigns.ui.fragments.List.CollectionListFragment"
+        android:label="CollectionListFragment" >
+        <action
+            android:id="@+id/action_collectionListFragment_to_mainScreenFragment"
+            app:destination="@id/mainScreenFragment"
+            app:popUpTo="@id/mainScreenFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_collectionListFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.example.trafficsigns.ui.fragments.Detail.DetailFragment"
+        android:label="fragment_detail"
+        tools:layout="@layout/fragment_detail" >
+        <action
+            android:id="@+id/action_detailFragment_to_collectionListFragment"
+            app:destination="@id/collectionListFragment"
+            app:launchSingleTop="false"
+            app:popUpTo="@id/collectionListFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_detailFragment_to_mainScreenFragment"
+            app:destination="@id/mainScreenFragment"
+            app:popUpTo="@id/mainScreenFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+</navigation>

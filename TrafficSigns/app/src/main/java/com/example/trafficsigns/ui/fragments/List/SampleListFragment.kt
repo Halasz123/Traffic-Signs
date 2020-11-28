@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.trafficsigns.R
@@ -16,10 +17,12 @@ import com.example.trafficsigns.data.TrafficSignsCollection
 import com.example.trafficsigns.databinding.FragmentSampleListBinding
 import com.example.trafficsigns.ui.adapters.MainMenuAdapter
 import com.example.trafficsigns.ui.adapters.SampleListAdapter
+import com.example.trafficsigns.ui.fragments.Detail.DetailFragment
+import com.example.trafficsigns.ui.interfaces.ItemClickListener
 
 const val ARG_OBJECT = "object"
 
-class SampleListFragment : Fragment() {
+class SampleListFragment : Fragment(), ItemClickListener {
 
     private lateinit var binding: FragmentSampleListBinding
     private lateinit var trafficSignList: List<TrafficSign>
@@ -51,19 +54,15 @@ class SampleListFragment : Fragment() {
         }
         Log.d("List", trafficSignList.toString())
 
-      //  activity?.supportFragmentManager
-        val mAdapter = activity?.supportFragmentManager?.let {
-            SampleListAdapter(trafficSignList,
-                it
-            )
-        }
+        val mAdapter = SampleListAdapter(this)
+        mAdapter.setData(trafficSignList)
         recyclerView = binding.recyclerview.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())
             adapter = mAdapter
         }
 
-    }
+}
 
     companion object {
 
@@ -78,5 +77,12 @@ class SampleListFragment : Fragment() {
             return fragment
         }
 
+    }
+
+    override fun onItemClickListener(position: Int) {
+    }
+
+    override fun onItemClickListener(trafficSign: TrafficSign) {
+        binding.root.findNavController().navigate(R.id.action_collectionListFragment_to_detailFragment, DetailFragment.newInstanceBundle(trafficSign))
     }
 }
