@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.trafficsigns.R
+import com.example.trafficsigns.data.TrafficSign
 
 
 class DetailFragment : Fragment() {
@@ -20,7 +21,11 @@ class DetailFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() = DetailFragment()
+        fun newInstanceBundle(trafficSign: TrafficSign): Bundle {
+            val args = Bundle()
+            args.putSerializable("currentItem", trafficSign )
+            return args
+        }
     }
 
 }

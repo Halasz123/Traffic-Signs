@@ -7,8 +7,8 @@ import com.example.trafficsigns.data.TrafficSignsCollection
 import com.example.trafficsigns.ui.fragments.List.ARG_OBJECT
 import com.example.trafficsigns.ui.fragments.List.SampleListFragment
 
-class TrafficCollectionListAdapter(fragment: Fragment, collectionList: List<TrafficSignsCollection>) : FragmentStateAdapter(fragment) {
-    private val collectionList = collectionList
+class TrafficCollectionListAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+    private var collectionList = emptyList<TrafficSignsCollection>()
 
     override fun getItemCount(): Int = collectionList.size
 
@@ -16,5 +16,12 @@ class TrafficCollectionListAdapter(fragment: Fragment, collectionList: List<Traf
         // Return a NEW fragment instance in createFragment(int)
         return SampleListFragment.newInstance(collectionList[position].trafficSigns)
     }
+
+    fun setData(collection: List<TrafficSignsCollection>){
+        this.collectionList = collection
+        notifyDataSetChanged()
+    }
+
+    fun getData() = collectionList
 
 }

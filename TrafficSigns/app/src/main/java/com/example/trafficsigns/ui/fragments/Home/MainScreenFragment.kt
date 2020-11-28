@@ -8,15 +8,19 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.trafficsigns.R
+import com.example.trafficsigns.data.TrafficSign
 import com.example.trafficsigns.data.TrafficSignsCollectionViewModel
 import com.example.trafficsigns.databinding.FragmentMainScreenBinding
 import com.example.trafficsigns.ui.adapters.MainMenuAdapter
+import com.example.trafficsigns.ui.fragments.List.CollectionListFragment
+import com.example.trafficsigns.ui.interfaces.ItemClickListener
 
 
-class MainScreenFragment : Fragment() {
+class MainScreenFragment : Fragment(), ItemClickListener {
 
     lateinit var mTrafficViewModel: TrafficSignsCollectionViewModel
     private lateinit var trafficRecyclerView: RecyclerView
@@ -35,7 +39,7 @@ class MainScreenFragment : Fragment() {
             )
 
 
-        val mAdapter = MainMenuAdapter(parentFragmentManager)
+        val mAdapter = MainMenuAdapter(this)
         trafficRecyclerView = binding.recyclerview.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())
@@ -49,6 +53,14 @@ class MainScreenFragment : Fragment() {
         })
 
         return binding.root
+    }
+
+    override fun onItemClickListener(position: Int) {
+        view?.findNavController()?.navigate(R.id.action_mainScreenFragment_to_collectionListFragment, CollectionListFragment.newInstanceBundle(position))
+    }
+
+    override fun onItemClickListener(trafficSign: TrafficSign) {
+        //do nothing
     }
 
 }

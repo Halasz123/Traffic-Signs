@@ -6,20 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.trafficsigns.R
 import com.example.trafficsigns.data.TrafficSignsCollection
 import com.example.trafficsigns.ui.fragments.List.CollectionListFragment
+import com.example.trafficsigns.ui.interfaces.ItemClickListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.group_item.view.*
 import kotlinx.android.synthetic.main.sample_list_item.view.*
 
 
-class MainMenuAdapter(parent: FragmentManager) : RecyclerView.Adapter<MainMenuAdapter.MyViewHolder>(){
+class MainMenuAdapter(private val itemClickListener: ItemClickListener) : RecyclerView.Adapter<MainMenuAdapter.MyViewHolder>(){
 
     private var collectionList =  emptyList<TrafficSignsCollection>()
-    private val mFragmentManager = parent
 
 
     class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -29,7 +30,7 @@ class MainMenuAdapter(parent: FragmentManager) : RecyclerView.Adapter<MainMenuAd
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): MainMenuAdapter.MyViewHolder {
+    ): MyViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
             R.layout.group_item,
             parent,
@@ -39,7 +40,7 @@ class MainMenuAdapter(parent: FragmentManager) : RecyclerView.Adapter<MainMenuAd
     }
 
     @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: MainMenuAdapter.MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val  currentItem = collectionList[position]
 
         holder.itemView.text_view_list_item.text = currentItem.groupId.capitalize() + " signs"
@@ -47,13 +48,7 @@ class MainMenuAdapter(parent: FragmentManager) : RecyclerView.Adapter<MainMenuAd
         myGlide(holder.itemView, currentItem.trafficSigns[1].image, holder.itemView.imageView)
 
         holder.itemView.setOnClickListener {
-            val myFragment = CollectionListFragment.newInstance(position, collectionList)
-            myFragment?.let { it1 ->
-                mFragmentManager.beginTransaction().replace(
-                    R.id.main_framelayout,
-                    it1
-                ).addToBackStack(null).commit()
-            }
+            itemClickListener.onItemClickListener(position)
         }
     }
 
