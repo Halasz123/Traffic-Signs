@@ -51,6 +51,9 @@ class CollectionListFragment : Fragment() {
             startPosition = bundle.getInt("currentPosition", 1)
             mCollectionList = bundle.getSerializable("collectionList") as List<TrafficSignsCollection>
         }
+        binding.backButton.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
 
         trafficCollectionAdapter = TrafficCollectionListAdapter(this, mCollectionList)
         viewPager = binding.pager
