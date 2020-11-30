@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -50,6 +51,9 @@ class CollectionListFragment : Fragment() {
         }
         binding.backButton.setOnClickListener {
             view.findNavController().navigate(R.id.action_collectionListFragment_to_mainScreenFragment)
+        }
+        binding.switch1.setOnCheckedChangeListener { _, isChecked ->
+            trafficCollectionAdapter.setFragmentType(isChecked)
         }
 
         trafficCollectionAdapter = TrafficCollectionListAdapter(this)
