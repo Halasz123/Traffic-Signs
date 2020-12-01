@@ -10,4 +10,7 @@
     <string name="profile">Profile</string>
     <string name="camera">Camera</string>
     <string name="grid">Grid</string>
+    <string name="sing_in">Sing In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="settings">Settings</string>
 </resources>
