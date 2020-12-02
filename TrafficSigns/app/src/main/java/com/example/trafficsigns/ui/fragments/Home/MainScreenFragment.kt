@@ -80,8 +80,6 @@ class MainScreenFragment : Fragment(), ItemClickListener,
             R.id.profileFragment -> {
                 binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_profileFragment)
             }
-            R.id.signInFragment -> { binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_signInFragment)}
-            R.id.signUpFragment -> { binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_signUpFragment)}
             R.id.neuralNetworkFragment -> { binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_neuralNetworkFragment)}
             R.id.settingsFragment -> { binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_settingsFragment)}
         }

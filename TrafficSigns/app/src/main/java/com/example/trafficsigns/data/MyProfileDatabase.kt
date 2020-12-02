@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @Database(entities = [MyProfile::class], version = 1, exportSchema = false)
+@TypeConverters(Convertes::class)
 abstract  class MyProfileDatabase: RoomDatabase() {
 
     abstract fun myProfileDao(): MyProfielDao
@@ -24,7 +25,7 @@ abstract  class MyProfileDatabase: RoomDatabase() {
                 val instance = Room.databaseBuilder(
                         context.applicationContext,
                         MyProfileDatabase::class.java,
-                        "traffic_signs_database"
+                        "my_profile_database"
                 ).build()
                 INSTANCE = instance
                 return instance

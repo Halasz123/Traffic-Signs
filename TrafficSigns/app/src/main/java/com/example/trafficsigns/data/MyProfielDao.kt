@@ -12,6 +12,6 @@ interface MyProfielDao {
     @Update
     suspend fun updateProfile(profile: MyProfile)
 
-    @Query("SELECT * FROM traffic_signs")
+    @Query("SELECT * FROM my_profile")
     fun getProfile(): LiveData<MyProfile>
 }
