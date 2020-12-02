@@ -9,12 +9,7 @@
 
     <item android:id="@+id/neuralNetworkFragment"
         android:title="@string/camera" />
-
-    <item android:id="@+id/signInFragment"
-        android:title="@string/sing_in" />
-
-    <item android:id="@+id/signUpFragment"
-        android:title="@string/sign_up" />
+    
 
     <item android:id="@+id/settingsFragment"
         android:title="@string/settings" />

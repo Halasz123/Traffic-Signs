@@ -1,18 +1,15 @@
 package com.example.trafficsigns.ui.fragments.List
 
-import android.content.BroadcastReceiver
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.navigation.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.trafficsigns.R
 import com.example.trafficsigns.data.TrafficSignsCollection
@@ -35,15 +32,15 @@ class CollectionListFragment : Fragment() {
     private var mCollectionList =  emptyList<TrafficSignsCollection>()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil
             .inflate(
-                inflater,
-                R.layout.fragment_collection_list,
-                container,
-                false
+                    inflater,
+                    R.layout.fragment_collection_list,
+                    container,
+                    false
             )
         return binding.root
     }
@@ -61,14 +58,7 @@ class CollectionListFragment : Fragment() {
 
 
         binding.switch1.setOnCheckedChangeListener { _, isChecked ->
-            val intent = Intent(this.context, SampleListFragment::class.java)
-            intent.action = "de.pspaeth.simplebroadcast.DO_STH"
-            if (isChecked) {
-                intent.putExtra("myExtra", true)
-            } else {
-                intent.putExtra("myExtra", false)
-            }
-            context?.let { LocalBroadcastManager.getInstance(it).sendBroadcast(intent) }
+            sendGridOnData(isChecked)
         }
 
         trafficCollectionAdapter = TrafficCollectionListAdapter(this)
@@ -95,6 +85,12 @@ class CollectionListFragment : Fragment() {
             args.putInt("currentPosition", startPosition)
             return args
         }
+    }
+
+    private fun sendGridOnData(isGrid: Boolean) {
+        val broadcastIntent = Intent("sendGridOnMessage")
+        broadcastIntent.putExtra("grid", isGrid)
+        LocalBroadcastManager.getInstance(requireContext()).sendBroadcast(broadcastIntent)
     }
 
 

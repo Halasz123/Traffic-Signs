@@ -1,27 +1,31 @@
 package com.example.trafficsigns.ui.fragments.List
 
 import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.trafficsigns.R
 import com.example.trafficsigns.data.TrafficSign
-import com.example.trafficsigns.data.TrafficSignsCollection
 import com.example.trafficsigns.databinding.FragmentSampleListBinding
-import com.example.trafficsigns.ui.adapters.MainMenuAdapter
 import com.example.trafficsigns.ui.adapters.SampleListAdapter
 import com.example.trafficsigns.ui.fragments.Detail.DetailFragment
 import com.example.trafficsigns.ui.interfaces.ItemClickListener
 import com.example.trafficsigns.ui.interfaces.SetOnCheckedChangeListener
+
 
 const val ARG_OBJECT = "object"
 
@@ -30,29 +34,34 @@ class SampleListFragment : Fragment(), ItemClickListener, SetOnCheckedChangeList
     private lateinit var binding: FragmentSampleListBinding
     private lateinit var trafficSignList: List<TrafficSign>
     private lateinit var recyclerView: RecyclerView
-    private lateinit var broadcastReceiver: BroadcastReceiver
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
+    private var isGrid = false
+    var localBroadcastReceiver: BroadcastReceiver? = null
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil
             .inflate(
-                inflater,
-                R.layout.fragment_sample_list,
-                container,
-                false
+                    inflater,
+                    R.layout.fragment_sample_list,
+                    container,
+                    false
             )
-//        val parent = parentFragment as CollectionListFragment
-//        parent.gridListener = this
+        localBroadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if (intent != null) {
+                    isGrid = intent.getBooleanExtra("grid", false)
+                    recyclerView.layoutManager = if (!isGrid) {
+                        LinearLayoutManager(requireContext())
+                    } else {
+                        GridLayoutManager(requireContext(),2 )
+                    }
+                }
+            }
+        }
 
-        //broadcastReceiver.
-
+        LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(localBroadcastReceiver as BroadcastReceiver, IntentFilter ("sendGridOnMessage"))
         return binding.root
     }
 
@@ -67,16 +76,28 @@ class SampleListFragment : Fragment(), ItemClickListener, SetOnCheckedChangeList
         mAdapter.setData(trafficSignList)
         recyclerView = binding.recyclerview.apply {
             setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(requireContext())
+            layoutManager = if (!isGrid) {
+                LinearLayoutManager(requireContext())
+            } else {
+                GridLayoutManager(requireContext(),2 )
+            }
             adapter = mAdapter
         }
 
     }
 
+
+    override fun onDestroy() {
+        super.onDestroy()
+        localBroadcastReceiver?.let {
+            LocalBroadcastManager.getInstance(requireContext())
+                .unregisterReceiver(it)
+        }
+    }
     companion object {
 
         @JvmStatic
-        fun newInstance( trafficSignList: List<TrafficSign>): SampleListFragment {
+        fun newInstance(trafficSignList: List<TrafficSign>): SampleListFragment {
             val fragment = SampleListFragment()
 
             val args = Bundle()
