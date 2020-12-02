@@ -1,5 +1,6 @@
 package com.example.trafficsigns.ui.fragments.List
 
+import android.content.BroadcastReceiver
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.trafficsigns.R
@@ -19,14 +21,16 @@ import com.example.trafficsigns.ui.adapters.MainMenuAdapter
 import com.example.trafficsigns.ui.adapters.SampleListAdapter
 import com.example.trafficsigns.ui.fragments.Detail.DetailFragment
 import com.example.trafficsigns.ui.interfaces.ItemClickListener
+import com.example.trafficsigns.ui.interfaces.SetOnCheckedChangeListener
 
 const val ARG_OBJECT = "object"
 
-class SampleListFragment : Fragment(), ItemClickListener {
+class SampleListFragment : Fragment(), ItemClickListener, SetOnCheckedChangeListener {
 
     private lateinit var binding: FragmentSampleListBinding
     private lateinit var trafficSignList: List<TrafficSign>
     private lateinit var recyclerView: RecyclerView
+    private lateinit var broadcastReceiver: BroadcastReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +48,11 @@ class SampleListFragment : Fragment(), ItemClickListener {
                 container,
                 false
             )
+//        val parent = parentFragment as CollectionListFragment
+//        parent.gridListener = this
+
+        //broadcastReceiver.
+
         return binding.root
     }
 
@@ -62,7 +71,7 @@ class SampleListFragment : Fragment(), ItemClickListener {
             adapter = mAdapter
         }
 
-}
+    }
 
     companion object {
 
@@ -70,7 +79,6 @@ class SampleListFragment : Fragment(), ItemClickListener {
         fun newInstance( trafficSignList: List<TrafficSign>): SampleListFragment {
             val fragment = SampleListFragment()
 
-            // Supply index input as an argument.
             val args = Bundle()
             args.putSerializable(ARG_OBJECT, trafficSignList as ArrayList)
             fragment.arguments = args
@@ -84,5 +92,13 @@ class SampleListFragment : Fragment(), ItemClickListener {
 
     override fun onItemClickListener(trafficSign: TrafficSign) {
         binding.root.findNavController().navigate(R.id.action_collectionListFragment_to_detailFragment, DetailFragment.newInstanceBundle(trafficSign))
+    }
+
+    override fun setOnCheckedChangeListener(isChecked: Boolean) {
+        if (isChecked) {
+            recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        } else {
+            recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        }
     }
 }

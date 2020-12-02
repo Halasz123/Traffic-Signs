@@ -8,25 +8,24 @@
     android:layout_height="match_parent"
     android:background="@color/blue_gray_700">
 
-    <ImageButton
-        android:id="@+id/back_button"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:background="@null"
-        android:contentDescription="@string/back_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/abc_vector_test"
-        tools:srcCompat="@drawable/ic_baseline_arrow_back_24" />
+<!--    <ImageButton-->
+<!--        android:id="@+id/back_button"-->
+<!--        android:layout_width="40dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:layout_marginStart="10dp"-->
+<!--        android:layout_marginLeft="10dp"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:background="@null"-->
+<!--        android:contentDescription="@string/back_button"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:srcCompat="@drawable/abc_vector_test"-->
+<!--        tools:srcCompat="@drawable/ic_baseline_arrow_back_24" />-->
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginTop="40dp"
         android:gravity="center_horizontal"
         android:textAlignment="center"
         android:background="@color/blue_gray_700"
