@@ -7,5 +7,10 @@
         android:icon="@drawable/ic_baseline_accessibility_24"
         android:title="@string/profile" />
 
-    <item android:title="@string/camera" />
+    <item android:id="@+id/neuralNetworkFragment"
+        android:title="@string/camera" />
+    
+
+    <item android:id="@+id/settingsFragment"
+        android:title="@string/settings" />
 </menu>

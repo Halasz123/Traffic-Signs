@@ -43,9 +43,9 @@ class DetailFragment : Fragment(){
         binding.groupTextView.text = trafficSign.group?.capitalize() + " signs"
         binding.descriptionTextView.text = trafficSign.description
 
-        binding.backButton2.setOnClickListener {
-            it.findNavController().navigate(R.id.action_detailFragment_to_collectionListFragment)
-        }
+//        binding.backButton2.setOnClickListener {
+//            it.findNavController().navigate(R.id.action_detailFragment_to_collectionListFragment)
+//        }
         binding.floatingActionButton.setOnClickListener {
             it.findNavController().navigate(R.id.action_detailFragment_to_mainScreenFragment)
         }
