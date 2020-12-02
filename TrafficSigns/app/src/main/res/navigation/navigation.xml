@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/mainScreenFragment">
+
+    <fragment
+        android:id="@+id/mainScreenFragment"
+        tools:layout="@layout/fragment_main_screen"
+        android:name="com.example.trafficsigns.ui.fragments.Home.MainScreenFragment"
+        android:label="MainScreenFragment" >
+        <action
+            android:id="@+id/action_mainScreenFragment_to_collectionListFragment"
+            app:destination="@id/collectionListFragment"
+            app:enterAnim="@anim/fade_out"
+            app:exitAnim="@anim/fad_in"
+            app:popEnterAnim="@anim/fade_out"
+            app:popExitAnim="@anim/fad_in"
+            app:popUpTo="@id/mainScreenFragment" />
+        <action
+            android:id="@+id/action_mainScreenFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_mainScreenFragment_to_neuralNetworkFragment"
+            app:destination="@id/neuralNetworkFragment" />
+        <action
+            android:id="@+id/action_mainScreenFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/collectionListFragment"
+        tools:layout="@layout/fragment_collection_list"
+        android:name="com.example.trafficsigns.ui.fragments.List.CollectionListFragment"
+        android:label="CollectionListFragment" >
+        <action
+            android:id="@+id/action_collectionListFragment_to_mainScreenFragment"
+            app:destination="@id/mainScreenFragment"
+            app:enterAnim="@anim/fade_out"
+            app:exitAnim="@anim/fad_in"
+            app:popUpTo="@id/mainScreenFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_collectionListFragment_to_detailFragment"
+            app:destination="@id/detailFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.example.trafficsigns.ui.fragments.Detail.DetailFragment"
+        android:label="fragment_detail"
+        tools:layout="@layout/fragment_detail" >
+        <action
+            android:id="@+id/action_detailFragment_to_collectionListFragment"
+            app:destination="@id/collectionListFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:launchSingleTop="false"
+            app:popUpTo="@id/collectionListFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_detailFragment_to_mainScreenFragment"
+            app:destination="@id/mainScreenFragment"
+            app:enterAnim="@anim/from_up"
+            app:exitAnim="@anim/to_down"
+            app:popUpTo="@id/mainScreenFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.trafficsigns.ui.fragments.Profile.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/neuralNetworkFragment"
+        android:name="com.example.trafficsigns.ui.fragments.Profile.NeuralNetworkFragment"
+        android:label="fragment_neural_network"
+        tools:layout="@layout/fragment_neural_network" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.trafficsigns.ui.fragments.Profile.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
+</navigation>

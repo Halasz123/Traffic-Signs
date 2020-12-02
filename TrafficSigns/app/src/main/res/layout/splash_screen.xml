@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue_gray_700">
+
+
+    <ImageView
+        android:id="@+id/stop_imageview"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+
+        android:src="@drawable/ic_stop_splash"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/ic_stop_splash"
+        app:layout_constraintVertical_bias="0.35"/>
+
+    <ImageView
+        android:id="@+id/warning_imageview"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/ic_warning_splash"
+        app:layout_constraintEnd_toStartOf="@+id/roundabout_imageview"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/stop_imageview"
+        tools:srcCompat="@drawable/ic_warning_splash" />
+
+    <ImageView
+        android:id="@+id/roundabout_imageview"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="48dp"
+        android:src="@drawable/ic_roundabout_splash"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/warning_imageview"
+        app:layout_constraintTop_toBottomOf="@+id/stop_imageview"
+        tools:srcCompat="@drawable/ic_roundabout_splash" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
