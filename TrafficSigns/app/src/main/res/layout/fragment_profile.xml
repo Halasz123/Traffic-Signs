@@ -21,7 +21,8 @@
         android:layout_marginTop="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+        android:src="@drawable/ic_roundabout_splash"
+        tools:src="@tools:sample/avatars[1]" />
 
     <ImageButton
         android:id="@+id/create_picture"
@@ -57,7 +58,9 @@
         android:hint="@string/name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/profile_picture"
-        app:layout_constraintTop_toTopOf="@+id/profile_picture" />
+        app:layout_constraintTop_toTopOf="@+id/profile_picture"
+        android:inputType="text"
+        android:autofillHints="" />
 
     <EditText
         android:id="@+id/age"
@@ -71,7 +74,8 @@
         android:inputType="number"
         app:layout_constraintStart_toEndOf="@+id/profile_picture"
         app:layout_constraintTop_toBottomOf="@+id/name_edittext"
-        android:layout_marginLeft="20dp" />
+        android:layout_marginLeft="20dp"
+        android:autofillHints="" />
 
     <TextView
         android:id="@+id/years_text"
@@ -126,7 +130,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="44dp"
-        android:text="Maximum score:"
+        android:text="@string/maximum_score"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@id/max_score_value"
@@ -150,7 +154,7 @@
         android:id="@+id/known_signs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Known signs"
+        android:text="@string/known_signs"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/test"
         app:layout_constraintStart_toStartOf="parent"
@@ -160,7 +164,7 @@
         android:id="@+id/test"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Solve test"
+        android:text="@string/solve_test"
         app:layout_constraintStart_toEndOf="@+id/known_signs"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

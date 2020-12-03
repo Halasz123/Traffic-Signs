@@ -19,4 +19,7 @@
     <string name="save">Save</string>
     <string name="_0_0">0.0</string>
     <string name="average_score">Average score:</string>
+    <string name="maximum_score">Maximum score:</string>
+    <string name="known_signs">Known signs</string>
+    <string name="solve_test">Solve test</string>
 </resources>
