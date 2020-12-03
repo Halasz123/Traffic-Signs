@@ -53,9 +53,9 @@ class SampleListFragment : Fragment(), ItemClickListener, SetOnCheckedChangeList
                 if (intent != null) {
                     isGrid = intent.getBooleanExtra("grid", false)
                     recyclerView.layoutManager = if (!isGrid) {
-                        LinearLayoutManager(requireContext())
+                        LinearLayoutManager(activity)
                     } else {
-                        GridLayoutManager(requireContext(),2 )
+                        GridLayoutManager(activity,2 )
                     }
                 }
             }
