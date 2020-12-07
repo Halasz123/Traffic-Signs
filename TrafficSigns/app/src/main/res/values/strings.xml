@@ -22,4 +22,8 @@
     <string name="maximum_score">Maximum score:</string>
     <string name="known_signs">Known signs</string>
     <string name="solve_test">Solve test</string>
+    <string name="sign_quiz">Sign Quiz</string>
+    <string name="traffic_quiz">Traffic Quiz</string>
+    <string name="quiz_description">Hello, this is a little quiz for earning some knowledge about traffic signs. I hope you will enjoy it. :) \n You will get images from signs randomly and you have to select the right one!</string>
+    <string name="start">Start</string>
 </resources>
