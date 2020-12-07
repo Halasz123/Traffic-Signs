@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 
 class MyProfileRepository(private val myProfileDao: MyProfileDao) {
 
-    val getMyProfile: LiveData<MyProfile> = myProfileDao.getProfile()
+    val getMyProfile: MyProfile=  myProfileDao.getProfile()
 
     suspend fun addProfile(profile: MyProfile){
         myProfileDao.addProfile(profile)

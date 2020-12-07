@@ -3,6 +3,7 @@ package com.example.trafficsigns.ui.fragments.Profile
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,8 @@ import com.example.trafficsigns.data.MyProfileViewModel
 import com.example.trafficsigns.databinding.FragmentProfileBinding
 import com.google.android.material.tabs.TabLayoutMediator
 
+const val PROFILE_TAG = "profile"
+
 class ProfileFragment : Fragment() {
 
     private lateinit var mMyProfileViewModel: MyProfileViewModel
@@ -32,18 +35,19 @@ class ProfileFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
         saveButton = binding.saveButton
         name = binding.nameEdittext
         age = binding.age
 
         mMyProfileViewModel = ViewModelProvider(this).get(MyProfileViewModel::class.java)
-        mMyProfileViewModel.myProfile.observe(viewLifecycleOwner, Observer { profile ->
-            this.myProfile = profile
+        myProfile = mMyProfileViewModel.myProfile
+
+            Log.d(PROFILE_TAG, myProfile.toString())
             name.setText(myProfile?.name)
             age.setText(myProfile?.age.toString())
-        })
+
 
         return binding.root
     }
@@ -57,6 +61,8 @@ class ProfileFragment : Fragment() {
             val newProfile = MyProfile(0, name.text.toString(), age.text.toString().toInt())
              mMyProfileViewModel.updateProfile(newProfile)
         }
+
+        Log.d(PROFILE_TAG, myProfile.toString())
     }
 
     companion object {

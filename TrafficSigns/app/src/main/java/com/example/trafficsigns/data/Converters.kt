@@ -39,13 +39,23 @@ class Convertes {
     }
 
     @TypeConverter
-    fun fromIntsToString(source: List<Int>): String{
+    fun fromIntsToString(source: ArrayList<Int>): String{
         return Gson().toJson(source)
     }
 
     @TypeConverter
-    fun  fromStringToInts(string: String): List<Int> {
-        val type = object : TypeToken<List<Int>>() {}.type
+    fun  fromStringToInts(string: String): ArrayList<Int> {
+        val type = object : TypeToken<ArrayList<Int>>() {}.type
+        return Gson().fromJson(string, type)
+    }
+    @TypeConverter
+    fun fromTrafficSignsToString2(source: ArrayList<TrafficSign>) :String{
+        return Gson().toJson(source)
+    }
+
+    @TypeConverter
+    fun  fromStringToTrafficSigns2(string: String): ArrayList<TrafficSign> {
+        val type = object : TypeToken<ArrayList<TrafficSign>>() {}.type
         return Gson().fromJson(string, type)
     }
 

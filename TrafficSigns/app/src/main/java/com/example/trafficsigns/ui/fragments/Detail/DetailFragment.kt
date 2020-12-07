@@ -1,5 +1,7 @@
 package com.example.trafficsigns.ui.fragments.Detail
 
+import android.graphics.Color
+import android.graphics.Color.YELLOW
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,24 +10,30 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.OnBackPressedDispatcherOwner
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.example.trafficsigns.R
+import com.example.trafficsigns.data.MyProfileViewModel
 import com.example.trafficsigns.data.TrafficSign
 import com.example.trafficsigns.databinding.FragmentDetailBinding
+import com.google.android.material.tabs.TabLayoutMediator
 
 
 class DetailFragment : Fragment(){
 
     private lateinit var binding: FragmentDetailBinding
     private lateinit var trafficSign: TrafficSign
+    private lateinit var mMyProfileViewModel: MyProfileViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding =  DataBindingUtil.inflate(inflater, R.layout.fragment_detail, container, false)
+        mMyProfileViewModel = ViewModelProvider(this).get(MyProfileViewModel::class.java)
         return binding.root
     }
 
@@ -43,9 +51,11 @@ class DetailFragment : Fragment(){
         binding.groupTextView.text = trafficSign.group?.capitalize() + " signs"
         binding.descriptionTextView.text = trafficSign.description
 
-//        binding.backButton2.setOnClickListener {
-//            it.findNavController().navigate(R.id.action_detailFragment_to_collectionListFragment)
-//        }
+
+        binding.starButton.setOnClickListener {
+            updateMyTrafficSignList()
+            binding.starButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow), android.graphics.PorterDuff.Mode.MULTIPLY)
+        }
         binding.floatingActionButton.setOnClickListener {
             it.findNavController().navigate(R.id.action_detailFragment_to_mainScreenFragment)
         }
@@ -58,6 +68,12 @@ class DetailFragment : Fragment(){
             args.putSerializable("currentItem", trafficSign )
             return args
         }
+    }
+
+    private fun updateMyTrafficSignList(){
+        val myProfile = mMyProfileViewModel.myProfile
+        myProfile.knownTrafficSigns?.add(trafficSign)
+        mMyProfileViewModel.updateProfile(myProfile)
     }
 
 }

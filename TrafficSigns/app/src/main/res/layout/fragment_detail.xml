@@ -17,20 +17,6 @@
             android:background="@color/blue_gray_600"
             tools:context=".ui.fragments.Detail.DetailFragment">
 
-            <!--    <ImageButton-->
-            <!--        android:id="@+id/back_button2"-->
-            <!--        android:layout_width="40dp"-->
-            <!--        android:layout_height="40dp"-->
-            <!--        android:layout_marginStart="10dp"-->
-            <!--        android:layout_marginLeft="10dp"-->
-            <!--        android:layout_marginTop="10dp"-->
-            <!--        android:background="@null"-->
-            <!--        android:tint="@color/white"-->
-            <!--        android:contentDescription="@string/back_button"-->
-            <!--        app:layout_constraintStart_toStartOf="parent"-->
-            <!--        app:layout_constraintTop_toTopOf="parent"-->
-            <!--        android:src="@drawable/ic_baseline_arrow_back_24" />-->
-
             <ImageView
                 android:id="@+id/traffic_image"
                 android:layout_width="150dp"
@@ -42,6 +28,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@tools:sample/avatars" />
+
+
+            <ImageButton
+                android:id="@+id/star_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@null"
+                android:src="@drawable/ic_baseline_star_rate_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/traffic_image"
+                app:layout_constraintTop_toTopOf="@+id/traffic_image" />
 
             <TextView
                 android:id="@+id/name_textView"

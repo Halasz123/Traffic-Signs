@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 
 class MyProfileViewModel(application: Application): AndroidViewModel(application) {
 
-    val myProfile: LiveData<MyProfile>
+    val myProfile: MyProfile
     private val repository: MyProfileRepository
 
     init {
