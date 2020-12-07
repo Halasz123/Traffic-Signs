@@ -10,7 +10,7 @@ import androidx.room.TypeConverters
 @TypeConverters(Convertes::class)
 abstract  class MyProfileDatabase: RoomDatabase() {
 
-    abstract fun myProfileDao(): MyProfielDao
+    abstract fun myProfileDao(): MyProfileDao
 
     companion object{
         @Volatile

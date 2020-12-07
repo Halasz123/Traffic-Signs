@@ -2,7 +2,7 @@ package com.example.trafficsigns.data
 
 import androidx.lifecycle.LiveData
 
-class MyProfileRepository(private val myProfileDao: MyProfielDao) {
+class MyProfileRepository(private val myProfileDao: MyProfileDao) {
 
     val getMyProfile: LiveData<MyProfile> = myProfileDao.getProfile()
 

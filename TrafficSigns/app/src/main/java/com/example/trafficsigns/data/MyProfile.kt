@@ -10,12 +10,13 @@ import java.io.Serializable
 data class MyProfile (
         @PrimaryKey(autoGenerate = false)
         var id: Int,
-        var name: String? = null,
-        var age: Int? = null,
+        var name: String? = "",
+        var age: Int? = 0,
         @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-        var picture: ByteArray? = null,
-        var averageScore: Float? = null,
-        var maxPoint: Int? = null,
-        var knownTrafficSigns: List<TrafficSign>? = null
-        ): Serializable {
-}
+        var picture: ByteArray? = ByteArray(0),
+        var address: String? = "",
+        var phoneNumber: String? = "",
+        var email: String? = "",
+        var scores: List<Int>? = emptyList(),
+        var knownTrafficSigns: List<TrafficSign>? = emptyList()
+        ): Serializable

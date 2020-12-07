@@ -1,28 +1,20 @@
 package com.example.trafficsigns
 
 import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
+import android.animation.ObjectAnimator.ofFloat
 import android.animation.ValueAnimator
 import android.content.Intent
-import android.graphics.Path
 import android.os.Build
 import android.os.Bundle
-import android.os.Looper
 import android.util.Log
-import android.util.Property
 import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.view.animation.LinearInterpolator
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.example.trafficsigns.data.TrafficSign
-import com.example.trafficsigns.data.TrafficSignsCollection
-import com.example.trafficsigns.data.TrafficSignsCollectionViewModel
+import com.example.trafficsigns.data.*
 import com.example.trafficsigns.databinding.SplashScreenBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -33,8 +25,9 @@ import okhttp3.*
 import java.io.IOException
 import java.util.*
 import kotlin.concurrent.schedule
-import android.animation.ObjectAnimator.ofFloat as ofFloat
 
+
+const val PREFS_NAME = "MyPrefsFile"
 
 class SplashScreen: AppCompatActivity() {
 
@@ -42,6 +35,7 @@ class SplashScreen: AppCompatActivity() {
     private var myData = ""
     private var trafficSigns: HashMap<String, ArrayList<TrafficSign>> = HashMap()
     private lateinit var mTrafficSignsCollectionViewModel: TrafficSignsCollectionViewModel
+    private lateinit var mMyProfileViewModel: MyProfileViewModel
     private var downloaded = false
     private lateinit var internetErrorToast: Toast
 
@@ -49,13 +43,19 @@ class SplashScreen: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.splash_screen)
-        mTrafficSignsCollectionViewModel = ViewModelProvider(this).get(
-            TrafficSignsCollectionViewModel::class.java
-        )
+        mTrafficSignsCollectionViewModel = ViewModelProvider(this).get(TrafficSignsCollectionViewModel::class.java)
+        mMyProfileViewModel = ViewModelProvider(this).get(MyProfileViewModel::class.java)
         internetErrorToast = Toast.makeText(this, "Please turn on the internet!", Toast.LENGTH_LONG)
         downloadData()
-        //newAnim()
         animateLogo()
+
+        val settings = getSharedPreferences(PREFS_NAME, 0)
+        if (settings.getBoolean("my_first_time", true)) {
+            //the app is being launched for first time, do something
+            Log.d("Comments", "First time");
+            createNullProfile()
+            settings.edit().putBoolean("my_first_time", false).apply();
+        }
 
         val intent = Intent(this, MainActivity::class.java)
         Timer().schedule(4000){
@@ -64,26 +64,6 @@ class SplashScreen: AppCompatActivity() {
             startActivity(intent)
             overridePendingTransition(R.anim.fade_out, R.anim.splash_anim);
             finish()
-        }
-
-    }
-
-    private fun newAnim() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val path = Path()
-            path.arcTo(
-                0f,
-                0f,
-                0f,
-                0f,
-                0f,
-                359f,
-                true
-            ) //with first four parameters you determine four edge of a rectangle by pixel , and fifth parameter is the path'es start point from circle 360 degree and sixth parameter is end point of path in that circle
-            val animator: ObjectAnimator = ofFloat(binding.stopImageview, "translationX", "translationY" , path)
-            animator.duration = 3000
-            animator.startDelay = 1000
-            animator.start()
         }
 
     }
@@ -146,12 +126,13 @@ class SplashScreen: AppCompatActivity() {
     private fun downloadDataBlocking(){
         val client = OkHttpClient()
         val request = Request.Builder().url("https://www.dropbox.com/s/6osm7j4tyee0kqf/traffic_signs.json?dl=1").build()
-        return client.newCall(request).enqueue(object: Callback {
+        return client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 myData = response.body()?.string() ?: ""
                 parseJson()
 
             }
+
             override fun onFailure(call: Call, e: IOException) {
                 Log.d("Splashscreen", e.toString())
                 internetErrorToast.show()
@@ -174,9 +155,15 @@ class SplashScreen: AppCompatActivity() {
         trafficSigns.forEach {
             Log.d("Splash", "${it.key} -- ${it.value}")
             mTrafficSignsCollectionViewModel.addTrafficSignsCollection(
-                TrafficSignsCollection(it.key, it.value)
+                    TrafficSignsCollection(it.key, it.value)
             )
         }
+
+    }
+
+    private fun createNullProfile() {
+        val profile = MyProfile(0)
+        mMyProfileViewModel.addMyProfile(profile)
 
     }
 
