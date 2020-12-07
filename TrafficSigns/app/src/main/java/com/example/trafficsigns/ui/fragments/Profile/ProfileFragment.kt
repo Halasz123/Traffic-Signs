@@ -39,15 +39,10 @@ class ProfileFragment : Fragment() {
         age = binding.age
 
         mMyProfileViewModel = ViewModelProvider(this).get(MyProfileViewModel::class.java)
-//        this.myProfile = mMyProfileViewModel.myProfile.value
-//        name.text = myProfile?.name as TextView.BufferType.Editable
         mMyProfileViewModel.myProfile.observe(viewLifecycleOwner, Observer { profile ->
             this.myProfile = profile
             name.setText(myProfile?.name)
             age.setText(myProfile?.age.toString())
-
-
-
         })
 
         return binding.root
