@@ -12,8 +12,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.example.trafficsigns.R
 import com.example.trafficsigns.data.MyProfile
 import com.example.trafficsigns.data.MyProfileViewModel
@@ -42,12 +45,13 @@ class ProfileFragment : Fragment() {
         age = binding.age
 
         mMyProfileViewModel = ViewModelProvider(this).get(MyProfileViewModel::class.java)
-        myProfile = mMyProfileViewModel.myProfile
 
-            Log.d(PROFILE_TAG, myProfile.toString())
+        mMyProfileViewModel.myProfile.observe(viewLifecycleOwner, { profile ->
+            this.myProfile = profile
+            Log.d(PROFILE_TAG, profile.toString())
             name.setText(myProfile?.name)
             age.setText(myProfile?.age.toString())
-
+        })
 
         return binding.root
     }
@@ -58,8 +62,11 @@ class ProfileFragment : Fragment() {
 
 
         saveButton.setOnClickListener {
-            val newProfile = MyProfile(0, name.text.toString(), age.text.toString().toInt())
-             mMyProfileViewModel.updateProfile(newProfile)
+            updateProfile()
+        }
+
+        binding.knownSigns.setOnClickListener {
+            binding.root.findNavController().navigate(R.id.action_profileFragment_to_knownSigns)
         }
 
         Log.d(PROFILE_TAG, myProfile.toString())
@@ -67,6 +74,14 @@ class ProfileFragment : Fragment() {
 
     companion object {
         fun newInstance() = ProfileFragment()
+    }
+
+    private fun updateProfile(){
+        mMyProfileViewModel.myProfile.observeOnce(viewLifecycleOwner, { profile ->
+            profile.name = name.text.toString()
+            profile.age = age.text.toString().toInt()
+            mMyProfileViewModel.updateProfile(profile)
+        })
     }
 }
 
@@ -80,6 +95,15 @@ fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
 
         override fun afterTextChanged(editable: Editable?) {
             afterTextChanged.invoke(editable.toString())
+        }
+    })
+}
+
+fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+    observe(lifecycleOwner, object : Observer<T> {
+        override fun onChanged(t: T?) {
+            observer.onChanged(t)
+            removeObserver(this)
         }
     })
 }

@@ -1,15 +1,12 @@
 package com.example.trafficsigns.ui.fragments.Detail
 
-import android.graphics.Color
-import android.graphics.Color.YELLOW
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
-import androidx.activity.OnBackPressedDispatcherOwner
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -19,8 +16,8 @@ import com.example.trafficsigns.R
 import com.example.trafficsigns.data.MyProfileViewModel
 import com.example.trafficsigns.data.TrafficSign
 import com.example.trafficsigns.databinding.FragmentDetailBinding
-import com.google.android.material.tabs.TabLayoutMediator
 
+const val DETAIL_TAG = "detailFragment"
 
 class DetailFragment : Fragment(){
 
@@ -37,6 +34,7 @@ class DetailFragment : Fragment(){
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val bundle = this.arguments
         if (bundle != null){
@@ -48,8 +46,16 @@ class DetailFragment : Fragment(){
             .override(binding.trafficImage.width, binding.trafficImage.height)
             .into(binding.trafficImage)
         binding.nameTextView.text = trafficSign.name
-        binding.groupTextView.text = trafficSign.group?.capitalize() + " signs"
+        binding.groupTextView.text = "${trafficSign.group?.capitalize()} signs"
         binding.descriptionTextView.text = trafficSign.description
+
+        mMyProfileViewModel.myProfile.observe(viewLifecycleOwner, { profile ->
+            if (profile.knownTrafficSigns?.contains(trafficSign) == true) {
+                binding.starButton.isEnabled = false
+                binding.starButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow), android.graphics.PorterDuff.Mode.MULTIPLY)
+
+            }
+        })
 
 
         binding.starButton.setOnClickListener {
@@ -71,9 +77,13 @@ class DetailFragment : Fragment(){
     }
 
     private fun updateMyTrafficSignList(){
-        val myProfile = mMyProfileViewModel.myProfile
-        myProfile.knownTrafficSigns?.add(trafficSign)
-        mMyProfileViewModel.updateProfile(myProfile)
+        mMyProfileViewModel.myProfile.observe(viewLifecycleOwner, { profile ->
+            Log.d(DETAIL_TAG, profile.toString())
+            if (profile.knownTrafficSigns?.contains(trafficSign) == false){
+                profile.knownTrafficSigns?.add(trafficSign)
+                mMyProfileViewModel.updateProfile(profile)
+            }
+        })
     }
 
 }

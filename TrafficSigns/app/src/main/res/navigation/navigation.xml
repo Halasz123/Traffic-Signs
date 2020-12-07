@@ -73,7 +73,11 @@
         android:id="@+id/profileFragment"
         android:name="com.example.trafficsigns.ui.fragments.Profile.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_knownSigns"
+            app:destination="@id/knownSigns" />
+    </fragment>
     <fragment
         android:id="@+id/neuralNetworkFragment"
         android:name="com.example.trafficsigns.ui.fragments.Profile.NeuralNetworkFragment"
@@ -84,4 +88,13 @@
         android:name="com.example.trafficsigns.ui.fragments.Profile.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/knownSigns"
+        android:name="com.example.trafficsigns.ui.fragments.Profile.KnownSigns"
+        android:label="KnownSigns"
+        tools:layout="@layout/fragment_known_signs">
+        <action
+            android:id="@+id/action_knownSigns_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
 </navigation>

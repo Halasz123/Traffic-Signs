@@ -36,7 +36,7 @@ class MainScreenFragment : Fragment(), ItemClickListener,
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil
             .inflate(
                 inflater,
@@ -62,7 +62,7 @@ class MainScreenFragment : Fragment(), ItemClickListener,
 
 
         mTrafficViewModel = ViewModelProvider(this).get(TrafficSignsCollectionViewModel::class.java)
-        mTrafficViewModel.readAllData.observe(viewLifecycleOwner, Observer { collection ->
+        mTrafficViewModel.readAllData.observe(viewLifecycleOwner, { collection ->
             mAdapter.setData(collection)
         })
     }
@@ -72,6 +72,10 @@ class MainScreenFragment : Fragment(), ItemClickListener,
     }
 
     override fun onItemClickListener(trafficSign: TrafficSign) {
+        //do nothing
+    }
+
+    override fun onItemLongClickListener(trafficSign: TrafficSign) {
         //do nothing
     }
 

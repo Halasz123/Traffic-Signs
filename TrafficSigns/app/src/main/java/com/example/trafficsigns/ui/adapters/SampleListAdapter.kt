@@ -1,5 +1,6 @@
 package com.example.trafficsigns.ui.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,10 +39,15 @@ class SampleListAdapter(private val itemClickListener: ItemClickListener): Recyc
 
         holder.itemView.name_textView.text = currentItem.name
 
-        Glide.with(holder.itemView).load(currentItem.image).override(holder.itemView.width,holder.itemView.height).into(holder.itemView.sign_imageView);
+        Glide.with(holder.itemView).load(currentItem.image).override(holder.itemView.width,holder.itemView.height).into(holder.itemView.sign_imageView)
 
         holder.itemView.setOnClickListener {
             itemClickListener.onItemClickListener(currentItem)
+        }
+
+        holder.itemView.setOnLongClickListener {
+            itemClickListener.onItemLongClickListener(currentItem)
+            true
         }
 
     }

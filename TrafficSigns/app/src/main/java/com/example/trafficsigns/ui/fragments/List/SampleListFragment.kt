@@ -40,7 +40,7 @@ class SampleListFragment : Fragment(), ItemClickListener, SetOnCheckedChangeList
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil
             .inflate(
                     inflater,
@@ -113,6 +113,10 @@ class SampleListFragment : Fragment(), ItemClickListener, SetOnCheckedChangeList
 
     override fun onItemClickListener(trafficSign: TrafficSign) {
         binding.root.findNavController().navigate(R.id.action_collectionListFragment_to_detailFragment, DetailFragment.newInstanceBundle(trafficSign))
+    }
+
+    override fun onItemLongClickListener(trafficSign: TrafficSign) {
+        //do nothing
     }
 
     override fun setOnCheckedChangeListener(isChecked: Boolean) {

@@ -1,5 +1,7 @@
 package com.example.trafficsigns.data
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import java.util.concurrent.Flow
 
@@ -13,5 +15,6 @@ interface MyProfileDao {
     suspend fun updateProfile(profile: MyProfile)
 
     @Query("SELECT * FROM my_profile")
-    fun getProfile(): MyProfile
+    fun getProfile(): LiveData<MyProfile>
+
 }
