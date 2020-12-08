@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -55,19 +56,23 @@ class CollectionListFragment : Fragment() {
         binding.switch1.setOnCheckedChangeListener { _, isChecked ->
             sendGridOnData(isChecked)
         }
+        val tabLayout = binding.tabLayout
+        viewPager = binding.pager
 
         trafficCollectionAdapter = TrafficCollectionListAdapter(this)
-        viewPager = binding.pager
         viewPager.adapter = trafficCollectionAdapter
-        viewPager.setCurrentItem(startPosition, true)
-        val tabLayout = binding.tabLayout
+        viewPager.setCurrentItem(startPosition, false)
+        viewPager.doOnLayout {
+            viewPager.currentItem = startPosition
+        }
+
 
         mTrafficViewModel = ViewModelProvider(this).get(TrafficSignsCollectionViewModel::class.java)
         mTrafficViewModel.readAllData.observe(viewLifecycleOwner, { collection ->
             trafficCollectionAdapter.setData(collection)
-            mCollectionList = collection
+
             TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-                tab.text = mCollectionList[position].groupId
+                tab.text = collection[position].groupId
             }.attach()
         })
 

@@ -17,6 +17,6 @@ data class MyProfile (
         var address: String? = "",
         var phoneNumber: String? = "",
         var email: String? = "",
-        var scores: ArrayList<Int> = ArrayList(),
-        var knownTrafficSigns: ArrayList<TrafficSign> = ArrayList()
+        var scores: ArrayList<Int>? = ArrayList(),
+        var knownTrafficSigns: ArrayList<TrafficSign>? = ArrayList()
         ): Serializable

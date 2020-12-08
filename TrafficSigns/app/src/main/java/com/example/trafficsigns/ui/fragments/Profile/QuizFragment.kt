@@ -37,7 +37,7 @@ class QuizFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         mProfileViewModel = ViewModelProvider(this).get(MyProfileViewModel::class.java)
         mProfileViewModel.myProfile.observeOnce(viewLifecycleOwner, {
-            if (it.knownTrafficSigns.count() < 5) {
+            if (it.knownTrafficSigns?.count()!! < 5) {
                 Toast.makeText(requireContext(), "You have to learn minimum 5 traffic sign!", Toast.LENGTH_LONG).show()
             }
             else {
@@ -54,10 +54,10 @@ class QuizFragment : Fragment() {
         var score = 0
         binding.quiz.visibility = View.VISIBLE
         mProfileViewModel.myProfile.observeOnce(viewLifecycleOwner, {
-            var signs = it.knownTrafficSigns.shuffled()
+            var signs = it.knownTrafficSigns?.shuffled()
 
             for ( i in 0 until 5) {
-                Glide.with(binding.root).load(signs[i].image)
+                Glide.with(binding.root).load(signs?.get(i)?.image)
                         .override(binding.quizImage.width,binding.quizImage.height)
                         .into(binding.quizImage)
             }
