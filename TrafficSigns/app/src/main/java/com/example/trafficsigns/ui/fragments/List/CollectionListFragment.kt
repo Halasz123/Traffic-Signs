@@ -27,14 +27,13 @@ class CollectionListFragment : Fragment() {
     private lateinit var binding: FragmentCollectionListBinding
     lateinit var mTrafficViewModel: TrafficSignsCollectionViewModel
     private var startPosition: Int = 1
-    var gridListener: SetOnCheckedChangeListener? = null
 
     private var mCollectionList =  emptyList<TrafficSignsCollection>()
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil
             .inflate(
                     inflater,
@@ -52,10 +51,6 @@ class CollectionListFragment : Fragment() {
             startPosition = bundle.getInt("currentPosition", 1)
            // mCollectionList = bundle.getSerializable("collectionList") as List<TrafficSignsCollection>
         }
-//        binding.backButton.setOnClickListener {
-//            view.findNavController().navigate(R.id.action_collectionListFragment_to_mainScreenFragment)
-//        }
-
 
         binding.switch1.setOnCheckedChangeListener { _, isChecked ->
             sendGridOnData(isChecked)
@@ -64,11 +59,11 @@ class CollectionListFragment : Fragment() {
         trafficCollectionAdapter = TrafficCollectionListAdapter(this)
         viewPager = binding.pager
         viewPager.adapter = trafficCollectionAdapter
-        viewPager.setCurrentItem(startPosition, false)
+        viewPager.setCurrentItem(startPosition, true)
         val tabLayout = binding.tabLayout
 
         mTrafficViewModel = ViewModelProvider(this).get(TrafficSignsCollectionViewModel::class.java)
-        mTrafficViewModel.readAllData.observe(viewLifecycleOwner, Observer { collection ->
+        mTrafficViewModel.readAllData.observe(viewLifecycleOwner, { collection ->
             trafficCollectionAdapter.setData(collection)
             mCollectionList = collection
             TabLayoutMediator(tabLayout, viewPager) { tab, position ->

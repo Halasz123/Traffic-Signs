@@ -48,20 +48,20 @@ class SampleListFragment : Fragment(), ItemClickListener, SetOnCheckedChangeList
                     container,
                     false
             )
-        localBroadcastReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                if (intent != null) {
-                    isGrid = intent.getBooleanExtra("grid", false)
-                    recyclerView.layoutManager = if (!isGrid) {
-                        LinearLayoutManager(activity)
-                    } else {
-                        GridLayoutManager(activity,2 )
-                    }
-                }
-            }
-        }
-
-        LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(localBroadcastReceiver as BroadcastReceiver, IntentFilter ("sendGridOnMessage"))
+//        localBroadcastReceiver = object : BroadcastReceiver() {
+//            override fun onReceive(context: Context?, intent: Intent?) {
+//                if (intent != null) {
+//                    isGrid = intent.getBooleanExtra("grid", false)
+//                    recyclerView.layoutManager = if (!isGrid) {
+//                        LinearLayoutManager(activity)
+//                    } else {
+//                        GridLayoutManager(activity,2 )
+//                    }
+//                }
+//            }
+//        }
+//
+//        LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(localBroadcastReceiver as BroadcastReceiver, IntentFilter ("sendGridOnMessage"))
         return binding.root
     }
 

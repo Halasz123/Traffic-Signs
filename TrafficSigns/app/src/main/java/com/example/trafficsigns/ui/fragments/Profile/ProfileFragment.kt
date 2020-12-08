@@ -69,6 +69,10 @@ class ProfileFragment : Fragment() {
             binding.root.findNavController().navigate(R.id.action_profileFragment_to_knownSigns)
         }
 
+        binding.testButton.setOnClickListener {
+            binding.root.findNavController().navigate(R.id.action_profileFragment_to_quizFragment)
+        }
+
         Log.d(PROFILE_TAG, myProfile.toString())
     }
 
