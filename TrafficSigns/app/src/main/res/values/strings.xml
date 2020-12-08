@@ -27,4 +27,5 @@
     <string name="quiz_description">Hello, this is a little quiz for earning some knowledge about traffic signs. I hope you will enjoy it. :) \n You will get images from signs randomly and you have to select the right one!</string>
     <string name="start">Start</string>
     <string name="quiz_image">Quiz image</string>
+    <string name="next">Next</string>
 </resources>

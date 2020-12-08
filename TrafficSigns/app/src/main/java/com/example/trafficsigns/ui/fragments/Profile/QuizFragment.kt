@@ -12,8 +12,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.trafficsigns.R
 import com.example.trafficsigns.data.MyProfileViewModel
+import com.example.trafficsigns.data.TrafficSign
 import com.example.trafficsigns.databinding.FragmentQuizBinding
 import kotlinx.android.synthetic.main.sample_list_item.view.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class QuizFragment : Fragment() {
 
@@ -48,22 +51,49 @@ class QuizFragment : Fragment() {
         binding.start.setOnClickListener {
             startTest()
         }
+
     }
 
     private fun startTest() {
         var score = 0
+        binding.start.isEnabled = false
+        binding.start.visibility = View.INVISIBLE
         binding.quiz.visibility = View.VISIBLE
-        mProfileViewModel.myProfile.observeOnce(viewLifecycleOwner, {
-            var signs = it.knownTrafficSigns?.shuffled()
+        binding.nextButton.visibility = View.VISIBLE
+        binding.nextButton.isEnabled = true
 
-            for ( i in 0 until 5) {
-                Glide.with(binding.root).load(signs?.get(i)?.image)
+        mProfileViewModel.myProfile.observeOnce(viewLifecycleOwner, {
+            val signs = it.knownTrafficSigns?.shuffled()
+            var answers = arrayListOf<String>()
+
+            var i = 0
+                binding.nextButton.setOnClickListener {
+                    Glide.with(binding.root).load(signs?.get(i)?.image)
                         .override(binding.quizImage.width,binding.quizImage.height)
                         .into(binding.quizImage)
-            }
+
+                    answers.add(signs?.get(i)?.name.toString())
+                    answers.add(getFalseAnswer(answers,signs))
+                    answers.add(getFalseAnswer(answers,signs))
+                    answers.shuffle()
+
+                    binding.radioButton.text = answers[0]
+                    binding.radioButton2.text = answers[1]
+                    binding.radioButton3.text = answers[2]
+                    i+=1
+                }
+
 
         })
 
+
+    }
+    fun getFalseAnswer(answers: ArrayList<String>, signs: List<TrafficSign>?): String {
+        var rand = Random().nextInt(signs?.count() as Int)
+        while(answers.contains(signs[rand].name)){
+            rand = Random().nextInt(signs.count())
+        }
+        return signs[rand].name.toString()
     }
 
 }
