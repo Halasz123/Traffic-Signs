@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.trafficsigns.R
 import com.example.trafficsigns.data.TrafficSign
+import com.example.trafficsigns.data.TrafficSignsCollection
 import com.example.trafficsigns.data.TrafficSignsCollectionViewModel
 import com.example.trafficsigns.databinding.FragmentMainScreenBinding
 import com.example.trafficsigns.ui.adapters.MainMenuAdapter
@@ -31,6 +32,7 @@ class MainScreenFragment : Fragment(), ItemClickListener,
     lateinit var mTrafficViewModel: TrafficSignsCollectionViewModel
     private lateinit var trafficRecyclerView: RecyclerView
     private lateinit var binding: FragmentMainScreenBinding
+    private var mCollectionList =  emptyList<TrafficSignsCollection>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,11 +66,12 @@ class MainScreenFragment : Fragment(), ItemClickListener,
         mTrafficViewModel = ViewModelProvider(this).get(TrafficSignsCollectionViewModel::class.java)
         mTrafficViewModel.readAllData.observe(viewLifecycleOwner, { collection ->
             mAdapter.setData(collection)
+            mCollectionList = collection
         })
     }
 
     override fun onItemClickListener(position: Int) {
-        binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_collectionListFragment, CollectionListFragment.newInstanceBundle(position))
+        binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_collectionListFragment, CollectionListFragment.newInstanceBundle(position, mCollectionList))
     }
 
     override fun onItemClickListener(trafficSign: TrafficSign) {

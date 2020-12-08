@@ -50,7 +50,7 @@ class CollectionListFragment : Fragment() {
         val bundle = this.arguments
         if (bundle != null){
             startPosition = bundle.getInt("currentPosition", 1)
-           // mCollectionList = bundle.getSerializable("collectionList") as List<TrafficSignsCollection>
+            mCollectionList = bundle.getSerializable("collectionList") as List<TrafficSignsCollection>
         }
 
         binding.switch1.setOnCheckedChangeListener { _, isChecked ->
@@ -60,29 +60,22 @@ class CollectionListFragment : Fragment() {
         viewPager = binding.pager
 
         trafficCollectionAdapter = TrafficCollectionListAdapter(this)
+        trafficCollectionAdapter.setData(mCollectionList)
         viewPager.adapter = trafficCollectionAdapter
         viewPager.setCurrentItem(startPosition, false)
-        viewPager.doOnLayout {
-            viewPager.currentItem = startPosition
-        }
 
-
-        mTrafficViewModel = ViewModelProvider(this).get(TrafficSignsCollectionViewModel::class.java)
-        mTrafficViewModel.readAllData.observe(viewLifecycleOwner, { collection ->
-            trafficCollectionAdapter.setData(collection)
-
-            TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-                tab.text = collection[position].groupId
-            }.attach()
-        })
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            tab.text = mCollectionList[position].groupId
+        }.attach()
 
     }
 
     companion object {
         @JvmStatic
-        fun newInstanceBundle(startPosition: Int): Bundle {
+        fun newInstanceBundle(startPosition: Int, trafficSignsCollections: List<TrafficSignsCollection>): Bundle {
             val args = Bundle()
             args.putInt("currentPosition", startPosition)
+            args.putSerializable("collectionList", trafficSignsCollections as ArrayList)
             return args
         }
     }
