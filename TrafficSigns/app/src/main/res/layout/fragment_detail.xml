@@ -111,21 +111,13 @@
 
             <ImageButton
                 android:id="@+id/read_more_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="117dp"
+                android:layout_height="67dp"
                 android:layout_marginTop="50dp"
                 android:background="@null"
                 android:src="@drawable/ic_baseline_read_more_24"
                 app:layout_constraintStart_toStartOf="@+id/descripiton_icon"
                 app:layout_constraintTop_toBottomOf="@id/description_text_view" />
-
-<!--            <View-->
-<!--                android:id="@+id/view"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="300dp"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@id/read_more_button" />-->
-
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/floatingActionButton"
@@ -137,6 +129,18 @@
                 android:clickable="true"
                 android:src="@drawable/ic_baseline_home_24"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/read_more_button" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="-20dp"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text=" More.."
+                app:layout_constraintBottom_toBottomOf="@+id/read_more_button"
+                app:layout_constraintStart_toEndOf="@+id/read_more_button"
                 app:layout_constraintTop_toTopOf="@+id/read_more_button" />
 
 
