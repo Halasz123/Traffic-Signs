@@ -4,6 +4,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator.ofFloat
 import android.animation.ValueAnimator
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +24,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.*
 import java.io.IOException
+import java.nio.ByteBuffer
 import java.util.*
 import kotlin.concurrent.schedule
 
@@ -43,7 +45,9 @@ class SplashScreen: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.splash_screen)
-        mTrafficSignsCollectionViewModel = ViewModelProvider(this).get(TrafficSignsCollectionViewModel::class.java)
+        mTrafficSignsCollectionViewModel = ViewModelProvider(this).get(
+            TrafficSignsCollectionViewModel::class.java
+        )
         mMyProfileViewModel = ViewModelProvider(this).get(MyProfileViewModel::class.java)
         internetErrorToast = Toast.makeText(this, "Please turn on the internet!", Toast.LENGTH_LONG)
         downloadData()
@@ -155,7 +159,7 @@ class SplashScreen: AppCompatActivity() {
         trafficSigns.forEach {
             Log.d("Splash", "${it.key} -- ${it.value}")
             mTrafficSignsCollectionViewModel.addTrafficSignsCollection(
-                    TrafficSignsCollection(it.key, it.value)
+                TrafficSignsCollection(it.key, it.value)
             )
         }
 
