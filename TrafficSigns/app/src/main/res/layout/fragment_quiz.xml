@@ -12,24 +12,23 @@
 
 
         <TextView
-            android:id="@+id/description"
+            android:id="@+id/title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
             android:layout_marginTop="30dp"
-            android:layout_marginEnd="20dp"
             android:fontFamily="sans-serif"
             android:gravity="center"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
             android:text="@string/quiz_description"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/start"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title" />
+            app:layout_constraintTop_toBottomOf="@+id/description" />
 
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="80dp"
@@ -74,16 +73,16 @@
             android:id="@+id/quiz"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
             android:background="@color/blue_gray_200"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:visibility="invisible"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
             app:layout_constraintBottom_toTopOf="@+id/start"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title">
+            app:layout_constraintTop_toBottomOf="@+id/description">
 
             <ImageView
                 android:id="@+id/quiz_image"
@@ -102,10 +101,10 @@
                 android:id="@+id/radio_group"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="30dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginEnd="30dp"
                 android:layout_marginBottom="20dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
                 android:gravity="center">
 
                 <RadioButton

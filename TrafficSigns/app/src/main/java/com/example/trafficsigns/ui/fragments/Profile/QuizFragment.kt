@@ -5,10 +5,8 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.LayoutInflater.from
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioButton
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -19,9 +17,7 @@ import com.example.trafficsigns.data.MyProfileViewModel
 import com.example.trafficsigns.data.TrafficSign
 import com.example.trafficsigns.databinding.FragmentQuizBinding
 import kotlinx.android.synthetic.main.sample_list_item.view.*
-import java.time.DayOfWeek.from
 import java.util.*
-import java.util.Date.from
 import kotlin.collections.ArrayList
 
 const val QUIZ_TAG = "QuizFragment"
@@ -66,7 +62,6 @@ class QuizFragment : Fragment() {
 
     }
 
-    @SuppressLint("SetTextI18n")
     private fun startTest() {
         binding.start.isEnabled = false
         binding.start.visibility = View.INVISIBLE
@@ -91,9 +86,11 @@ class QuizFragment : Fragment() {
                         binding.nextButton.visibility = View.INVISIBLE
                         binding.nextButton.isEnabled = false
                         binding.quiz.visibility = View.INVISIBLE
-                        binding.description.text = "Your score is: $gainedScore /5 \n Keep learning!"
+                        binding.description.text = "Your score is: $gainedScore \n Keep learning!"
                         binding.doneButtond.isEnabled = true
                         binding.doneButtond.visibility = View.VISIBLE
+
+
                     }
                 }
         })
@@ -123,22 +120,14 @@ class QuizFragment : Fragment() {
     }
 
     private fun updateScores() {
-        mProfileViewModel.myProfile.observeOnce(viewLifecycleOwner, {
-            it?.scores?.add(gainedScore)
-            mProfileViewModel.updateProfile(it)
-        })
 
     }
 
     private fun checkCorrectAnswer(correctAnswer: String) {
         val id = binding.radioGroup.checkedRadioButtonId
-        val value = ( view?.findViewById<RadioButton>(id))?.text.toString()
-        Log.d(QUIZ_TAG, value)
-        if (value == correctAnswer){
-            gainedScore++
-        }
-        binding.radioGroup.clearCheck()
-    }
+        val answer = resources.getResourceEntryName(id)
+        Log.d(QUIZ_TAG, answer)
 
+    }
 
 }
