@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -27,14 +28,13 @@ class CollectionListFragment : Fragment() {
     private lateinit var binding: FragmentCollectionListBinding
     lateinit var mTrafficViewModel: TrafficSignsCollectionViewModel
     private var startPosition: Int = 1
-    var gridListener: SetOnCheckedChangeListener? = null
 
     private var mCollectionList =  emptyList<TrafficSignsCollection>()
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil
             .inflate(
                     inflater,
@@ -50,39 +50,32 @@ class CollectionListFragment : Fragment() {
         val bundle = this.arguments
         if (bundle != null){
             startPosition = bundle.getInt("currentPosition", 1)
-           // mCollectionList = bundle.getSerializable("collectionList") as List<TrafficSignsCollection>
+            mCollectionList = bundle.getSerializable("collectionList") as List<TrafficSignsCollection>
         }
-//        binding.backButton.setOnClickListener {
-//            view.findNavController().navigate(R.id.action_collectionListFragment_to_mainScreenFragment)
-//        }
-
 
         binding.switch1.setOnCheckedChangeListener { _, isChecked ->
             sendGridOnData(isChecked)
         }
+        val tabLayout = binding.tabLayout
+        viewPager = binding.pager
 
         trafficCollectionAdapter = TrafficCollectionListAdapter(this)
-        viewPager = binding.pager
+        trafficCollectionAdapter.setData(mCollectionList)
         viewPager.adapter = trafficCollectionAdapter
         viewPager.setCurrentItem(startPosition, false)
-        val tabLayout = binding.tabLayout
 
-        mTrafficViewModel = ViewModelProvider(this).get(TrafficSignsCollectionViewModel::class.java)
-        mTrafficViewModel.readAllData.observe(viewLifecycleOwner, Observer { collection ->
-            trafficCollectionAdapter.setData(collection)
-            mCollectionList = collection
-            TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-                tab.text = mCollectionList[position].groupId
-            }.attach()
-        })
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            tab.text = mCollectionList[position].groupId
+        }.attach()
 
     }
 
     companion object {
         @JvmStatic
-        fun newInstanceBundle(startPosition: Int): Bundle {
+        fun newInstanceBundle(startPosition: Int, trafficSignsCollections: List<TrafficSignsCollection>): Bundle {
             val args = Bundle()
             args.putInt("currentPosition", startPosition)
+            args.putSerializable("collectionList", trafficSignsCollections as ArrayList)
             return args
         }
     }
