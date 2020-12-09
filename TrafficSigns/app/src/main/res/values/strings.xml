@@ -28,4 +28,5 @@
     <string name="start">Start</string>
     <string name="quiz_image">Quiz image</string>
     <string name="next">Next</string>
+    <string name="done">Done</string>
 </resources>

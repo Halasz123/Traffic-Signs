@@ -44,6 +44,7 @@ class ProfileFragment : Fragment() {
         name = binding.nameEdittext
         age = binding.age
 
+
         mMyProfileViewModel = ViewModelProvider(this).get(MyProfileViewModel::class.java)
 
         mMyProfileViewModel.myProfile.observe(viewLifecycleOwner, { profile ->
@@ -51,6 +52,8 @@ class ProfileFragment : Fragment() {
             Log.d(PROFILE_TAG, profile.toString())
             name.setText(myProfile?.name)
             age.setText(myProfile?.age.toString())
+            binding.averageScoreValue.text = myProfile?.scores?.average().toString()
+            binding.maxScoreValue.text = myProfile?.scores?.maxOrNull().toString()
         })
 
         return binding.root
