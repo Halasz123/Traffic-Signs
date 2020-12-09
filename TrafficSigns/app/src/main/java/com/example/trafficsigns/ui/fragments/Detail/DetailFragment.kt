@@ -1,12 +1,15 @@
 package com.example.trafficsigns.ui.fragments.Detail
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -57,13 +60,20 @@ class DetailFragment : Fragment(){
             }
         })
 
-
         binding.starButton.setOnClickListener {
             updateMyTrafficSignList()
             binding.starButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow), android.graphics.PorterDuff.Mode.MULTIPLY)
+            Toast.makeText(requireContext(), "You know this sing!", Toast.LENGTH_SHORT).show()
         }
+
         binding.floatingActionButton.setOnClickListener {
             it.findNavController().navigate(R.id.action_detailFragment_to_mainScreenFragment)
+        }
+
+        binding.readMoreButton.setOnClickListener {
+            val urlIntent = Intent(Intent.ACTION_VIEW)
+            urlIntent.data = Uri.parse(trafficSign.traffic_rules)
+            startActivity(urlIntent)
         }
     }
 
