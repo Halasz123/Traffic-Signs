@@ -87,8 +87,18 @@ class MainScreenFragment : Fragment(), ItemClickListener,
             R.id.profileFragment -> {
                 binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_profileFragment)
             }
-            R.id.neuralNetworkFragment -> { binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_neuralNetworkFragment)}
-            R.id.settingsFragment -> { binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_settingsFragment)}
+            R.id.knownSigns -> {
+                binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_knownSigns)
+            }
+            R.id.quizFragment -> {
+                binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_quizFragment)
+            }
+            R.id.neuralNetworkFragment -> {
+                binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_neuralNetworkFragment)
+            }
+            R.id.settingsFragment -> {
+                binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_settingsFragment)
+            }
         }
         binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true

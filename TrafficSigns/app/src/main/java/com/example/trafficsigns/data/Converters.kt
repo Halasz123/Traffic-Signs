@@ -1,12 +1,27 @@
 package com.example.trafficsigns.data
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.time.Instant
-import javax.xml.transform.Source
+import java.io.ByteArrayOutputStream
 
 class Convertes {
+
+    @TypeConverter
+    fun fromBitmapToByteArray(bitmap: Bitmap): ByteArray {
+        val outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+        return outputStream.toByteArray()
+    }
+
+    @TypeConverter
+    fun toBitmap(byteArray: ByteArray): Bitmap {
+        return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
+    }
+
     @TypeConverter
     fun fromTrafficSignsCollectionToString(source: TrafficSignsCollection) :String{
         return Gson().toJson(source)
@@ -58,5 +73,6 @@ class Convertes {
         val type = object : TypeToken<ArrayList<TrafficSign>>() {}.type
         return Gson().fromJson(string, type)
     }
+
 
 }

@@ -12,11 +12,11 @@ data class MyProfile (
         var id: Int,
         var name: String? = "",
         var age: Int? = 0,
-        @ColumnInfo(typeAffinity = ColumnInfo.BLOB)
-        var picture: ByteArray? = ByteArray(0),
+        var picturePath: String? = "",
         var address: String? = "",
         var phoneNumber: String? = "",
         var email: String? = "",
         var scores: ArrayList<Int>? = ArrayList(),
         var knownTrafficSigns: ArrayList<TrafficSign>? = ArrayList()
-        ): Serializable
+        ): Serializable {
+}

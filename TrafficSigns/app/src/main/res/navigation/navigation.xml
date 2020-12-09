@@ -27,6 +27,12 @@
         <action
             android:id="@+id/action_mainScreenFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_mainScreenFragment_to_knownSigns"
+            app:destination="@id/knownSigns" />
+        <action
+            android:id="@+id/action_mainScreenFragment_to_quizFragment"
+            app:destination="@id/quizFragment" />
     </fragment>
     <fragment
         android:id="@+id/collectionListFragment"
