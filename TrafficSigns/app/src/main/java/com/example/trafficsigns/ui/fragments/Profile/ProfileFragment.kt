@@ -22,6 +22,7 @@ import com.example.trafficsigns.data.MyProfile
 import com.example.trafficsigns.data.MyProfileViewModel
 import com.example.trafficsigns.databinding.FragmentProfileBinding
 import com.google.android.material.tabs.TabLayoutMediator
+import java.text.DecimalFormat
 
 const val PROFILE_TAG = "profile"
 
@@ -52,7 +53,7 @@ class ProfileFragment : Fragment() {
             Log.d(PROFILE_TAG, profile.toString())
             name.setText(myProfile?.name)
             age.setText(myProfile?.age.toString())
-            binding.averageScoreValue.text = myProfile?.scores?.average().toString()
+            binding.averageScoreValue.text = DecimalFormat("##.##").format(myProfile?.scores?.average())
             binding.maxScoreValue.text = myProfile?.scores?.maxOrNull().toString()
         })
 

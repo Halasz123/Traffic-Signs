@@ -6,6 +6,15 @@
         android:id="@+id/profileFragment"
         android:icon="@drawable/ic_baseline_accessibility_24"
         android:title="@string/profile" />
+    <item
+        android:id="@+id/knownSigns"
+        android:icon="@drawable/ic_baseline_assessment_24"
+        android:title="@string/known_signs" />
+
+    <item
+        android:id="@+id/quizFragment"
+        android:icon="@drawable/ic_baseline_bubble_chart_24"
+        android:title="@string/quiz" />
 
     <item android:id="@+id/neuralNetworkFragment"
         android:title="@string/camera" />
