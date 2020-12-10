@@ -5,6 +5,8 @@ import android.animation.ObjectAnimator.ofFloat
 import android.animation.ValueAnimator
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -38,7 +40,6 @@ class SplashScreen: AppCompatActivity() {
     private var trafficSigns: HashMap<String, ArrayList<TrafficSign>> = HashMap()
     private lateinit var mTrafficSignsCollectionViewModel: TrafficSignsCollectionViewModel
     private lateinit var mMyProfileViewModel: MyProfileViewModel
-    private var downloaded = false
     private lateinit var internetErrorToast: Toast
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
@@ -61,14 +62,6 @@ class SplashScreen: AppCompatActivity() {
             settings.edit().putBoolean("my_first_time", false).apply();
         }
 
-        val intent = Intent(this, MainActivity::class.java)
-        Timer().schedule(4000){
-            //while (!downloaded)
-
-            startActivity(intent)
-            overridePendingTransition(R.anim.fade_out, R.anim.splash_anim);
-            finish()
-        }
 
     }
 
@@ -123,6 +116,9 @@ class SplashScreen: AppCompatActivity() {
             withContext(Dispatchers.IO) {
                 downloadDataBlocking()
             }
+            Timer().schedule(3000){
+                goToMain()
+            }
         }
     }
 
@@ -134,7 +130,6 @@ class SplashScreen: AppCompatActivity() {
             override fun onResponse(call: Call, response: Response) {
                 myData = response.body()?.string() ?: ""
                 parseJson()
-
             }
 
             override fun onFailure(call: Call, e: IOException) {
@@ -169,6 +164,19 @@ class SplashScreen: AppCompatActivity() {
         val profile = MyProfile(0)
         mMyProfileViewModel.addMyProfile(profile)
 
+    }
+
+    private fun goToMain() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        overridePendingTransition(R.anim.fade_out, R.anim.splash_anim);
+        finish()
+    }
+
+    fun isOnline(): Boolean {
+        val connMgr = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo: NetworkInfo? = connMgr.activeNetworkInfo
+        return networkInfo?.isConnected == true
     }
 
 }
