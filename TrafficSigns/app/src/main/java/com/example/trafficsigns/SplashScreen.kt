@@ -4,7 +4,6 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator.ofFloat
 import android.animation.ValueAnimator
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Build
@@ -26,7 +25,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.*
 import java.io.IOException
-import java.nio.ByteBuffer
 import java.util.*
 import kotlin.concurrent.schedule
 
@@ -100,7 +98,7 @@ class SplashScreen: AppCompatActivity() {
         val rotateRound = rotateStop.clone()
         rotateRound.target = binding.roundaboutImageview
 
-        val asd = AnimatorSet().apply {
+        AnimatorSet().apply {
             play(fromUp).with(rotateStop)
             play(fromLeft).with(rotateWarning)
             play(fromRight).with(rotateRound)

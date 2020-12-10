@@ -19,6 +19,7 @@ import com.example.trafficsigns.data.TrafficSignsCollectionViewModel
 import com.example.trafficsigns.databinding.FragmentCollectionListBinding
 import com.example.trafficsigns.ui.adapters.TrafficCollectionListAdapter
 import com.example.trafficsigns.ui.interfaces.SetOnCheckedChangeListener
+import com.example.trafficsigns.ui.utils.Settings
 import com.google.android.material.tabs.TabLayoutMediator
 
 
@@ -53,6 +54,7 @@ class CollectionListFragment : Fragment() {
             startPosition = bundle.getInt("currentPosition", 1)
             mCollectionList = bundle.getSerializable("collectionList") as List<TrafficSignsCollection>
         }
+        binding.switch1.isChecked = Settings.isGrid
 
         binding.switch1.setOnCheckedChangeListener { _, isChecked ->
             sendGridOnData(isChecked)

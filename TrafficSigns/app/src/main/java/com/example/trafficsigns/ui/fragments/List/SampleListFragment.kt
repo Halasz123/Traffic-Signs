@@ -16,13 +16,14 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.trafficsigns.MainActivity
 import com.example.trafficsigns.R
 import com.example.trafficsigns.data.TrafficSign
 import com.example.trafficsigns.databinding.FragmentSampleListBinding
 import com.example.trafficsigns.ui.adapters.SampleListAdapter
 import com.example.trafficsigns.ui.fragments.Detail.DetailFragment
 import com.example.trafficsigns.ui.interfaces.ItemClickListener
-import com.example.trafficsigns.ui.interfaces.SetOnCheckedChangeListener
+import com.example.trafficsigns.ui.utils.Settings
 
 
 const val ARG_OBJECT = "object"
@@ -33,7 +34,7 @@ class SampleListFragment : Fragment(), ItemClickListener {
     private lateinit var trafficSignList: List<TrafficSign>
     private lateinit var recyclerView: RecyclerView
     private lateinit var mAdapter: SampleListAdapter
-    private var isGrid = false
+    //private var isGrid = false
     private var searchText = ""
     var localBroadcastGridReceiver: BroadcastReceiver? = null
     var localBroadcastSearchReceiver: BroadcastReceiver? = null
@@ -52,12 +53,13 @@ class SampleListFragment : Fragment(), ItemClickListener {
         localBroadcastGridReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 if (intent != null) {
-                    isGrid = intent.getBooleanExtra("grid", false)
-                    recyclerView.layoutManager = if (!isGrid) {
+                     Settings.isGrid = intent.getBooleanExtra("grid", false)
+                    recyclerView.layoutManager = if (! Settings.isGrid) {
                         LinearLayoutManager(activity)
                     } else {
                         GridLayoutManager(activity,2 )
                     }
+                    recyclerView.forceLayout()
                 }
             }
         }
@@ -90,7 +92,7 @@ class SampleListFragment : Fragment(), ItemClickListener {
 
         recyclerView.apply {
             setHasFixedSize(true)
-            layoutManager = if (!isGrid) {
+            layoutManager = if (!Settings.isGrid) {
                 LinearLayoutManager(requireContext())
             } else {
                 GridLayoutManager(requireContext(),2 )
@@ -99,41 +101,40 @@ class SampleListFragment : Fragment(), ItemClickListener {
         }
 
 
-        localBroadcastGridReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                if (intent != null) {
-                    isGrid = intent.getBooleanExtra("grid", false)
-                    recyclerView.layoutManager = if (!isGrid) {
-                        LinearLayoutManager(activity)
-                    } else {
-                        GridLayoutManager(activity,2 )
-                    }
-                }
-            }
-        }
-
-        localBroadcastSearchReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                if (intent != null) {
-                    searchText = intent.getStringExtra("search").toString()
-                    (recyclerView.adapter as SampleListAdapter).filter.filter(searchText)
-                }
-            }
-        }
+//        localBroadcastGridReceiver = object : BroadcastReceiver() {
+//            override fun onReceive(context: Context?, intent: Intent?) {
+//                if (intent != null) {
+//                    MainActivity.isGrid = intent.getBooleanExtra("grid", false)
+//                    recyclerView.layoutManager = if (! MainActivity.isGrid) {
+//                        LinearLayoutManager(activity)
+//                    } else {
+//                        GridLayoutManager(activity,2 )
+//                    }
+//                }
+//            }
+//        }
+//
+//        localBroadcastSearchReceiver = object : BroadcastReceiver() {
+//            override fun onReceive(context: Context?, intent: Intent?) {
+//                if (intent != null) {
+//                    searchText = intent.getStringExtra("search").toString()
+//                    (recyclerView.adapter as SampleListAdapter).filter.filter(searchText)
+//                }
+//            }
+//        }
 
     }
 
-
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         localBroadcastGridReceiver?.let {
-            LocalBroadcastManager.getInstance(requireContext())
-                .unregisterReceiver(it)
+            LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(it)
         }
         localBroadcastSearchReceiver?.let {
             LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(it)
         }
     }
+
     companion object {
 
         @JvmStatic
