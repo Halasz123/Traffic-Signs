@@ -98,30 +98,8 @@ class SampleListFragment : Fragment(), ItemClickListener {
                 GridLayoutManager(requireContext(),2 )
             }
             adapter = mAdapter
+            adapter?.notifyDataSetChanged()
         }
-
-
-//        localBroadcastGridReceiver = object : BroadcastReceiver() {
-//            override fun onReceive(context: Context?, intent: Intent?) {
-//                if (intent != null) {
-//                    MainActivity.isGrid = intent.getBooleanExtra("grid", false)
-//                    recyclerView.layoutManager = if (! MainActivity.isGrid) {
-//                        LinearLayoutManager(activity)
-//                    } else {
-//                        GridLayoutManager(activity,2 )
-//                    }
-//                }
-//            }
-//        }
-//
-//        localBroadcastSearchReceiver = object : BroadcastReceiver() {
-//            override fun onReceive(context: Context?, intent: Intent?) {
-//                if (intent != null) {
-//                    searchText = intent.getStringExtra("search").toString()
-//                    (recyclerView.adapter as SampleListAdapter).filter.filter(searchText)
-//                }
-//            }
-//        }
 
     }
 

@@ -14,6 +14,7 @@ import com.example.trafficsigns.data.TrafficSign
 import com.example.trafficsigns.data.TrafficSignsCollection
 import com.example.trafficsigns.ui.fragments.Detail.DetailFragment
 import com.example.trafficsigns.ui.interfaces.ItemClickListener
+import com.example.trafficsigns.ui.utils.Settings
 import kotlinx.android.synthetic.main.sample_list_item.view.*
 
 class SampleListAdapter(private val itemClickListener: ItemClickListener): RecyclerView.Adapter<SampleListAdapter.MyViewHolder>(), Filterable {
@@ -40,7 +41,13 @@ class SampleListAdapter(private val itemClickListener: ItemClickListener): Recyc
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val  currentItem = mTrafficList[position]
 
-        holder.itemView.name_textView.text = currentItem.name
+        if(!Settings.isGrid){
+            holder.itemView.name_textView.text = currentItem.name
+        }
+        else {
+            holder.itemView.name_textView.text = ""
+        }
+
 
         Glide.with(holder.itemView).load(currentItem.image).override(holder.itemView.width,holder.itemView.height).into(holder.itemView.sign_imageView)
 

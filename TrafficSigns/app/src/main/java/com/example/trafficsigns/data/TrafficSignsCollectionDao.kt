@@ -7,7 +7,7 @@ import androidx.room.*
 @Dao
 interface TrafficSignsCollectionDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addTrafficSignsCollection(collection: TrafficSignsCollection)
 
     @Query("SELECT * FROM traffic_signs")

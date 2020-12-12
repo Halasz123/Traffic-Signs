@@ -123,7 +123,7 @@ class SplashScreen: AppCompatActivity() {
 
     private fun downloadDataBlocking(){
         val client = OkHttpClient()
-        val request = Request.Builder().url("https://www.dropbox.com/s/6osm7j4tyee0kqf/traffic_signs.json?dl=1").build()
+        val request = Request.Builder().url("https://www.dropbox.com/s/5bf54w8ikn69k7f/traffic_signs.json?dl=1").build()
         return client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 myData = response.body()?.string() ?: ""
