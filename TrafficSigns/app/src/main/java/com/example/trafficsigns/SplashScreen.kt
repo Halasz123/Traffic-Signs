@@ -4,7 +4,6 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator.ofFloat
 import android.animation.ValueAnimator
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.Build
@@ -26,7 +25,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.*
 import java.io.IOException
-import java.nio.ByteBuffer
 import java.util.*
 import kotlin.concurrent.schedule
 
@@ -100,7 +98,7 @@ class SplashScreen: AppCompatActivity() {
         val rotateRound = rotateStop.clone()
         rotateRound.target = binding.roundaboutImageview
 
-        val asd = AnimatorSet().apply {
+        AnimatorSet().apply {
             play(fromUp).with(rotateStop)
             play(fromLeft).with(rotateWarning)
             play(fromRight).with(rotateRound)
@@ -125,7 +123,7 @@ class SplashScreen: AppCompatActivity() {
 
     private fun downloadDataBlocking(){
         val client = OkHttpClient()
-        val request = Request.Builder().url("https://www.dropbox.com/s/6osm7j4tyee0kqf/traffic_signs.json?dl=1").build()
+        val request = Request.Builder().url("https://www.dropbox.com/s/5bf54w8ikn69k7f/traffic_signs.json?dl=1").build()
         return client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 myData = response.body()?.string() ?: ""

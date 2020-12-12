@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.core.view.doOnLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -18,6 +19,7 @@ import com.example.trafficsigns.data.TrafficSignsCollectionViewModel
 import com.example.trafficsigns.databinding.FragmentCollectionListBinding
 import com.example.trafficsigns.ui.adapters.TrafficCollectionListAdapter
 import com.example.trafficsigns.ui.interfaces.SetOnCheckedChangeListener
+import com.example.trafficsigns.ui.utils.Settings
 import com.google.android.material.tabs.TabLayoutMediator
 
 
@@ -52,10 +54,23 @@ class CollectionListFragment : Fragment() {
             startPosition = bundle.getInt("currentPosition", 1)
             mCollectionList = bundle.getSerializable("collectionList") as List<TrafficSignsCollection>
         }
+        binding.switch1.isChecked = Settings.isGrid
 
         binding.switch1.setOnCheckedChangeListener { _, isChecked ->
             sendGridOnData(isChecked)
         }
+
+        binding.search.setOnQueryTextListener( object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                sendSearchText(newText)
+                return false
+            }
+
+        })
         val tabLayout = binding.tabLayout
         viewPager = binding.pager
 
@@ -67,6 +82,7 @@ class CollectionListFragment : Fragment() {
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = mCollectionList[position].groupId
         }.attach()
+
 
     }
 
@@ -83,6 +99,12 @@ class CollectionListFragment : Fragment() {
     private fun sendGridOnData(isGrid: Boolean) {
         val broadcastIntent = Intent("sendGridOnMessage")
         broadcastIntent.putExtra("grid", isGrid)
+        LocalBroadcastManager.getInstance(requireContext()).sendBroadcast(broadcastIntent)
+    }
+
+    private fun sendSearchText(text: String?){
+        val broadcastIntent = Intent("sendSearchText")
+        broadcastIntent.putExtra("search", text)
         LocalBroadcastManager.getInstance(requireContext()).sendBroadcast(broadcastIntent)
     }
 

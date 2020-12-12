@@ -5,12 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -18,24 +16,28 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.trafficsigns.MainActivity
 import com.example.trafficsigns.R
 import com.example.trafficsigns.data.TrafficSign
 import com.example.trafficsigns.databinding.FragmentSampleListBinding
 import com.example.trafficsigns.ui.adapters.SampleListAdapter
 import com.example.trafficsigns.ui.fragments.Detail.DetailFragment
 import com.example.trafficsigns.ui.interfaces.ItemClickListener
-import com.example.trafficsigns.ui.interfaces.SetOnCheckedChangeListener
+import com.example.trafficsigns.ui.utils.Settings
 
 
 const val ARG_OBJECT = "object"
 
-class SampleListFragment : Fragment(), ItemClickListener, SetOnCheckedChangeListener {
+class SampleListFragment : Fragment(), ItemClickListener {
 
     private lateinit var binding: FragmentSampleListBinding
     private lateinit var trafficSignList: List<TrafficSign>
     private lateinit var recyclerView: RecyclerView
-    private var isGrid = false
-    var localBroadcastReceiver: BroadcastReceiver? = null
+    private lateinit var mAdapter: SampleListAdapter
+    //private var isGrid = false
+    private var searchText = ""
+    var localBroadcastGridReceiver: BroadcastReceiver? = null
+    var localBroadcastSearchReceiver: BroadcastReceiver? = null
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -48,20 +50,31 @@ class SampleListFragment : Fragment(), ItemClickListener, SetOnCheckedChangeList
                     container,
                     false
             )
-        localBroadcastReceiver = object : BroadcastReceiver() {
+        localBroadcastGridReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 if (intent != null) {
-                    isGrid = intent.getBooleanExtra("grid", false)
-                    recyclerView.layoutManager = if (!isGrid) {
+                     Settings.isGrid = intent.getBooleanExtra("grid", false)
+                    recyclerView.layoutManager = if (! Settings.isGrid) {
                         LinearLayoutManager(activity)
                     } else {
                         GridLayoutManager(activity,2 )
                     }
+                    recyclerView.forceLayout()
+                }
+            }
+        }
+        localBroadcastSearchReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if (intent != null) {
+                    searchText = intent.getStringExtra("search").toString()
+                    (recyclerView.adapter as SampleListAdapter).filter.filter(searchText)
                 }
             }
         }
 
-        LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(localBroadcastReceiver as BroadcastReceiver, IntentFilter ("sendGridOnMessage"))
+        LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(localBroadcastGridReceiver as BroadcastReceiver, IntentFilter ("sendGridOnMessage"))
+        LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(localBroadcastSearchReceiver as BroadcastReceiver, IntentFilter ("sendSearchText"))
+
         return binding.root
     }
 
@@ -71,29 +84,35 @@ class SampleListFragment : Fragment(), ItemClickListener, SetOnCheckedChangeList
             trafficSignList= getSerializable(ARG_OBJECT) as List<TrafficSign>
         }
         Log.d("List", trafficSignList.toString())
+        recyclerView = binding.recyclerview
 
-        val mAdapter = SampleListAdapter(this)
+        mAdapter = SampleListAdapter(this)
         mAdapter.setData(trafficSignList)
-        recyclerView = binding.recyclerview.apply {
+
+
+        recyclerView.apply {
             setHasFixedSize(true)
-            layoutManager = if (!isGrid) {
+            layoutManager = if (!Settings.isGrid) {
                 LinearLayoutManager(requireContext())
             } else {
                 GridLayoutManager(requireContext(),2 )
             }
             adapter = mAdapter
+            adapter?.notifyDataSetChanged()
         }
 
     }
 
-
-    override fun onDestroy() {
-        super.onDestroy()
-        localBroadcastReceiver?.let {
-            LocalBroadcastManager.getInstance(requireContext())
-                .unregisterReceiver(it)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        localBroadcastGridReceiver?.let {
+            LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(it)
+        }
+        localBroadcastSearchReceiver?.let {
+            LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(it)
         }
     }
+
     companion object {
 
         @JvmStatic
@@ -117,13 +136,5 @@ class SampleListFragment : Fragment(), ItemClickListener, SetOnCheckedChangeList
 
     override fun onItemLongClickListener(trafficSign: TrafficSign) {
         //do nothing
-    }
-
-    override fun setOnCheckedChangeListener(isChecked: Boolean) {
-        if (isChecked) {
-            recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        } else {
-            recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        }
     }
 }
