@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -21,7 +22,10 @@ import com.example.trafficsigns.data.TrafficSignsCollection
 import com.example.trafficsigns.data.TrafficSignsCollectionViewModel
 import com.example.trafficsigns.databinding.FragmentMainScreenBinding
 import com.example.trafficsigns.ui.adapters.MainMenuAdapter
+import com.example.trafficsigns.ui.adapters.SampleListAdapter
+import com.example.trafficsigns.ui.fragments.Detail.DetailFragment
 import com.example.trafficsigns.ui.fragments.List.CollectionListFragment
+import com.example.trafficsigns.ui.fragments.Profile.observeOnce
 import com.example.trafficsigns.ui.interfaces.ItemClickListener
 import com.google.android.material.navigation.NavigationView
 
@@ -33,6 +37,8 @@ class MainScreenFragment : Fragment(), ItemClickListener,
     private lateinit var trafficRecyclerView: RecyclerView
     private lateinit var binding: FragmentMainScreenBinding
     private var mCollectionList =  emptyList<TrafficSignsCollection>()
+    private lateinit var sampleListAdapter: SampleListAdapter
+    private lateinit var menuAdapter: MainMenuAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,19 +61,65 @@ class MainScreenFragment : Fragment(), ItemClickListener,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val mAdapter = MainMenuAdapter(this)
+        sampleListAdapter = SampleListAdapter(this)
+        menuAdapter = MainMenuAdapter(this)
+
         trafficRecyclerView = binding.recyclerview.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = mAdapter
+            adapter = menuAdapter
         }
-
 
         mTrafficViewModel = ViewModelProvider(this).get(TrafficSignsCollectionViewModel::class.java)
         mTrafficViewModel.readAllData.observe(viewLifecycleOwner, { collection ->
-            mAdapter.setData(collection)
+            menuAdapter.setData(collection)
             mCollectionList = collection
         })
+
+        binding.search.setOnQueryTextListener( object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != "") {
+                    trafficRecyclerView.adapter = sampleListAdapter
+                    trafficRecyclerView.forceLayout()
+                    sampleListAdapter.filter.filter(newText)
+                }
+                else {
+                    changeAdapter()
+                }
+                return true
+            }
+        })
+
+        binding.search.setOnSearchClickListener {
+            trafficRecyclerView.forceLayout()
+            mTrafficViewModel.readAllData.observeOnce(this@MainScreenFragment, { it ->
+                val arrayList = ArrayList<TrafficSign>()
+                it.forEach {
+                    arrayList.addAll(it.trafficSigns)
+                }
+                sampleListAdapter.setData(arrayList.shuffled())
+            })
+            binding.title.visibility = View.INVISIBLE
+        }
+
+        binding.search.setOnCloseListener { changeAdapter() }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        changeAdapter()
+        binding.search.onActionViewCollapsed()
+    }
+
+    private fun changeAdapter(): Boolean {
+        trafficRecyclerView.adapter = menuAdapter
+        binding.title.visibility = View.VISIBLE
+        return false
     }
 
     override fun onItemClickListener(position: Int) {
@@ -75,7 +127,7 @@ class MainScreenFragment : Fragment(), ItemClickListener,
     }
 
     override fun onItemClickListener(trafficSign: TrafficSign) {
-        //do nothing
+        binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_detailFragment, DetailFragment.newInstanceBundle(trafficSign))
     }
 
     override fun onItemLongClickListener(trafficSign: TrafficSign) {

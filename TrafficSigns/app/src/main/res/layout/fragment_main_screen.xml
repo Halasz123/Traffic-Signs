@@ -32,17 +32,29 @@
             tools:srcCompat="@drawable/ic_baseline_menu_24" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/traffic_signs"
+            android:fontFamily="sans-serif"
             android:gravity="center"
+            android:text="@string/traffic_signs"
             android:textSize="30sp"
             android:textStyle="bold"
-            android:fontFamily="sans-serif"
             app:layout_constraintBottom_toBottomOf="@+id/imageButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageButton"
+            app:layout_constraintEnd_toEndOf="@+id/search"
+            app:layout_constraintStart_toStartOf="@+id/imageButton"
+            app:layout_constraintTop_toTopOf="@+id/imageButton" />
+
+        <SearchView
+            android:id="@+id/search"
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layoutDirection="rtl"
+            android:queryBackground="@color/blue_gray_200"
+            android:queryHint="Search"
+            android:searchIcon="@drawable/ic_baseline_search_24"
+            app:layout_constraintBottom_toBottomOf="@+id/imageButton"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/imageButton" />
 
         <androidx.recyclerview.widget.RecyclerView
