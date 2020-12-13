@@ -33,6 +33,9 @@
         <action
             android:id="@+id/action_mainScreenFragment_to_quizFragment"
             app:destination="@id/quizFragment" />
+        <action
+            android:id="@+id/action_mainScreenFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
     </fragment>
     <fragment
         android:id="@+id/collectionListFragment"
