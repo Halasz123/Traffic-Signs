@@ -34,6 +34,7 @@ class SampleListFragment : Fragment(), ItemClickListener {
     private lateinit var trafficSignList: List<TrafficSign>
     private lateinit var recyclerView: RecyclerView
     private lateinit var mAdapter: SampleListAdapter
+
     //private var isGrid = false
     private var searchText = ""
     var localBroadcastGridReceiver: BroadcastReceiver? = null
@@ -59,7 +60,8 @@ class SampleListFragment : Fragment(), ItemClickListener {
                     } else {
                         GridLayoutManager(activity,2 )
                     }
-                    recyclerView.forceLayout()
+                    //TODO("HACK, Optimalis megoldas kell!!")
+                    recyclerView.adapter = mAdapter
                 }
             }
         }
@@ -138,3 +140,5 @@ class SampleListFragment : Fragment(), ItemClickListener {
         //do nothing
     }
 }
+
+
