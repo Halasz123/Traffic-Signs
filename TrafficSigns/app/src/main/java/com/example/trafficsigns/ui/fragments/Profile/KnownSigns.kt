@@ -24,6 +24,7 @@ import com.example.trafficsigns.ui.adapters.SampleListAdapter
 import com.example.trafficsigns.ui.adapters.TrafficCollectionListAdapter
 import com.example.trafficsigns.ui.fragments.Detail.DetailFragment
 import com.example.trafficsigns.ui.interfaces.ItemClickListener
+import com.example.trafficsigns.ui.utils.Settings
 import com.google.android.material.tabs.TabLayoutMediator
 
 const val KNOWN_TAG = "knownsigns"
@@ -47,6 +48,7 @@ class KnownSigns : Fragment(), ItemClickListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Settings.isGrid = false
         trafficSignListAdapter = SampleListAdapter(this)
         binding.recyclerview.apply {
             setHasFixedSize(true)
