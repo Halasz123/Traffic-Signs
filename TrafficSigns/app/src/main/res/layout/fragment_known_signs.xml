@@ -48,7 +48,6 @@
             android:src="@drawable/ic_baseline_calculate_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginRight="40dp"
             android:contentDescription="@string/solve_test" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

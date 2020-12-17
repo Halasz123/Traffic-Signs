@@ -13,9 +13,7 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 /**
- * A simple [Fragment] subclass.
- * Use the [NeuralNetworkFragment.newInstance] factory method to
- * create an instance of this fragment.
+ ** NOT IMPLEMENTED!
  */
 class NeuralNetworkFragment : Fragment() {
     // TODO: Rename and change types of parameters

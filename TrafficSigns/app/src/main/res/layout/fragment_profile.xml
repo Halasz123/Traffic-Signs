@@ -5,173 +5,232 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.fragments.Profile.ProfileFragment"
-    android:background="@color/blue_gray_200">
-
-
-    <ImageView
-        android:id="@+id/profile_picture"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="40dp"
-        android:scaleType="centerCrop"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/ic_roundabout_splash"
-        tools:src="@tools:sample/avatars[1]" />
+        android:background="@color/blue_gray_200">
 
-    <ImageButton
-        android:id="@+id/create_picture_button"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="10dp"
-        android:background="@null"
-        android:src="@drawable/ic_baseline_photo_camera_24"
-        app:layout_constraintStart_toStartOf="@+id/profile_picture"
-        app:layout_constraintTop_toBottomOf="@+id/profile_picture"
-        android:layout_marginLeft="10dp" />
-
-    <ImageButton
-        android:id="@+id/gallery_picture"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:background="@null"
-        android:src="@drawable/ic_baseline_camera_roll_24"
-        app:layout_constraintEnd_toEndOf="@+id/profile_picture"
-        app:layout_constraintTop_toBottomOf="@+id/profile_picture"
-        android:layout_marginRight="10dp" />
-
-    <EditText
-        android:id="@+id/name_edittext"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:gravity="center"
-        android:hint="@string/name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/profile_picture"
-        app:layout_constraintTop_toTopOf="@+id/profile_picture"
-        android:inputType="text"
-        android:autofillHints="" />
-
-    <EditText
-        android:id="@+id/age"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="35dp"
-        android:ems="10"
-        android:hint="@string/age"
-        android:gravity="center"
-        android:inputType="number"
-        app:layout_constraintStart_toEndOf="@+id/profile_picture"
-        app:layout_constraintTop_toBottomOf="@+id/name_edittext"
-        android:layout_marginLeft="20dp"
-        android:autofillHints="" />
-
-    <TextView
-        android:id="@+id/years_text"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp"
-        android:text="@string/years"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="@+id/age"
-        app:layout_constraintStart_toEndOf="@+id/age"
-        app:layout_constraintTop_toTopOf="@+id/age" />
-
-    <Button
-        android:id="@+id/save_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:text="@string/save"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gallery_picture" />
-
-    <TextView
-        android:id="@+id/average_score"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:textSize="25sp"
-        android:text="@string/average_score"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@id/average_score_value"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/save_button" />
-
-    <TextView
-        android:id="@+id/average_score_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/_0_0"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/average_score"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/average_score"
-        app:layout_constraintTop_toTopOf="@+id/average_score" />
-
-    <TextView
-        android:id="@+id/max_score_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
-        android:text="@string/maximum_score"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@id/max_score_value"
-        app:layout_constraintHorizontal_bias="0.434"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/average_score" />
-
-    <TextView
-        android:id="@+id/max_score_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/_0_0"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/max_score_textview"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/max_score_textview"
-        app:layout_constraintTop_toTopOf="@+id/max_score_textview" />
-
-    <Button
-        android:id="@+id/known_signs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/known_signs"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/test_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/max_score_textview" />
-
-    <Button
-        android:id="@+id/test_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/solve_test"
-        app:layout_constraintStart_toEndOf="@+id/known_signs"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/max_score_textview" />
+        tools:context=".ui.fragments.Profile.ProfileFragment"
+        android:background="@color/blue_gray_200">
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
 
+        <ImageView
+            android:id="@+id/profile_picture"
+            android:layout_width="0dp"
+            android:layout_height="300dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_roundabout_splash"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars[1]"
+            android:contentDescription="@string/add_photo_form_gallery" />
+
+        <ImageButton
+            android:id="@+id/create_picture_button"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:background="@null"
+            android:src="@drawable/ic_baseline_add_a_photo_24"
+            app:layout_constraintEnd_toStartOf="@+id/gallery_picture"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_picture"
+            tools:srcCompat="@drawable/ic_baseline_add_a_photo_24" />
+
+        <ImageButton
+            android:id="@+id/gallery_picture"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="10dp"
+            android:background="@null"
+            android:src="@drawable/ic_baseline_add_photo_alternate_24"
+            app:layout_constraintStart_toEndOf="@id/create_picture_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_picture" />
+
+        <EditText
+            android:id="@+id/name_edit_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:autofillHints=""
+            android:gravity="center"
+            android:hint="@string/name"
+            android:inputType="text"
+            app:layout_constraintEnd_toStartOf="@+id/gallery_picture"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/create_picture_button" />
+
+        <EditText
+            android:id="@+id/age_edit_text"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:autofillHints=""
+            android:ems="10"
+            android:gravity="center"
+            android:hint="@string/age"
+            android:inputType="number"
+            app:layout_constraintStart_toStartOf="@+id/name_edit_text"
+            app:layout_constraintTop_toBottomOf="@+id/name_edit_text" />
+
+        <TextView
+            android:id="@+id/years_text"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/years"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/age_edit_text"
+            app:layout_constraintEnd_toEndOf="@+id/name_edit_text"
+            app:layout_constraintStart_toEndOf="@+id/age_edit_text"
+            app:layout_constraintTop_toTopOf="@+id/age_edit_text" />
+
+        <EditText
+            android:id="@+id/address_edit_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:autofillHints=""
+            android:paddingStart="20dp"
+            android:hint="@string/address"
+            android:inputType="text"
+            app:layout_constraintEnd_toEndOf="@+id/name_edit_text"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/age_edit_text"
+            tools:ignore="RtlSymmetry" />
+
+        <EditText
+            android:id="@+id/email_edit_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:autofillHints=""
+            android:hint="@string/email"
+            android:inputType="textEmailAddress"
+            android:paddingStart="20dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="@+id/name_edit_text"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/address_edit_text"
+            tools:ignore="RtlSymmetry" />
+
+        <EditText
+            android:id="@+id/phone_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="80dp"
+            android:hint="@string/phone_number"
+            android:inputType="phone"
+            android:paddingStart="20dp"
+            app:layout_constraintEnd_toEndOf="@+id/name_edit_text"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/address_edit_text"
+            tools:ignore="RtlSymmetry" />
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/save"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/phone_number" />
+
+        <TextView
+            android:id="@+id/average_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:textSize="25sp"
+            android:text="@string/average_score"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/average_score_value"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/save_button" />
+
+        <TextView
+            android:id="@+id/average_score_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/_0_0"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/average_score"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/average_score"
+            app:layout_constraintTop_toTopOf="@+id/average_score" />
+
+        <TextView
+            android:id="@+id/max_score_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="44dp"
+            android:text="@string/maximum_score"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/max_score_value"
+            app:layout_constraintHorizontal_bias="0.434"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/average_score" />
+
+        <TextView
+            android:id="@+id/max_score_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/_0_0"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/max_score_textview"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/max_score_textview"
+            app:layout_constraintTop_toTopOf="@+id/max_score_textview" />
+
+        <Button
+            android:id="@+id/known_signs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/known_signs"
+            app:layout_constraintBottom_toBottomOf="@+id/test_button"
+            app:layout_constraintEnd_toStartOf="@+id/test_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/test_button" />
+
+        <Button
+            android:id="@+id/test_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/solve_test"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="40dp"
+            app:layout_constraintStart_toEndOf="@+id/known_signs"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/max_score_textview" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 </layout>

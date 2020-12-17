@@ -170,11 +170,11 @@ class SplashScreen: AppCompatActivity() {
         overridePendingTransition(R.anim.fade_out, R.anim.splash_anim);
         finish()
     }
-
-    fun isOnline(): Boolean {
-        val connMgr = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo: NetworkInfo? = connMgr.activeNetworkInfo
-        return networkInfo?.isConnected == true
-    }
+//
+//    fun isOnline(): Boolean {
+//        val connMgr = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+//        val networkInfo: NetworkInfo? = connMgr.activeNetworkInfo
+//        return networkInfo?.isConnected == true
+//    }
 
 }

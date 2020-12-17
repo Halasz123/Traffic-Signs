@@ -55,6 +55,9 @@ class ProfileFragment : Fragment() {
     private lateinit var saveButton: Button
     private lateinit var name: EditText
     private lateinit var age: EditText
+    private lateinit var address: EditText
+    private lateinit var email: EditText
+    private lateinit var phoneNumber: EditText
     private lateinit var photoFile: File
 
     override fun onCreateView(
@@ -63,8 +66,11 @@ class ProfileFragment : Fragment() {
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
         saveButton = binding.saveButton
-        name = binding.nameEdittext
-        age = binding.age
+        name = binding.nameEditText
+        age = binding.ageEditText
+        address = binding.addressEditText
+        email = binding.emailEditText
+        phoneNumber = binding.phoneNumber
 
 
         mMyProfileViewModel = ViewModelProvider(this).get(MyProfileViewModel::class.java)
@@ -74,6 +80,10 @@ class ProfileFragment : Fragment() {
             Log.d(PROFILE_TAG, profile.toString())
             name.setText(myProfile?.name)
             age.setText(myProfile?.age.toString())
+            address.setText(myProfile?.address)
+            email.setText(myProfile?.email)
+            phoneNumber.setText(myProfile?.phoneNumber)
+
             binding.averageScoreValue.text =
                 DecimalFormat("##.##").format(myProfile?.scores?.average())
             binding.maxScoreValue.text = myProfile?.scores?.maxOrNull().toString()
@@ -93,7 +103,9 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         name.afterTextChanged { saveButton.isEnabled = true }
         age.afterTextChanged { saveButton.isEnabled = true }
-
+        address.afterTextChanged { saveButton.isEnabled = true }
+        email.afterTextChanged { saveButton.isEnabled = true }
+        phoneNumber.afterTextChanged { saveButton.isEnabled = true }
 
         saveButton.setOnClickListener {
             updateProfile()
@@ -150,7 +162,11 @@ class ProfileFragment : Fragment() {
         mMyProfileViewModel.myProfile.observeOnce(viewLifecycleOwner, { profile ->
             profile.name = name.text.toString()
             profile.age = age.text.toString().toInt()
+            profile.address = address.text.toString()
+            profile.email = email.text.toString()
+            profile.phoneNumber = phoneNumber.text.toString()
             mMyProfileViewModel.updateProfile(profile)
+            Toast.makeText(requireContext(), "Data Saved!", Toast.LENGTH_SHORT).show()
         })
     }
 
@@ -171,6 +187,7 @@ class ProfileFragment : Fragment() {
             Toast.makeText(requireContext(), "Unable to open camera", Toast.LENGTH_LONG).show()
         }
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             var path: String = ""
