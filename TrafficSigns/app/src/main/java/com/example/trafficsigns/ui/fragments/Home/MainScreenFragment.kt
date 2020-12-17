@@ -1,11 +1,13 @@
 package com.example.trafficsigns.ui.fragments.Home
 
+import android.media.audiofx.BassBoost
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.SearchView
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
@@ -27,6 +29,7 @@ import com.example.trafficsigns.ui.fragments.Detail.DetailFragment
 import com.example.trafficsigns.ui.fragments.List.CollectionListFragment
 import com.example.trafficsigns.ui.fragments.Profile.observeOnce
 import com.example.trafficsigns.ui.interfaces.ItemClickListener
+import com.example.trafficsigns.ui.utils.Settings
 import com.google.android.material.navigation.NavigationView
 
 
@@ -39,6 +42,7 @@ class MainScreenFragment : Fragment(), ItemClickListener,
     private var mCollectionList =  emptyList<TrafficSignsCollection>()
     private lateinit var sampleListAdapter: SampleListAdapter
     private lateinit var menuAdapter: MainMenuAdapter
+    private lateinit var allTrafficSign: ArrayList<TrafficSign>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,6 +78,10 @@ class MainScreenFragment : Fragment(), ItemClickListener,
         mTrafficViewModel.readAllData.observe(viewLifecycleOwner, { collection ->
             menuAdapter.setData(collection)
             mCollectionList = collection
+            allTrafficSign = ArrayList<TrafficSign>()
+            collection.forEach {
+                allTrafficSign.addAll(it.trafficSigns)
+            }
         })
 
         binding.search.setOnQueryTextListener( object : SearchView.OnQueryTextListener {
@@ -96,18 +104,12 @@ class MainScreenFragment : Fragment(), ItemClickListener,
 
         binding.search.setOnSearchClickListener {
             trafficRecyclerView.forceLayout()
-            mTrafficViewModel.readAllData.observeOnce(this@MainScreenFragment, { it ->
-                val arrayList = ArrayList<TrafficSign>()
-                it.forEach {
-                    arrayList.addAll(it.trafficSigns)
-                }
-                sampleListAdapter.setData(arrayList.shuffled())
-            })
+            Settings.isGrid = false
+            sampleListAdapter.setData(allTrafficSign.shuffled())
             binding.title.visibility = View.INVISIBLE
         }
 
         binding.search.setOnCloseListener { changeAdapter() }
-
     }
 
     override fun onResume() {
