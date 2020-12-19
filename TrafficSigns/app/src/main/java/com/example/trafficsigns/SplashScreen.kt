@@ -167,14 +167,7 @@ class SplashScreen: AppCompatActivity() {
     private fun goToMain() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
-        overridePendingTransition(R.anim.fade_out, R.anim.splash_anim);
+        overridePendingTransition(R.anim.fade_out, R.anim.splash_anim)
         finish()
     }
-//
-//    fun isOnline(): Boolean {
-//        val connMgr = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-//        val networkInfo: NetworkInfo? = connMgr.activeNetworkInfo
-//        return networkInfo?.isConnected == true
-//    }
-
 }
