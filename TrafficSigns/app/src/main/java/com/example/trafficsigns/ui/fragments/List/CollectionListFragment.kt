@@ -6,11 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
-import androidx.core.view.doOnLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.trafficsigns.R
@@ -18,7 +15,6 @@ import com.example.trafficsigns.data.TrafficSignsCollection
 import com.example.trafficsigns.data.TrafficSignsCollectionViewModel
 import com.example.trafficsigns.databinding.FragmentCollectionListBinding
 import com.example.trafficsigns.ui.adapters.TrafficCollectionListAdapter
-import com.example.trafficsigns.ui.interfaces.SetOnCheckedChangeListener
 import com.example.trafficsigns.ui.utils.Settings
 import com.google.android.material.tabs.TabLayoutMediator
 

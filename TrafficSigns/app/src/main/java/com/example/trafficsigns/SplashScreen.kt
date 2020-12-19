@@ -18,6 +18,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.trafficsigns.data.*
 import com.example.trafficsigns.databinding.SplashScreenBinding
+import com.example.trafficsigns.ui.constants.Data
+import com.example.trafficsigns.ui.constants.SharedPreference
+import com.example.trafficsigns.ui.constants.ToastMessage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +33,7 @@ import kotlin.concurrent.schedule
 
 
 const val PREFS_NAME = "MyPrefsFile"
+const val SLASH_TAG = "Splash"
 
 class SplashScreen: AppCompatActivity() {
 
@@ -48,16 +52,15 @@ class SplashScreen: AppCompatActivity() {
             TrafficSignsCollectionViewModel::class.java
         )
         mMyProfileViewModel = ViewModelProvider(this).get(MyProfileViewModel::class.java)
-        internetErrorToast = Toast.makeText(this, "Please turn on the internet!", Toast.LENGTH_LONG)
+        internetErrorToast = Toast.makeText(this, ToastMessage.INTERNET, Toast.LENGTH_LONG)
         downloadData()
         animateLogo()
 
         val settings = getSharedPreferences(PREFS_NAME, 0)
-        if (settings.getBoolean("my_first_time", true)) {
-            //the app is being launched for first time, do something
-            Log.d("Comments", "First time");
+        if (settings.getBoolean(SharedPreference.FIRST_TIME_USE_KEY, true)) {
+            Log.d(SLASH_TAG, "First time");
             createNullProfile()
-            settings.edit().putBoolean("my_first_time", false).apply();
+            settings.edit().putBoolean(SharedPreference.FIRST_TIME_USE_KEY, false).apply();
         }
 
 
@@ -123,7 +126,7 @@ class SplashScreen: AppCompatActivity() {
 
     private fun downloadDataBlocking(){
         val client = OkHttpClient()
-        val request = Request.Builder().url("https://www.dropbox.com/s/5bf54w8ikn69k7f/traffic_signs.json?dl=1").build()
+        val request = Request.Builder().url(Data.URL).build()
         return client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 myData = response.body()?.string() ?: ""
@@ -131,7 +134,7 @@ class SplashScreen: AppCompatActivity() {
             }
 
             override fun onFailure(call: Call, e: IOException) {
-                Log.d("Splashscreen", e.toString())
+                Log.d(SLASH_TAG, e.toString())
                 internetErrorToast.show()
             }
         })
@@ -150,7 +153,7 @@ class SplashScreen: AppCompatActivity() {
             }
         }
         trafficSigns.forEach {
-            Log.d("Splash", "${it.key} -- ${it.value}")
+            Log.d(SLASH_TAG, "${it.key} -- ${it.value}")
             mTrafficSignsCollectionViewModel.addTrafficSignsCollection(
                 TrafficSignsCollection(it.key, it.value)
             )

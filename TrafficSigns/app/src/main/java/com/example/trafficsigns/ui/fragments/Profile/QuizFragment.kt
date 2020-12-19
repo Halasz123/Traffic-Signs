@@ -18,6 +18,7 @@ import com.example.trafficsigns.R
 import com.example.trafficsigns.data.MyProfileViewModel
 import com.example.trafficsigns.data.TrafficSign
 import com.example.trafficsigns.databinding.FragmentQuizBinding
+import com.example.trafficsigns.ui.constants.ToastMessage
 import kotlinx.android.synthetic.main.sample_list_item.view.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -34,12 +35,7 @@ class QuizFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil
-                .inflate(
-                        inflater,
-                        R.layout.fragment_quiz,
-                        container,
-                        false
-                )
+                .inflate( inflater, R.layout.fragment_quiz, container, false )
         return binding.root
     }
 
@@ -47,7 +43,7 @@ class QuizFragment : Fragment() {
         mProfileViewModel = ViewModelProvider(this).get(MyProfileViewModel::class.java)
         mProfileViewModel.myProfile.observeOnce(viewLifecycleOwner, {
             if (it.knownTrafficSigns?.count()!! < 5) {
-                Toast.makeText(requireContext(), "You have to learn minimum 5 traffic sign!", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), ToastMessage.QUIZ_WARNING, Toast.LENGTH_LONG).show()
             }
             else {
                 binding.start.isEnabled = true
@@ -61,15 +57,10 @@ class QuizFragment : Fragment() {
             updateScores()
             binding.root.findNavController().navigate(R.id.action_quizFragment_to_mainScreenFragment)
         }
-
     }
 
     private fun startTest() {
-        binding.start.isEnabled = false
-        binding.start.visibility = View.INVISIBLE
-        binding.quiz.visibility = View.VISIBLE
-        binding.nextButton.visibility = View.VISIBLE
-        binding.nextButton.isEnabled = true
+        quizVisible()
 
         mProfileViewModel.myProfile.observeOnce(viewLifecycleOwner, {
             val signs = it.knownTrafficSigns?.shuffled()
@@ -85,17 +76,26 @@ class QuizFragment : Fragment() {
                         loadQuizLayout(answers, signs, i)
                     }
                     else {
-                        binding.nextButton.visibility = View.INVISIBLE
-                        binding.nextButton.isEnabled = false
-                        binding.quiz.visibility = View.INVISIBLE
-                        binding.description.text = "Your score is: $gainedScore /5 \n Keep learning!"
-                        binding.doneButtond.isEnabled = true
-                        binding.doneButtond.visibility = View.VISIBLE
-
-
+                     quizInvisible()
                     }
                 }
         })
+    }
+    private fun quizVisible() {
+        binding.start.isEnabled = false
+        binding.start.visibility = View.INVISIBLE
+        binding.quiz.visibility = View.VISIBLE
+        binding.nextButton.visibility = View.VISIBLE
+        binding.nextButton.isEnabled = true
+    }
+
+    private fun quizInvisible() {
+        binding.nextButton.visibility = View.INVISIBLE
+        binding.nextButton.isEnabled = false
+        binding.quiz.visibility = View.INVISIBLE
+        binding.description.text = "Your score is: $gainedScore /5 \n Keep learning!"
+        binding.doneButtond.isEnabled = true
+        binding.doneButtond.visibility = View.VISIBLE
     }
 
     private fun getFalseAnswer(answers: ArrayList<String>, signs: List<TrafficSign>?): String {
