@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.trafficsigns.ui.constants.Data
 
 @Database(entities = [TrafficSignsCollection::class], version = 1, exportSchema = false)
 @TypeConverters(Convertes::class)
@@ -25,7 +26,7 @@ abstract  class TrafficSignsCollectionDatabase: RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     TrafficSignsCollectionDatabase::class.java,
-                    "traffic_signs_database"
+                    Data.TRAFFIC_DATABASE
                 ).build()
                 INSTANCE = instance
                 return instance

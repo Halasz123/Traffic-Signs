@@ -22,20 +22,13 @@ class MainMenuAdapter(private val itemClickListener: ItemClickListener) : Recycl
 
     private var collectionList =  emptyList<TrafficSignsCollection>()
 
-
-    class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-
-    }
+    class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): MyViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(
-            R.layout.group_item,
-            parent,
-            false
-        )
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.group_item, parent, false)
         return MyViewHolder(itemView)
     }
 

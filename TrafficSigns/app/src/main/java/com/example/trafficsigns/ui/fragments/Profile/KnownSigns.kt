@@ -8,24 +8,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.trafficsigns.R
 import com.example.trafficsigns.data.MyProfileViewModel
 import com.example.trafficsigns.data.TrafficSign
-import com.example.trafficsigns.data.TrafficSignsCollectionViewModel
-import com.example.trafficsigns.databinding.FragmentCollectionListBinding
 import com.example.trafficsigns.databinding.FragmentKnownSignsBinding
 import com.example.trafficsigns.ui.adapters.SampleListAdapter
-import com.example.trafficsigns.ui.adapters.TrafficCollectionListAdapter
+import com.example.trafficsigns.ui.constants.Alert
 import com.example.trafficsigns.ui.fragments.Detail.DetailFragment
 import com.example.trafficsigns.ui.interfaces.ItemClickListener
 import com.example.trafficsigns.ui.utils.Settings
-import com.google.android.material.tabs.TabLayoutMediator
 
 const val KNOWN_TAG = "knownsigns"
 
@@ -76,13 +70,13 @@ class KnownSigns : Fragment(), ItemClickListener {
 
     override fun onItemLongClickListener(trafficSign: TrafficSign) {
         val builder = AlertDialog.Builder(context)
-        builder.setPositiveButton("Yes") { _, _ ->
+        builder.setPositiveButton(Alert.YES) { _, _ ->
             deleteSign(trafficSign)
         }
-        builder.setNegativeButton("No") { _, _ ->
+        builder.setNegativeButton(Alert.NO) { _, _ ->
         }
-        builder.setTitle("Delete?")
-        builder.setMessage("Are you sure you want to delete this element?")
+        builder.setTitle(Alert.DELETE)
+        builder.setMessage(Alert.DELETE_SURE)
         builder.create().show()
     }
 

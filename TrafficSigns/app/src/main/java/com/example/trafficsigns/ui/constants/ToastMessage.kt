@@ -6,4 +6,5 @@ object ToastMessage {
     const val DATA_SAVED = "Data saved!"
     const val UNABLE_OPEN_CAMERA = "Unable to open camera"
     const val PERMISSION_DENIED = "Presmission denied"
+    const val KNOWN_SIGN = "You know this sing!"
 }

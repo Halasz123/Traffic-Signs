@@ -19,7 +19,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
@@ -37,10 +36,7 @@ import com.example.trafficsigns.databinding.FragmentProfileBinding
 import com.example.trafficsigns.ui.constants.Data
 import com.example.trafficsigns.ui.constants.ToastMessage
 import java.io.File
-import java.io.FileNotFoundException
-import java.lang.Exception
 import java.text.DecimalFormat
-
 
 const val PROFILE_TAG = "profile"
 const val CAPTURE_PHOTO_CODE = 42

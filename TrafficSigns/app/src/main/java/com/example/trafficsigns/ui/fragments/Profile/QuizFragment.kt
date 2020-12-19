@@ -1,11 +1,9 @@
 package com.example.trafficsigns.ui.fragments.Profile
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.LayoutInflater.from
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
@@ -19,7 +17,6 @@ import com.example.trafficsigns.data.MyProfileViewModel
 import com.example.trafficsigns.data.TrafficSign
 import com.example.trafficsigns.databinding.FragmentQuizBinding
 import com.example.trafficsigns.ui.constants.ToastMessage
-import kotlinx.android.synthetic.main.sample_list_item.view.*
 import java.util.*
 import kotlin.collections.ArrayList
 
