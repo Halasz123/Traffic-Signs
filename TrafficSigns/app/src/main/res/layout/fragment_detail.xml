@@ -32,13 +32,15 @@
 
             <ImageButton
                 android:id="@+id/star_button"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:background="@null"
+                android:layout_marginTop= "20dp"
                 android:src="@drawable/ic_baseline_star_rate_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/traffic_image"
-                app:layout_constraintTop_toTopOf="@+id/traffic_image" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/here_can_be_added_to_the_known_signs" />
 
             <TextView
                 android:id="@+id/name_textView"
@@ -49,7 +51,6 @@
                 android:layout_marginEnd="20dp"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:text="ASdasdsad"
                 android:textSize="25sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -61,22 +62,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
-                android:layout_marginLeft="20dp"
                 android:layout_marginTop="50dp"
                 android:src="@drawable/ic_baseline_group_work_24"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/name_textView"
-                tools:src="@drawable/ic_baseline_group_work_24" />
+                tools:src="@drawable/ic_baseline_group_work_24"
+                android:contentDescription="@string/traffic_sgin_name_image" />
 
             <TextView
                 android:id="@+id/group_text_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginRight="20dp"
-                android:text="TextView"
                 android:textColor="@color/blue_gray_200"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="@+id/group_icon"
@@ -88,21 +86,18 @@
                 android:id="@+id/descripiton_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:src="@drawable/ic_baseline_description_24"
                 app:layout_constraintStart_toStartOf="@+id/group_icon"
-                app:layout_constraintTop_toTopOf="@+id/description_text_view" />
+                app:layout_constraintTop_toTopOf="@+id/description_text_view"
+                android:contentDescription="@string/description_imgae" />
 
             <TextView
                 android:id="@+id/description_text_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="50dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginRight="20dp"
-                android:text="TextView"
                 android:textColor="@color/blue_gray_200"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -115,21 +110,25 @@
                 android:layout_height="67dp"
                 android:layout_marginTop="50dp"
                 android:background="@null"
+                android:layout_marginBottom="30dp"
                 android:src="@drawable/ic_baseline_read_more_24"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/descripiton_icon"
-                app:layout_constraintTop_toBottomOf="@id/description_text_view" />
+                app:layout_constraintTop_toBottomOf="@id/description_text_view"
+                android:contentDescription="@string/more_link_image_button" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/floatingActionButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
-                android:layout_marginRight="32dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginEnd="28dp"
+                android:layout_marginBottom="40dp"
                 android:clickable="true"
                 android:src="@drawable/ic_baseline_home_24"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/read_more_button" />
+                android:focusable="true"
+                android:contentDescription="@string/go_to_home" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -138,7 +137,7 @@
                 android:layout_marginStart="-20dp"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:text=" More.."
+                android:text="@string/more"
                 app:layout_constraintBottom_toBottomOf="@+id/read_more_button"
                 app:layout_constraintStart_toEndOf="@+id/read_more_button"
                 app:layout_constraintTop_toTopOf="@+id/read_more_button" />

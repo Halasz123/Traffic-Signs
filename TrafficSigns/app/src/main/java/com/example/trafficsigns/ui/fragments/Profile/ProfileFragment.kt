@@ -19,7 +19,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
@@ -34,11 +33,10 @@ import com.example.trafficsigns.R
 import com.example.trafficsigns.data.MyProfile
 import com.example.trafficsigns.data.MyProfileViewModel
 import com.example.trafficsigns.databinding.FragmentProfileBinding
+import com.example.trafficsigns.ui.constants.Data
+import com.example.trafficsigns.ui.constants.ToastMessage
 import java.io.File
-import java.io.FileNotFoundException
-import java.lang.Exception
 import java.text.DecimalFormat
-
 
 const val PROFILE_TAG = "profile"
 const val CAPTURE_PHOTO_CODE = 42
@@ -50,11 +48,13 @@ class ProfileFragment : Fragment() {
 
     private lateinit var mMyProfileViewModel: MyProfileViewModel
     private var myProfile: MyProfile? = null
-
     private lateinit var binding: FragmentProfileBinding
     private lateinit var saveButton: Button
     private lateinit var name: EditText
     private lateinit var age: EditText
+    private lateinit var address: EditText
+    private lateinit var email: EditText
+    private lateinit var phoneNumber: EditText
     private lateinit var photoFile: File
 
     override fun onCreateView(
@@ -63,10 +63,11 @@ class ProfileFragment : Fragment() {
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
         saveButton = binding.saveButton
-        name = binding.nameEdittext
-        age = binding.age
-
-
+        name = binding.nameEditText
+        age = binding.ageEditText
+        address = binding.addressEditText
+        email = binding.emailEditText
+        phoneNumber = binding.phoneNumber
         mMyProfileViewModel = ViewModelProvider(this).get(MyProfileViewModel::class.java)
 
         mMyProfileViewModel.myProfile.observe(viewLifecycleOwner, { profile ->
@@ -74,6 +75,10 @@ class ProfileFragment : Fragment() {
             Log.d(PROFILE_TAG, profile.toString())
             name.setText(myProfile?.name)
             age.setText(myProfile?.age.toString())
+            address.setText(myProfile?.address)
+            email.setText(myProfile?.email)
+            phoneNumber.setText(myProfile?.phoneNumber)
+
             binding.averageScoreValue.text =
                 DecimalFormat("##.##").format(myProfile?.scores?.average())
             binding.maxScoreValue.text = myProfile?.scores?.maxOrNull().toString()
@@ -91,9 +96,7 @@ class ProfileFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        name.afterTextChanged { saveButton.isEnabled = true }
-        age.afterTextChanged { saveButton.isEnabled = true }
-
+        editTextsChangeCheck()
 
         saveButton.setOnClickListener {
             updateProfile()
@@ -116,6 +119,14 @@ class ProfileFragment : Fragment() {
         }
 
         Log.d(PROFILE_TAG, myProfile.toString())
+    }
+
+    private fun editTextsChangeCheck() {
+        name.afterTextChanged { saveButton.isEnabled = true }
+        age.afterTextChanged { saveButton.isEnabled = true }
+        address.afterTextChanged { saveButton.isEnabled = true }
+        email.afterTextChanged { saveButton.isEnabled = true }
+        phoneNumber.afterTextChanged { saveButton.isEnabled = true }
     }
 
     private fun checkPermission() {
@@ -145,12 +156,15 @@ class ProfileFragment : Fragment() {
 
     }
 
-
     private fun updateProfile(){
         mMyProfileViewModel.myProfile.observeOnce(viewLifecycleOwner, { profile ->
             profile.name = name.text.toString()
             profile.age = age.text.toString().toInt()
+            profile.address = address.text.toString()
+            profile.email = email.text.toString()
+            profile.phoneNumber = phoneNumber.text.toString()
             mMyProfileViewModel.updateProfile(profile)
+            Toast.makeText(requireContext(), ToastMessage.DATA_SAVED, Toast.LENGTH_SHORT).show()
         })
     }
 
@@ -160,7 +174,7 @@ class ProfileFragment : Fragment() {
 
         val fileProvider = FileProvider.getUriForFile(
             requireContext(),
-            "com.example.trafficsigns.ui.fragments.fileprovider",
+            Data.PACKAGE_FILEPROVIDER_PATH,
             photoFile
         )
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
@@ -168,9 +182,10 @@ class ProfileFragment : Fragment() {
             startActivityForResult(takePictureIntent, CAPTURE_PHOTO_CODE)
         }
         else {
-            Toast.makeText(requireContext(), "Unable to open camera", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), ToastMessage.UNABLE_OPEN_CAMERA, Toast.LENGTH_LONG).show()
         }
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             var path: String = ""
@@ -204,12 +219,10 @@ class ProfileFragment : Fragment() {
     ) {
         when(requestCode) {
             PERMISSION_CODE -> {
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     pickGalleryPhoto()
                 } else {
-                    //permission popup denied
-                    Toast.makeText(requireContext(), "Presmission denied", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(requireContext(), ToastMessage.PERMISSION_DENIED, Toast.LENGTH_SHORT).show()
                 }
             }
         }

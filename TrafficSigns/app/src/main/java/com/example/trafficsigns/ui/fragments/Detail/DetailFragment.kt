@@ -19,6 +19,8 @@ import com.example.trafficsigns.R
 import com.example.trafficsigns.data.MyProfileViewModel
 import com.example.trafficsigns.data.TrafficSign
 import com.example.trafficsigns.databinding.FragmentDetailBinding
+import com.example.trafficsigns.ui.constants.Key
+import com.example.trafficsigns.ui.constants.ToastMessage
 
 const val DETAIL_TAG = "detailFragment"
 
@@ -41,7 +43,7 @@ class DetailFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val bundle = this.arguments
         if (bundle != null){
-            trafficSign = bundle.getSerializable("currentItem") as TrafficSign
+            trafficSign = bundle.getSerializable(Key.CURRENT_ITEM) as TrafficSign
         }
         Glide
             .with(view)
@@ -56,14 +58,13 @@ class DetailFragment : Fragment(){
             if (profile.knownTrafficSigns?.contains(trafficSign) == true) {
                 binding.starButton.isEnabled = false
                 binding.starButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow), android.graphics.PorterDuff.Mode.MULTIPLY)
-
             }
         })
 
         binding.starButton.setOnClickListener {
             updateMyTrafficSignList()
             binding.starButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow), android.graphics.PorterDuff.Mode.MULTIPLY)
-            Toast.makeText(requireContext(), "You know this sing!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), ToastMessage.KNOWN_SIGN, Toast.LENGTH_SHORT).show()
         }
 
         binding.floatingActionButton.setOnClickListener {
@@ -81,7 +82,7 @@ class DetailFragment : Fragment(){
         @JvmStatic
         fun newInstanceBundle(trafficSign: TrafficSign): Bundle {
             val args = Bundle()
-            args.putSerializable("currentItem", trafficSign )
+            args.putSerializable(Key.CURRENT_ITEM, trafficSign )
             return args
         }
     }

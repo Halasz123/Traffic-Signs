@@ -1,12 +1,9 @@
 package com.example.trafficsigns.ui.adapters
 
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.trafficsigns.data.TrafficSignsCollection
-import com.example.trafficsigns.ui.fragments.List.ARG_OBJECT
 import com.example.trafficsigns.ui.fragments.List.SampleListFragment
-import com.example.trafficsigns.ui.interfaces.SetOnCheckedChangeListener
 
 class TrafficCollectionListAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
     private var collectionList = emptyList<TrafficSignsCollection>()

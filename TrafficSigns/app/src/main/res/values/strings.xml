@@ -30,4 +30,16 @@
     <string name="next">Next</string>
     <string name="done">Done</string>
     <string name="quiz">Quiz</string>
+    <string name="address">Address</string>
+    <string name="email">Email</string>
+    <string name="phone_number">Phone number</string>
+    <string name="more">More..</string>
+    <string name="here_can_be_added_to_the_known_signs">Here can be added to the known signs.</string>
+    <string name="description_imgae">Description imgae</string>
+    <string name="traffic_sgin_name_image">Traffic Sgin name image</string>
+    <string name="more_link_image_button">More link image button</string>
+    <string name="go_to_main_screen_button">Go to main screen button</string>
+    <string name="go_to_home">Go to home</string>
+    <string name="menu_image_button">Menu image button</string>
+    <string name="add_photo_form_gallery">Add photo form gallery</string>
 </resources>

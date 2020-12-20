@@ -23,13 +23,13 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
             android:background="@null"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@android:drawable/ic_menu_sort_by_size"
-            tools:srcCompat="@drawable/ic_baseline_menu_24" />
+            tools:srcCompat="@drawable/ic_baseline_menu_24"
+            android:contentDescription="@string/menu_image_button" />
 
         <TextView
             android:id="@+id/title"
@@ -75,6 +75,9 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        app:itemTextColor="@color/white"
+        app:itemIconSize="40dp"
+        android:background="@color/blue_gray_400"
         app:menu="@menu/navdrawer_menu"
         app:headerLayout="@layout/menu_header"/>
 

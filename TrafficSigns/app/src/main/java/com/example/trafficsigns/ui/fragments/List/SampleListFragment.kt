@@ -16,17 +16,18 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.trafficsigns.MainActivity
 import com.example.trafficsigns.R
 import com.example.trafficsigns.data.TrafficSign
 import com.example.trafficsigns.databinding.FragmentSampleListBinding
 import com.example.trafficsigns.ui.adapters.SampleListAdapter
+import com.example.trafficsigns.ui.constants.Key
 import com.example.trafficsigns.ui.fragments.Detail.DetailFragment
 import com.example.trafficsigns.ui.interfaces.ItemClickListener
 import com.example.trafficsigns.ui.utils.Settings
 
 
 const val ARG_OBJECT = "object"
+const val SAMPLE_LIST = "List"
 
 class SampleListFragment : Fragment(), ItemClickListener {
 
@@ -34,8 +35,6 @@ class SampleListFragment : Fragment(), ItemClickListener {
     private lateinit var trafficSignList: List<TrafficSign>
     private lateinit var recyclerView: RecyclerView
     private lateinit var mAdapter: SampleListAdapter
-
-    //private var isGrid = false
     private var searchText = ""
     var localBroadcastGridReceiver: BroadcastReceiver? = null
     var localBroadcastSearchReceiver: BroadcastReceiver? = null
@@ -54,7 +53,7 @@ class SampleListFragment : Fragment(), ItemClickListener {
         localBroadcastGridReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 if (intent != null) {
-                     Settings.isGrid = intent.getBooleanExtra("grid", false)
+                     Settings.isGrid = intent.getBooleanExtra(Key.GRID, false)
                     recyclerView.layoutManager = if (! Settings.isGrid) {
                         LinearLayoutManager(activity)
                     } else {
@@ -68,12 +67,11 @@ class SampleListFragment : Fragment(), ItemClickListener {
         localBroadcastSearchReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 if (intent != null) {
-                    searchText = intent.getStringExtra("search").toString()
+                    searchText = intent.getStringExtra(Key.SEARCH).toString()
                     (recyclerView.adapter as SampleListAdapter).filter.filter(searchText)
                 }
             }
         }
-
         LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(localBroadcastGridReceiver as BroadcastReceiver, IntentFilter ("sendGridOnMessage"))
         LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(localBroadcastSearchReceiver as BroadcastReceiver, IntentFilter ("sendSearchText"))
 
@@ -85,7 +83,7 @@ class SampleListFragment : Fragment(), ItemClickListener {
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
             trafficSignList= getSerializable(ARG_OBJECT) as List<TrafficSign>
         }
-        Log.d("List", trafficSignList.toString())
+        Log.d(SAMPLE_LIST, trafficSignList.toString())
         recyclerView = binding.recyclerview
 
         mAdapter = SampleListAdapter(this)
