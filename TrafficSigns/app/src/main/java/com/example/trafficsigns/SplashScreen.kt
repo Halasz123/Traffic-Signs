@@ -4,8 +4,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator.ofFloat
 import android.animation.ValueAnimator
 import android.content.Intent
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -43,6 +42,7 @@ class SplashScreen: AppCompatActivity() {
     private lateinit var mTrafficSignsCollectionViewModel: TrafficSignsCollectionViewModel
     private lateinit var mMyProfileViewModel: MyProfileViewModel
     private lateinit var internetErrorToast: Toast
+    private lateinit var firstTimeSH: SharedPreferences
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,11 +56,11 @@ class SplashScreen: AppCompatActivity() {
         downloadData()
         animateLogo()
 
-        val settings = getSharedPreferences(PREFS_NAME, 0)
-        if (settings.getBoolean(SharedPreference.FIRST_TIME_USE_KEY, true)) {
-            Log.d(SLASH_TAG, "First time");
+        firstTimeSH = getSharedPreferences(PREFS_NAME, 0)
+        if (firstTimeSH.getBoolean(SharedPreference.FIRST_TIME_USE_KEY, true)) {
+            Log.d(SLASH_TAG, "First time")
             createNullProfile()
-            settings.edit().putBoolean(SharedPreference.FIRST_TIME_USE_KEY, false).apply();
+            firstTimeSH.edit().putBoolean(SharedPreference.FIRST_TIME_USE_KEY, false).apply()
         }
 
 
@@ -117,12 +117,8 @@ class SplashScreen: AppCompatActivity() {
             withContext(Dispatchers.IO) {
                 downloadDataBlocking()
             }
-            Timer().schedule(3000){
-                goToMain()
-            }
         }
     }
-
 
     private fun downloadDataBlocking(){
         val client = OkHttpClient()
@@ -131,11 +127,13 @@ class SplashScreen: AppCompatActivity() {
             override fun onResponse(call: Call, response: Response) {
                 myData = response.body()?.string() ?: ""
                 parseJson()
+                goToMain()
             }
 
             override fun onFailure(call: Call, e: IOException) {
                 Log.d(SLASH_TAG, e.toString())
                 internetErrorToast.show()
+                downloadData()
             }
         })
     }
@@ -169,8 +167,10 @@ class SplashScreen: AppCompatActivity() {
 
     private fun goToMain() {
         val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-        overridePendingTransition(R.anim.fade_out, R.anim.splash_anim)
-        finish()
+        Timer().schedule(3000) {
+            startActivity(intent)
+            overridePendingTransition(R.anim.fade_out, R.anim.splash_anim)
+            finish()
+        }
     }
 }
