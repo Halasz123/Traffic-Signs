@@ -1,6 +1,6 @@
 # Traffic Signs
 
-**Traffic** signs it's an android application for *novice* or experienced drivers. 
+**Traffic** signs it's an android application for *novice* or *experienced* drivers. 
 It's a knowledge developer application where you can easily read and learn about traffic signs of the *everyday life*.
 
 ## Table of contents
@@ -42,7 +42,7 @@ Please make sure to update tests as appropriate.
 
 ### Developer
 
-**Halász Botond** ~ *third year student in Sapientia EMTE Universyti
+**Halász Botond** ~ *third year student in Sapientia EMTE University*
 
 ### Teachers
 
