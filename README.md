@@ -5,9 +5,9 @@ It's a knowledge developer application where you can easily read and learn about
 
 ## Table of contents
 * [Usage](#usage)
-* [Contribuiting](#contribuiting)
+* [Contributing](#contributing)
 * [Features](#features)
-* [Feature Development](#feature-development)
+* [Future Development](#future-development)
 * [About Us](#about-us)
 
 ## Usage
