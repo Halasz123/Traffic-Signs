@@ -87,7 +87,7 @@ class SampleListFragment : Fragment(), ItemClickListener {
         recyclerView = binding.recyclerview
 
         mAdapter = SampleListAdapter(this)
-        mAdapter.setData(trafficSignList)
+        mAdapter.changeData(trafficSignList)
 
 
         recyclerView.apply {

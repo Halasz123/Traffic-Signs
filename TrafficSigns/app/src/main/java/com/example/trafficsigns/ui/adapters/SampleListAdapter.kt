@@ -56,7 +56,7 @@ class SampleListAdapter(private val itemClickListener: ItemClickListener): Recyc
 
     override fun getItemCount() = mTrafficList.count()
 
-    fun setData(collection: List<TrafficSign>) {
+    fun changeData(collection: List<TrafficSign>) {
         this.mTrafficList = collection
         this.mTrafficListAll = mTrafficList
         notifyDataSetChanged()

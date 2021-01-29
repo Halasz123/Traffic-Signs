@@ -29,10 +29,10 @@ import com.google.android.material.navigation.NavigationView
 
 class MainScreenFragment : Fragment(), ItemClickListener, NavigationView.OnNavigationItemSelectedListener {
 
-    lateinit var mTrafficViewModel: TrafficSignsCollectionViewModel
+    lateinit var trafficViewModel: TrafficSignsCollectionViewModel
     private lateinit var trafficRecyclerView: RecyclerView
     private lateinit var binding: FragmentMainScreenBinding
-    private var mCollectionList =  emptyList<TrafficSignsCollection>()
+    private var collectionList =  emptyList<TrafficSignsCollection>()
     private lateinit var sampleListAdapter: SampleListAdapter
     private lateinit var menuAdapter: MainMenuAdapter
     private lateinit var allTrafficSign: ArrayList<TrafficSign>
@@ -60,10 +60,10 @@ class MainScreenFragment : Fragment(), ItemClickListener, NavigationView.OnNavig
             adapter = menuAdapter
         }
 
-        mTrafficViewModel = ViewModelProvider(this).get(TrafficSignsCollectionViewModel::class.java)
-        mTrafficViewModel.readAllData.observe(viewLifecycleOwner, { collection ->
-            menuAdapter.setData(collection)
-            mCollectionList = collection
+        trafficViewModel = ViewModelProvider(this).get(TrafficSignsCollectionViewModel::class.java)
+        trafficViewModel.readAllData.observe(viewLifecycleOwner, { collection ->
+            menuAdapter.changeData(collection)
+            collectionList = collection
             allTrafficSign = ArrayList<TrafficSign>()
             collection.forEach {
                 allTrafficSign.addAll(it.trafficSigns)
@@ -91,7 +91,7 @@ class MainScreenFragment : Fragment(), ItemClickListener, NavigationView.OnNavig
         binding.search.setOnSearchClickListener {
             trafficRecyclerView.forceLayout()
             Settings.isGrid = false
-            sampleListAdapter.setData(allTrafficSign.shuffled())
+            sampleListAdapter.changeData(allTrafficSign.shuffled())
             binding.title.visibility = View.INVISIBLE
         }
 
@@ -111,7 +111,7 @@ class MainScreenFragment : Fragment(), ItemClickListener, NavigationView.OnNavig
     }
 
     override fun onItemClickListener(position: Int) {
-        binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_collectionListFragment, CollectionListFragment.newInstanceBundle(position, mCollectionList))
+        binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_collectionListFragment, CollectionListFragment.newInstanceBundle(position, collectionList))
     }
 
     override fun onItemClickListener(trafficSign: TrafficSign) {

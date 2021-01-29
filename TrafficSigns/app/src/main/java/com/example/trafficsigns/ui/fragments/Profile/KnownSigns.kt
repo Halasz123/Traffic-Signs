@@ -52,7 +52,7 @@ class KnownSigns : Fragment(), ItemClickListener {
 
         mProfileViewModel = ViewModelProvider(this).get(MyProfileViewModel::class.java)
         mProfileViewModel.myProfile.observe(viewLifecycleOwner, { profile ->
-            profile.knownTrafficSigns?.let { trafficSignListAdapter.setData(it as List<TrafficSign>) }
+            profile.knownTrafficSigns?.let { trafficSignListAdapter.changeData(it as List<TrafficSign>) }
         })
 
         binding.testButton.setOnClickListener {
