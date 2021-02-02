@@ -1,58 +1,108 @@
 package com.example.trafficsigns.ui.fragments.Profile
 
+import android.app.Activity
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.FileProvider
+import androidx.databinding.DataBindingUtil
 import com.example.trafficsigns.R
+import com.example.trafficsigns.databinding.FragmentKnownSignsBinding
+import com.example.trafficsigns.databinding.FragmentNeuralNetworkBinding
+import com.example.trafficsigns.ml.Second
+import com.example.trafficsigns.ui.constants.Data
+import com.example.trafficsigns.ui.constants.ToastMessage
+import org.tensorflow.lite.support.image.TensorImage
+import java.io.File
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- ** NOT IMPLEMENTED!
- */
 class NeuralNetworkFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var binding: FragmentNeuralNetworkBinding
+    private lateinit var photoFile: File
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_neural_network, container, false)
+    ): View {
+        binding = DataBindingUtil
+            .inflate(
+                inflater,
+                R.layout.fragment_neural_network,
+                container,
+                false
+            )
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment NeuralNetworkFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            NeuralNetworkFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding.photo.setOnClickListener {
+            startCameraIntent()
+
+        }
+    }
+
+    private fun startCameraIntent() {
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        photoFile = getPhotoFile("Traffic")
+
+        val fileProvider = FileProvider.getUriForFile(
+            requireContext(),
+            Data.PACKAGE_FILEPROVIDER_PATH,
+            photoFile
+        )
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
+        if (activity?.let { it1 -> takePictureIntent.resolveActivity(it1.packageManager) } != null){
+            startActivityForResult(takePictureIntent, CAPTURE_PHOTO_CODE)
+        }
+        else {
+            Toast.makeText(requireContext(), ToastMessage.UNABLE_OPEN_CAMERA, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun getPhotoFile(fileName: String): File {
+        val storageDirectory = activity?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return  File.createTempFile(fileName, ".jpg", storageDirectory)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            var path: String = ""
+            when (requestCode) {
+                CAPTURE_PHOTO_CODE -> {
+                    binding.profilePicture.setImageBitmap(BitmapFactory.decodeFile(photoFile.absolutePath))
+                    val bitmap: Bitmap = BitmapFactory.decodeFile(photoFile.absolutePath)
+                    val model = Second.newInstance(requireContext())
+
+// Creates inputs for reference.
+                    val image = TensorImage.fromBitmap(bitmap)
+
+// Runs model inference and gets result.
+                    val outputs = model.process(image)
+                    Log.d("NEURAL", outputs.toString())
+                    val probability = outputs.probabilityAsCategoryList
+                    Log.d("NEURAL", probability.toString())
+
+// Releases model resources if no longer used.
+                    model.close()
+                }
+                else -> {
+                    super.onActivityResult(requestCode, resultCode, data)
                 }
             }
+        }
+        else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
+
 }

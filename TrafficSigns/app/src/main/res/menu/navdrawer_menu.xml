@@ -16,8 +16,8 @@
         android:icon="@drawable/ic_baseline_bubble_chart_24"
         android:title="@string/quiz" />
 
-<!--    <item android:id="@+id/neuralNetworkFragment"-->
-<!--        android:title="@string/camera" />-->
+    <item android:id="@+id/neuralNetworkFragment"
+        android:title="@string/camera" />
 
 
 <!--    <item android:id="@+id/settingsFragment"-->

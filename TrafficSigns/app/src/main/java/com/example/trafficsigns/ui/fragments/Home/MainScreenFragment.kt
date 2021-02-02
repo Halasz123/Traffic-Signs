@@ -118,9 +118,9 @@ class MainScreenFragment : Fragment(), NavigationView.OnNavigationItemSelectedLi
             R.id.quizFragment -> {
                 binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_quizFragment)
             }
-//            R.id.neuralNetworkFragment -> {
-//                binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_neuralNetworkFragment)
-//            }
+            R.id.neuralNetworkFragment -> {
+                binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_neuralNetworkFragment)
+            }
 //            R.id.settingsFragment -> {
 //                binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_settingsFragment)
 //            }
