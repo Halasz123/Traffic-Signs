@@ -17,13 +17,12 @@ import com.example.trafficsigns.data.TrafficSign
 import com.example.trafficsigns.databinding.FragmentKnownSignsBinding
 import com.example.trafficsigns.ui.adapters.SampleListAdapter
 import com.example.trafficsigns.ui.constants.Alert
-import com.example.trafficsigns.ui.fragments.Detail.DetailFragment
-import com.example.trafficsigns.ui.interfaces.ItemClickListener
+import com.example.trafficsigns.ui.interfaces.ItemLongClickListener
 import com.example.trafficsigns.ui.utils.Settings
 
 const val KNOWN_TAG = "knownsigns"
 
-class KnownSigns : Fragment(), ItemClickListener {
+class KnownSigns : Fragment(), ItemLongClickListener {
 
     private lateinit var binding: FragmentKnownSignsBinding
     lateinit var mProfileViewModel: MyProfileViewModel
@@ -43,7 +42,7 @@ class KnownSigns : Fragment(), ItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Settings.isGrid = false
-        trafficSignListAdapter = SampleListAdapter(this)
+        trafficSignListAdapter = SampleListAdapter(R.id.action_knownSigns_to_detailFragment, this)
         binding.recyclerview.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())
@@ -58,14 +57,6 @@ class KnownSigns : Fragment(), ItemClickListener {
         binding.testButton.setOnClickListener {
             binding.root.findNavController().navigate(R.id.action_knownSigns_to_quizFragment)
         }
-    }
-
-    override fun onItemClickListener(position: Int) {
-        //do nothing
-    }
-
-    override fun onItemClickListener(trafficSign: TrafficSign) {
-        binding.root.findNavController().navigate(R.id.action_knownSigns_to_detailFragment, DetailFragment.newInstanceBundle(trafficSign))
     }
 
     override fun onItemLongClickListener(trafficSign: TrafficSign) {

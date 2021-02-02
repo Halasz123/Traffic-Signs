@@ -20,14 +20,11 @@ import com.example.trafficsigns.data.TrafficSignsCollectionViewModel
 import com.example.trafficsigns.databinding.FragmentMainScreenBinding
 import com.example.trafficsigns.ui.adapters.MainMenuAdapter
 import com.example.trafficsigns.ui.adapters.SampleListAdapter
-import com.example.trafficsigns.ui.fragments.Detail.DetailFragment
-import com.example.trafficsigns.ui.fragments.List.CollectionListFragment
-import com.example.trafficsigns.ui.interfaces.ItemClickListener
 import com.example.trafficsigns.ui.utils.Settings
 import com.google.android.material.navigation.NavigationView
 
 
-class MainScreenFragment : Fragment(), ItemClickListener, NavigationView.OnNavigationItemSelectedListener {
+class MainScreenFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
 
     lateinit var trafficViewModel: TrafficSignsCollectionViewModel
     private lateinit var trafficRecyclerView: RecyclerView
@@ -51,8 +48,8 @@ class MainScreenFragment : Fragment(), ItemClickListener, NavigationView.OnNavig
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        sampleListAdapter = SampleListAdapter(this)
-        menuAdapter = MainMenuAdapter(this)
+        sampleListAdapter = SampleListAdapter(R.id.action_mainScreenFragment_to_detailFragment, null)
+        menuAdapter = MainMenuAdapter()
 
         trafficRecyclerView = binding.recyclerview.apply {
             setHasFixedSize(true)
@@ -108,18 +105,6 @@ class MainScreenFragment : Fragment(), ItemClickListener, NavigationView.OnNavig
         trafficRecyclerView.adapter = menuAdapter
         binding.title.visibility = View.VISIBLE
         return false
-    }
-
-    override fun onItemClickListener(position: Int) {
-        binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_collectionListFragment, CollectionListFragment.newInstanceBundle(position, collectionList))
-    }
-
-    override fun onItemClickListener(trafficSign: TrafficSign) {
-        binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_detailFragment, DetailFragment.newInstanceBundle(trafficSign))
-    }
-
-    override fun onItemLongClickListener(trafficSign: TrafficSign) {
-        //do nothing
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

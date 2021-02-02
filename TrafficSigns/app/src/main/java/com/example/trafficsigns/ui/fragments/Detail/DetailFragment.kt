@@ -26,16 +26,25 @@ const val DETAIL_TAG = "detailFragment"
 
 class DetailFragment : Fragment(){
 
+    companion object {
+        @JvmStatic
+        fun newInstanceBundle(trafficSign: TrafficSign): Bundle {
+            val args = Bundle()
+            args.putSerializable(Key.CURRENT_ITEM, trafficSign )
+            return args
+        }
+    }
+
     private lateinit var binding: FragmentDetailBinding
     private lateinit var trafficSign: TrafficSign
-    private lateinit var mMyProfileViewModel: MyProfileViewModel
+    private lateinit var myProfileViewModel: MyProfileViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding =  DataBindingUtil.inflate(inflater, R.layout.fragment_detail, container, false)
-        mMyProfileViewModel = ViewModelProvider(this).get(MyProfileViewModel::class.java)
+        myProfileViewModel = ViewModelProvider(this).get(MyProfileViewModel::class.java)
         return binding.root
     }
 
@@ -54,7 +63,7 @@ class DetailFragment : Fragment(){
         binding.groupTextView.text = "${trafficSign.group?.capitalize()} signs"
         binding.descriptionTextView.text = trafficSign.description
 
-        mMyProfileViewModel.myProfile.observe(viewLifecycleOwner, { profile ->
+        myProfileViewModel.myProfile.observe(viewLifecycleOwner, { profile ->
             if (profile.knownTrafficSigns?.contains(trafficSign) == true) {
                 binding.starButton.isEnabled = false
                 binding.starButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow), android.graphics.PorterDuff.Mode.MULTIPLY)
@@ -78,21 +87,12 @@ class DetailFragment : Fragment(){
         }
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstanceBundle(trafficSign: TrafficSign): Bundle {
-            val args = Bundle()
-            args.putSerializable(Key.CURRENT_ITEM, trafficSign )
-            return args
-        }
-    }
-
     private fun updateMyTrafficSignList(){
-        mMyProfileViewModel.myProfile.observe(viewLifecycleOwner, { profile ->
+        myProfileViewModel.myProfile.observe(viewLifecycleOwner, { profile ->
             Log.d(DETAIL_TAG, profile.toString())
             if (profile.knownTrafficSigns?.contains(trafficSign) == false){
                 profile.knownTrafficSigns?.add(trafficSign)
-                mMyProfileViewModel.updateProfile(profile)
+                myProfileViewModel.updateProfile(profile)
             }
         })
     }

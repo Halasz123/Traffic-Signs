@@ -22,29 +22,29 @@
 
 
     <Switch
-        android:id="@+id/switch1"
+        android:id="@+id/switch_to_grid"
         android:layout_width="100dp"
         android:layout_height="30dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="36dp"
         android:paddingStart="10dp"
-        android:paddingLeft="10dp"
         android:text="@string/grid"
         android:textColor="@color/blue_gray_200"
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tab_layout" />
+        app:layout_constraintTop_toBottomOf="@+id/tab_layout"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <SearchView
-        android:id="@+id/search"
+        android:id="@+id/search_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:searchIcon="@drawable/ic_baseline_search_24"
         app:layout_constraintBottom_toTopOf="@+id/pager"
-        app:layout_constraintEnd_toStartOf="@+id/switch1"
+        app:layout_constraintEnd_toStartOf="@+id/switch_to_grid"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tab_layout"
         app:layout_constraintVertical_bias="0.0" />
@@ -59,7 +59,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch1" />
+        app:layout_constraintTop_toBottomOf="@+id/switch_to_grid" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

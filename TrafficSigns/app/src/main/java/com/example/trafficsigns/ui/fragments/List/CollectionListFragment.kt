@@ -21,11 +21,21 @@ import com.google.android.material.tabs.TabLayoutMediator
 
 class CollectionListFragment : Fragment() {
 
+    companion object {
+        @JvmStatic
+        fun newInstanceBundle(startPosition: Int, trafficSignsCollections: List<TrafficSignsCollection>): Bundle {
+            val args = Bundle()
+            args.putInt(Key.START_POSITION, startPosition)
+            args.putSerializable(Key.CURRENT_LIST, trafficSignsCollections as ArrayList)
+            return args
+        }
+    }
+
     private lateinit var trafficCollectionAdapter: TrafficCollectionListAdapter
     private lateinit var viewPager: ViewPager2
     private lateinit var binding: FragmentCollectionListBinding
     private var startPosition: Int = 1
-    private var mCollectionList =  emptyList<TrafficSignsCollection>()
+    private var collectionList =  emptyList<TrafficSignsCollection>()
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -35,20 +45,19 @@ class CollectionListFragment : Fragment() {
         return binding.root
     }
 
-    @Suppress("UNCHECKED_CAST")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val bundle = this.arguments
         if (bundle != null){
             startPosition = bundle.getInt(Key.START_POSITION, 1)
-            mCollectionList = bundle.getSerializable(Key.CURRENT_LIST) as List<TrafficSignsCollection>
+            collectionList = bundle.getSerializable(Key.CURRENT_LIST) as List<TrafficSignsCollection>
         }
-        binding.switch1.isChecked = Settings.isGrid
+        binding.switchToGrid.isChecked = Settings.isGrid
 
-        binding.switch1.setOnCheckedChangeListener { _, isChecked ->
+        binding.switchToGrid.setOnCheckedChangeListener { _, isChecked ->
             sendGridOnData(isChecked)
         }
 
-        binding.search.setOnQueryTextListener( object : SearchView.OnQueryTextListener {
+        binding.searchView.setOnQueryTextListener( object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
@@ -62,23 +71,13 @@ class CollectionListFragment : Fragment() {
         val tabLayout = binding.tabLayout
         viewPager = binding.pager
         trafficCollectionAdapter = TrafficCollectionListAdapter(this)
-        trafficCollectionAdapter.setData(mCollectionList)
+        trafficCollectionAdapter.setData(collectionList)
         viewPager.adapter = trafficCollectionAdapter
         viewPager.setCurrentItem(startPosition, false)
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = mCollectionList[position].groupId
+            tab.text = collectionList[position].groupId
         }.attach()
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstanceBundle(startPosition: Int, trafficSignsCollections: List<TrafficSignsCollection>): Bundle {
-            val args = Bundle()
-            args.putInt(Key.START_POSITION, startPosition)
-            args.putSerializable(Key.CURRENT_LIST, trafficSignsCollections as ArrayList)
-            return args
-        }
     }
 
     private fun sendGridOnData(isGrid: Boolean) {

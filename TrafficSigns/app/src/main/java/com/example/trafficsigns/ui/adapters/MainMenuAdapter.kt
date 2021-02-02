@@ -5,16 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.trafficsigns.R
 import com.example.trafficsigns.data.TrafficSignsCollection
 import com.example.trafficsigns.ui.constants.General
-import com.example.trafficsigns.ui.interfaces.ItemClickListener
+import com.example.trafficsigns.ui.fragments.List.CollectionListFragment
 import kotlinx.android.synthetic.main.group_item.view.*
 
 
-class MainMenuAdapter(private val itemClickListener: ItemClickListener) : RecyclerView.Adapter<MainMenuAdapter.MyViewHolder>(){
+class MainMenuAdapter : RecyclerView.Adapter<MainMenuAdapter.MyViewHolder>(){
 
     private var collectionList =  emptyList<TrafficSignsCollection>()
 
@@ -37,7 +38,8 @@ class MainMenuAdapter(private val itemClickListener: ItemClickListener) : Recycl
         loadImageWithGlide(holder.itemView, currentItem.trafficSigns[1].image, holder.itemView.imageView)
 
         holder.itemView.setOnClickListener {
-            itemClickListener.onItemClickListener(position)
+            it.findNavController().navigate(R.id.action_mainScreenFragment_to_collectionListFragment,
+                CollectionListFragment.newInstanceBundle(position, collectionList))
         }
     }
 
