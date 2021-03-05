@@ -20,19 +20,16 @@ import com.example.trafficsigns.data.TrafficSignsCollectionViewModel
 import com.example.trafficsigns.databinding.FragmentMainScreenBinding
 import com.example.trafficsigns.ui.adapters.MainMenuAdapter
 import com.example.trafficsigns.ui.adapters.SampleListAdapter
-import com.example.trafficsigns.ui.fragments.Detail.DetailFragment
-import com.example.trafficsigns.ui.fragments.List.CollectionListFragment
-import com.example.trafficsigns.ui.interfaces.ItemClickListener
 import com.example.trafficsigns.ui.utils.Settings
 import com.google.android.material.navigation.NavigationView
 
 
-class MainScreenFragment : Fragment(), ItemClickListener, NavigationView.OnNavigationItemSelectedListener {
+class MainScreenFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
 
-    lateinit var mTrafficViewModel: TrafficSignsCollectionViewModel
+    lateinit var trafficViewModel: TrafficSignsCollectionViewModel
     private lateinit var trafficRecyclerView: RecyclerView
     private lateinit var binding: FragmentMainScreenBinding
-    private var mCollectionList =  emptyList<TrafficSignsCollection>()
+    private var collectionList =  emptyList<TrafficSignsCollection>()
     private lateinit var sampleListAdapter: SampleListAdapter
     private lateinit var menuAdapter: MainMenuAdapter
     private lateinit var allTrafficSign: ArrayList<TrafficSign>
@@ -51,8 +48,8 @@ class MainScreenFragment : Fragment(), ItemClickListener, NavigationView.OnNavig
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        sampleListAdapter = SampleListAdapter(this)
-        menuAdapter = MainMenuAdapter(this)
+        sampleListAdapter = SampleListAdapter(R.id.action_mainScreenFragment_to_detailFragment, null)
+        menuAdapter = MainMenuAdapter()
 
         trafficRecyclerView = binding.recyclerview.apply {
             setHasFixedSize(true)
@@ -60,10 +57,10 @@ class MainScreenFragment : Fragment(), ItemClickListener, NavigationView.OnNavig
             adapter = menuAdapter
         }
 
-        mTrafficViewModel = ViewModelProvider(this).get(TrafficSignsCollectionViewModel::class.java)
-        mTrafficViewModel.readAllData.observe(viewLifecycleOwner, { collection ->
-            menuAdapter.setData(collection)
-            mCollectionList = collection
+        trafficViewModel = ViewModelProvider(this).get(TrafficSignsCollectionViewModel::class.java)
+        trafficViewModel.readAllData.observe(viewLifecycleOwner, { collection ->
+            menuAdapter.changeData(collection)
+            collectionList = collection
             allTrafficSign = ArrayList<TrafficSign>()
             collection.forEach {
                 allTrafficSign.addAll(it.trafficSigns)
@@ -91,7 +88,7 @@ class MainScreenFragment : Fragment(), ItemClickListener, NavigationView.OnNavig
         binding.search.setOnSearchClickListener {
             trafficRecyclerView.forceLayout()
             Settings.isGrid = false
-            sampleListAdapter.setData(allTrafficSign.shuffled())
+            sampleListAdapter.changeData(allTrafficSign.shuffled())
             binding.title.visibility = View.INVISIBLE
         }
 
@@ -110,18 +107,6 @@ class MainScreenFragment : Fragment(), ItemClickListener, NavigationView.OnNavig
         return false
     }
 
-    override fun onItemClickListener(position: Int) {
-        binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_collectionListFragment, CollectionListFragment.newInstanceBundle(position, mCollectionList))
-    }
-
-    override fun onItemClickListener(trafficSign: TrafficSign) {
-        binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_detailFragment, DetailFragment.newInstanceBundle(trafficSign))
-    }
-
-    override fun onItemLongClickListener(trafficSign: TrafficSign) {
-        //do nothing
-    }
-
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
             R.id.profileFragment -> {
@@ -133,9 +118,9 @@ class MainScreenFragment : Fragment(), ItemClickListener, NavigationView.OnNavig
             R.id.quizFragment -> {
                 binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_quizFragment)
             }
-//            R.id.neuralNetworkFragment -> {
-//                binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_neuralNetworkFragment)
-//            }
+            R.id.neuralNetworkFragment -> {
+                binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_neuralNetworkFragment)
+            }
 //            R.id.settingsFragment -> {
 //                binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_settingsFragment)
 //            }

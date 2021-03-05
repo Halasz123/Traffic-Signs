@@ -147,7 +147,6 @@ class ProfileFragment : Fragment() {
     private fun pickGalleryPhoto() {
         val intent = Intent(ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
         startActivityForResult(intent, IMAGE_PICK_CODE)
-
     }
 
     private fun getPhotoFile(fileName: String): File {

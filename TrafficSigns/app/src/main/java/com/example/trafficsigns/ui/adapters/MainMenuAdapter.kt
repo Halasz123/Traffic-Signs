@@ -5,20 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.fragment.app.FragmentManager
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.trafficsigns.R
 import com.example.trafficsigns.data.TrafficSignsCollection
+import com.example.trafficsigns.ui.constants.General
 import com.example.trafficsigns.ui.fragments.List.CollectionListFragment
-import com.example.trafficsigns.ui.interfaces.ItemClickListener
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.group_item.view.*
-import kotlinx.android.synthetic.main.sample_list_item.view.*
 
 
-class MainMenuAdapter(private val itemClickListener: ItemClickListener) : RecyclerView.Adapter<MainMenuAdapter.MyViewHolder>(){
+class MainMenuAdapter : RecyclerView.Adapter<MainMenuAdapter.MyViewHolder>(){
 
     private var collectionList =  emptyList<TrafficSignsCollection>()
 
@@ -36,23 +33,24 @@ class MainMenuAdapter(private val itemClickListener: ItemClickListener) : Recycl
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val  currentItem = collectionList[position]
 
-        holder.itemView.text_view_list_item.text = currentItem.groupId.capitalize() + " signs"
-        myGlide(holder.itemView, currentItem.trafficSigns[0].image, holder.itemView.image_view_list_item)
-        myGlide(holder.itemView, currentItem.trafficSigns[1].image, holder.itemView.imageView)
+        holder.itemView.text_view_list_item.text = currentItem.groupId.capitalize() + General.SIGNS
+        loadImageWithGlide(holder.itemView, currentItem.trafficSigns[0].image, holder.itemView.image_view_list_item)
+        loadImageWithGlide(holder.itemView, currentItem.trafficSigns[1].image, holder.itemView.imageView)
 
         holder.itemView.setOnClickListener {
-            itemClickListener.onItemClickListener(position)
+            it.findNavController().navigate(R.id.action_mainScreenFragment_to_collectionListFragment,
+                CollectionListFragment.newInstanceBundle(position, collectionList))
         }
     }
 
     override fun getItemCount() = collectionList.count()
 
-    fun setData(collection: List<TrafficSignsCollection>){
+    fun changeData(collection: List<TrafficSignsCollection>){
         this.collectionList = collection
         notifyDataSetChanged()
     }
 
-    private fun myGlide(view: View, url: String?, imageView: ImageView) {
+    private fun loadImageWithGlide(view: View, url: String?, imageView: ImageView) {
         Glide
             .with(view)
             .load(url)

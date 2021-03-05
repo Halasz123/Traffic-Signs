@@ -5,15 +5,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.trafficsigns.R
 import com.example.trafficsigns.data.TrafficSign
-import com.example.trafficsigns.ui.interfaces.ItemClickListener
+import com.example.trafficsigns.ui.fragments.Detail.DetailFragment
+import com.example.trafficsigns.ui.interfaces.ItemLongClickListener
 import com.example.trafficsigns.ui.utils.Settings
 import kotlinx.android.synthetic.main.sample_list_item.view.*
 
-class SampleListAdapter(private val itemClickListener: ItemClickListener): RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filterable {
+class SampleListAdapter(private val onClickNavigateAction: Int, private val itemLongClickListener: ItemLongClickListener?): RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filterable {
 
     class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     class GridViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -45,18 +47,18 @@ class SampleListAdapter(private val itemClickListener: ItemClickListener): Recyc
         Glide.with(holder.itemView).load(currentItem.image).override(holder.itemView.width, holder.itemView.height).into(holder.itemView.sign_imageView)
 
         holder.itemView.setOnClickListener {
-            itemClickListener.onItemClickListener(currentItem)
+            it.findNavController().navigate(onClickNavigateAction, DetailFragment.newInstanceBundle(currentItem))
         }
 
         holder.itemView.setOnLongClickListener {
-            itemClickListener.onItemLongClickListener(currentItem)
+            itemLongClickListener?.onItemLongClickListener(currentItem)
             true
         }
     }
 
     override fun getItemCount() = mTrafficList.count()
 
-    fun setData(collection: List<TrafficSign>) {
+    fun changeData(collection: List<TrafficSign>) {
         this.mTrafficList = collection
         this.mTrafficListAll = mTrafficList
         notifyDataSetChanged()
@@ -81,9 +83,9 @@ class SampleListAdapter(private val itemClickListener: ItemClickListener): Recyc
             return filterResult
         }
 
-        override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+        override fun publishResults(constraint: CharSequence?, results: FilterResults) {
             mTrafficList = emptyList()
-            mTrafficList = results?.values as List<TrafficSign>
+            mTrafficList = results.values as List<TrafficSign>
             notifyDataSetChanged()
         }
     })

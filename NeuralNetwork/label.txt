@@ -1,0 +1,36 @@
+Begin of a speed limit
+End of a speed limit
+Overtaking prohibited
+Overtaking prohibited for trucks
+Warning for a crossroad side roads on the left and right
+Begin of priority road
+Give way to all drivers
+Stop and give way to all drivers
+Entry prohibited
+Trucks prohibited
+Entry prohibited(road with one way traffic)
+Warning for a danger with no specific traffic sign
+Warning for a curve to the left
+Warning for a curve to the right
+Warning for a double curve
+Warning for a bad road surface
+Warning for a slippery road surface
+Warning for a road narrowing on the right
+Warning for roadworks
+Warning for traffic light
+Warning for a crossing for pedestrians
+Warning for children
+Warning for cyclists
+Snow
+Warning for crossing deer
+End of the limits
+Turning right mandatory
+Turning left mandatory
+Driving straight ahead mandatory
+Driving straight ahead or turning right mandatory
+Driving straight ahead or turning left mandatory
+Passing right mandatory
+Passing left mandatory
+Mandatory direction of the roundabout
+End of the overtaking prohibition
+End of overtaking limit for trac

@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,20 +20,29 @@ import com.example.trafficsigns.data.TrafficSign
 import com.example.trafficsigns.databinding.FragmentSampleListBinding
 import com.example.trafficsigns.ui.adapters.SampleListAdapter
 import com.example.trafficsigns.ui.constants.Key
-import com.example.trafficsigns.ui.fragments.Detail.DetailFragment
-import com.example.trafficsigns.ui.interfaces.ItemClickListener
 import com.example.trafficsigns.ui.utils.Settings
 
 
 const val ARG_OBJECT = "object"
 const val SAMPLE_LIST = "List"
 
-class SampleListFragment : Fragment(), ItemClickListener {
+class SampleListFragment : Fragment() {
+
+    companion object {
+        @JvmStatic
+        fun newInstance(trafficSignList: List<TrafficSign>): SampleListFragment {
+            val fragment = SampleListFragment()
+            val args = Bundle()
+            args.putSerializable(ARG_OBJECT, trafficSignList as ArrayList)
+            fragment.arguments = args
+            return fragment
+        }
+    }
 
     private lateinit var binding: FragmentSampleListBinding
     private lateinit var trafficSignList: List<TrafficSign>
     private lateinit var recyclerView: RecyclerView
-    private lateinit var mAdapter: SampleListAdapter
+    private lateinit var sampleListAdapter: SampleListAdapter
     private var searchText = ""
     var localBroadcastGridReceiver: BroadcastReceiver? = null
     var localBroadcastSearchReceiver: BroadcastReceiver? = null
@@ -60,7 +68,7 @@ class SampleListFragment : Fragment(), ItemClickListener {
                         GridLayoutManager(activity,2 )
                     }
                     //TODO("HACK, Optimalis megoldas kell!!")
-                    recyclerView.adapter = mAdapter
+                    recyclerView.adapter = sampleListAdapter
                 }
             }
         }
@@ -86,9 +94,8 @@ class SampleListFragment : Fragment(), ItemClickListener {
         Log.d(SAMPLE_LIST, trafficSignList.toString())
         recyclerView = binding.recyclerview
 
-        mAdapter = SampleListAdapter(this)
-        mAdapter.setData(trafficSignList)
-
+        sampleListAdapter = SampleListAdapter(R.id.action_collectionListFragment_to_detailFragment,null)
+        sampleListAdapter.changeData(trafficSignList)
 
         recyclerView.apply {
             setHasFixedSize(true)
@@ -97,10 +104,9 @@ class SampleListFragment : Fragment(), ItemClickListener {
             } else {
                 GridLayoutManager(requireContext(),2 )
             }
-            adapter = mAdapter
+            adapter = sampleListAdapter
             adapter?.notifyDataSetChanged()
         }
-
     }
 
     override fun onDestroyView() {
@@ -111,31 +117,6 @@ class SampleListFragment : Fragment(), ItemClickListener {
         localBroadcastSearchReceiver?.let {
             LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(it)
         }
-    }
-
-    companion object {
-
-        @JvmStatic
-        fun newInstance(trafficSignList: List<TrafficSign>): SampleListFragment {
-            val fragment = SampleListFragment()
-
-            val args = Bundle()
-            args.putSerializable(ARG_OBJECT, trafficSignList as ArrayList)
-            fragment.arguments = args
-            return fragment
-        }
-
-    }
-
-    override fun onItemClickListener(position: Int) {
-    }
-
-    override fun onItemClickListener(trafficSign: TrafficSign) {
-        binding.root.findNavController().navigate(R.id.action_collectionListFragment_to_detailFragment, DetailFragment.newInstanceBundle(trafficSign))
-    }
-
-    override fun onItemLongClickListener(trafficSign: TrafficSign) {
-        //do nothing
     }
 }
 
