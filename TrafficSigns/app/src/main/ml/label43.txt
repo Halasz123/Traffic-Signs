@@ -1,0 +1,43 @@
+Begin of a speed limit (20km/h)
+Begin of a speed limit (30km/h)
+Begin of a speed limit (50km/h)
+Begin of a speed limit (60km/h)
+Begin of a speed limit (70km/h)
+Begin of a speed limit (80km/h)
+End of speed limit (80km/h)
+Begin of a speed limit (100km/h)
+Begin of a speed limit(120km/h)
+Overtaking prohibited
+Overtaking prohibited for trucks
+Warning for a crossroad side roads on the left and right
+Begin of priority road
+Give way to all drivers
+Stop and give way to all drivers
+Entry prohibited
+Trucks prohibited
+Entry prohibited(road with one way traffic)
+Warning for a danger with no specific traffic sign
+Warning for a curve to the left
+Warning for a curve to the right
+Warning for a double curve
+Warning for a bad road surface
+Warning for a slippery road surface
+Warning for a road narrowing on the right
+Warning for roadworks
+Warning for traffic light
+Warning for a crossing for pedestrians
+Warning for children
+Warning for cyclists
+Beware of ice/snow
+Warning for crossing deer
+End of the limits
+Turning right mandatory
+Turning left mandatory
+Driving straight ahead mandatory
+Driving straight ahead or turning right mandatory
+Driving straight ahead or turning left mandatory
+Passing right mandatory
+Passing left mandatory
+Mandatory direction of the roundabout
+End of the overtaking prohibition
+End of overtaking limit for truck

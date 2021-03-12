@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.trafficsigns.R
 import com.example.trafficsigns.data.TrafficSign
-import com.example.trafficsigns.ui.fragments.Detail.DetailFragment
+import com.example.trafficsigns.ui.fragments.detail.DetailFragment
 import com.example.trafficsigns.ui.interfaces.ItemLongClickListener
 import com.example.trafficsigns.ui.utils.Settings
 import kotlinx.android.synthetic.main.sample_list_item.view.*

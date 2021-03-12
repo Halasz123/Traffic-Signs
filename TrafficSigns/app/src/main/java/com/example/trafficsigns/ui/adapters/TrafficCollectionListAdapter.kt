@@ -3,7 +3,7 @@ package com.example.trafficsigns.ui.adapters
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.trafficsigns.data.TrafficSignsCollection
-import com.example.trafficsigns.ui.fragments.List.SampleListFragment
+import com.example.trafficsigns.ui.fragments.list.SampleListFragment
 
 class TrafficCollectionListAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
     private var collectionList = emptyList<TrafficSignsCollection>()

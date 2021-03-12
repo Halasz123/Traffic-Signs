@@ -42,4 +42,5 @@
     <string name="go_to_home">Go to home</string>
     <string name="menu_image_button">Menu image button</string>
     <string name="add_photo_form_gallery">Add photo form gallery</string>
+    <string name="camera2">Camera2</string>
 </resources>

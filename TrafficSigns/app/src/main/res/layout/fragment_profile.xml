@@ -16,7 +16,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".ui.fragments.Profile.ProfileFragment"
+        tools:context=".ui.fragments.profile.ProfileFragment"
         android:background="@color/blue_gray_200">
 
 
