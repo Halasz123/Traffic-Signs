@@ -51,7 +51,7 @@ class TFLiteClassifier(private val context: Context) {
 
 
         val assetManager = context.assets
-        val model = loadModelFile(assetManager, "retrained_graph_mv1_100_224.tflite")
+        val model = loadModelFile(assetManager, "FirstModel200EPIL.tflite")
 
         labels = loadLines(context, "label43.txt")
         val options = Interpreter.Options()
@@ -170,7 +170,7 @@ class TFLiteClassifier(private val context: Context) {
         private const val TAG = "TfliteClassifier"
         private const val FLOAT_TYPE_SIZE = 4
         private const val CHANNEL_SIZE = 3
-        private const val IMAGE_MEAN = 127.5f
-        private const val IMAGE_STD = 127.5f
+        private const val IMAGE_MEAN = 0.0f
+        private const val IMAGE_STD = 1.0f
     }
 }

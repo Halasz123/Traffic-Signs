@@ -23,9 +23,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.trafficsigns.R
 import com.example.trafficsigns.databinding.FragmentNeuralNetworkBinding
-import com.example.trafficsigns.ml.Kaglemodel2
+import com.example.trafficsigns.ml.KagleModel
 import com.example.trafficsigns.ui.constants.Data
 import com.example.trafficsigns.ui.constants.ToastMessage
+import com.example.trafficsigns.ui.fragments.profile.CAPTURE_PHOTO_CODE
+import com.example.trafficsigns.ui.fragments.profile.IMAGE_PICK_CODE
+import com.example.trafficsigns.ui.fragments.profile.PERMISSION_CODE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -177,7 +180,7 @@ class NeuralNetworkFragment : Fragment() {
     }
 
     private fun classifier2(bitmap: Bitmap): List<Category> {
-        val model = Kaglemodel2.newInstance(requireContext())
+        val model = KagleModel.newInstance(requireContext())
 
         val image = TensorImage.fromBitmap(bitmap)
 
