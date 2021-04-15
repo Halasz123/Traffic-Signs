@@ -103,7 +103,7 @@ class NeuralNetworkFragment : Fragment() {
         }
 
         binding.button.setOnClickListener {
-           // iterateOnTestDirectory()
+               // iterateOnTestDirectory()
              iterateOnTestMicroDirectory()
             //   iterateOnTestMicroDirectoryWithprocessImage()
 
@@ -282,15 +282,15 @@ class NeuralNetworkFragment : Fragment() {
 //                        .addOnFailureListener { error ->  }
 
 //                    classifyMobilnet(bitmap)
-//                    lifecycleScope.launch {
-//                        val result: Classifications
-//                        withContext(Dispatchers.IO) {
-//                            result = classifier(bitmap)
-//                        }
-//                        networkResultAdapter = NetworkResult(result)
-//                        networkResultRecyclerView.adapter = networkResultAdapter
-//                        networkResultRecyclerView.adapter?.notifyDataSetChanged()
-//                    }
+                    lifecycleScope.launch {
+                        val result: Classifications
+                        withContext(Dispatchers.IO) {
+                            result = classifier(bitmap)
+                        }
+                        networkResultAdapter = NetworkResult(result)
+                        networkResultRecyclerView.adapter = networkResultAdapter
+                        networkResultRecyclerView.adapter?.notifyDataSetChanged()
+                    }
                 }
                 IMAGE_PICK_CODE -> {
                     binding.profilePicture.setImageURI(data?.data)
@@ -325,8 +325,8 @@ class NeuralNetworkFragment : Fragment() {
         val imageProcessor: ImageProcessor = ImageProcessor.Builder()
             //.add(ResizeWithCropOrPadOp(size, size))
             // .add(ResizeOp(30, 30, ResizeOp.ResizeMethod.BILINEAR))
-            //.add(NormalizeOp(127.5f, 127.5f))
-            .add(QuantizeOp(0.0f, 1.0f))
+           // .add(NormalizeOp(127.5f, 127.5f))
+           // .add(QuantizeOp(0.0f, 1.0f))
             .build()
 
         var tImage = TensorImage(DataType.FLOAT32)
@@ -336,28 +336,20 @@ class NeuralNetworkFragment : Fragment() {
         val options = ImageClassifierOptions.builder().setMaxResults(10).build()
         val imageClassifier = ImageClassifier.createFromFileAndOptions(
             context,
-            "KagleModel100EPIL.tflite",
+            "FirstModel200E_clahe_3232.tflite",
             options
         )
         val results = imageClassifier.classify(tImage)
-//        Log.d("NEURAL", results.toString())
-        Log.d(
-            "NEURAL-best",
-            "${results[0].categories[0].label}  = ${results[0].categories[0].score} | ${results[0].headIndex}"
-        )
         return results[0]
 
     }
 
 
     private fun classifier2(bitmap: Bitmap): List<Category> {
-        val model = KagleModel100EPIL.newInstance(requireContext())
+        val model = Firstmodel200eClahe3232.newInstance(requireContext())
         val image = TensorImage.fromBitmap(bitmap)
         val outputs = model.process(image)
-        //Log.d("NEURAL-Classifier2", outputs.toString())
         val probability = outputs.probabilityAsCategoryList.sortedByDescending { it.score }
-        // Log.d("NEURAL-Classifier2", outputs.probabilityAsCategoryList.sortedByDescending { it.score }.toString())
-        // Log.d("NEURAL-Classifier2", probability.sortedWith(compareBy { it.score}).reversed().toString())
         model.close()
         return probability
 
@@ -370,7 +362,6 @@ class NeuralNetworkFragment : Fragment() {
             getScreenWidth(),
             getScreenWidth()
         )
-
         val preprocessedImage = ImageUtils.prepareImageForClassification(squareBitmap)
 
         val recognitions: List<Classification> = gtsrbClassifier.recognizeImage(preprocessedImage)
@@ -407,26 +398,30 @@ class NeuralNetworkFragment : Fragment() {
                     val resultClassId2 = labels.indexOf(resultByModel2[0].label)
 
                     val searchedLabel = labels[line.first.toInt()]
-                    val resultObject =
-                        resultByModel.categories.firstOrNull { it1 -> it1.label == searchedLabel }
-                    if (resultObject != null) {
-                        averageModel += resultObject.score
-                    }
-                    val resultObject2 =
-                        resultByModel2.firstOrNull { it1 -> it1.label == searchedLabel }
-                    if (resultObject2 != null) {
-                        averageModel2 += resultObject2.score
-                    }
+                    val resultObject = resultByModel.categories.firstOrNull { it1 -> it1.label == searchedLabel }
+
                     Log.d(
                         "NEURAL-TEST",
                         "ClassId: ${line.first}... Result: $resultClassId | ${resultByModel.categories[0].label} - ${resultByModel.categories[0].score} "
                     )
+
+                    if (resultObject != null) {
+                        averageModel += resultObject.score
+                        Log.d("NeuralClassifier_Score", resultObject.score.toString())
+                    }
+                    val resultObject2 =
+                        resultByModel2.firstOrNull { it1 -> it1.label == searchedLabel }
+
                     Log.d(
                         "NEURAL-TEST-2",
                         "ClassId: ${line.first}... Result: $resultClassId2 | ${resultByModel2[0].label} - ${resultByModel2[0].score} "
                     )
-                    Log.d("NEURAL", resultByModel.toString())
-                    Log.d("NEURAL-Classifier2", resultByModel2.toString())
+                    if (resultObject2 != null) {
+                        averageModel2 += resultObject2.score
+                        Log.d("NeuralClassifier2_Score", resultObject2.score.toString())
+                    }
+//                    Log.d("NEURAL", resultByModel.toString())
+//                    Log.d("NEURAL-Classifier2", resultByModel2.toString())
 
                     if (resultClassId == line.first.toInt()) {
                         correctId++
@@ -437,11 +432,11 @@ class NeuralNetworkFragment : Fragment() {
                 }
                 Log.d(
                     "NEURAL",
-                    "Ossz: ${csvLines.size}  |  Helyes: $correctId  --- Atlag Megtalalasi szazalek: ${averageModel / 43}"
+                    "Ossz: ${csvLines.size}  |  Helyes: $correctId  --- Atlag Megtalalasi szazalek: ${averageModel / csvLines.size}"
                 )
                 Log.d(
                     "NEURAL-2",
-                    "Ossz: ${csvLines.size}  |  Helyes: $correctId2  --- Atlag Megtalalasi szazalek: ${averageModel2 / 43}\""
+                    "Ossz: ${csvLines.size}  |  Helyes: $correctId2  --- Atlag Megtalalasi szazalek: ${averageModel2 / csvLines.size}\""
                 )
             }
         }
@@ -474,24 +469,25 @@ class NeuralNetworkFragment : Fragment() {
                     val searchedLabel = labels[line.first.toInt()]
                     val resultObject =
                         resultByModel.categories.firstOrNull { it1 -> it1.label == searchedLabel }
-                    if (resultObject != null) {
-                        averageModel += resultObject.score
-                    }
-                    val resultObject2 =
-                        resultByModel2.firstOrNull { it1 -> it1.label == searchedLabel }
-                    if (resultObject2 != null) {
-                        averageModel2 += resultObject2.score
-                    }
                     Log.d(
                         "NEURAL-TEST",
                         "ClassId: ${line.first}... Result: $resultClassId | ${resultByModel.categories[0].label} - ${resultByModel.categories[0].score} "
                     )
-                    Log.d(
-                        "NEURAL-TEST-2",
-                        "ClassId: ${line.first}... Result: $resultClassId2 | ${resultByModel2[0].label} - ${resultByModel2[0].score} "
-                    )
-                    Log.d("NEURAL", resultByModel.toString())
-                    Log.d("NEURAL-Classifier2", resultByModel2.toString())
+                    if (resultObject != null) {
+                        averageModel += resultObject.score
+                        Log.d("NeuralClassifier_Score", resultObject.score.toString())
+                    }
+                    val resultObject2 =
+                        resultByModel2.firstOrNull { it1 -> it1.label == searchedLabel }
+                    Log.d("NEURAL-TEST-2", "ClassId: ${line.first}... Result: $resultClassId2 | ${resultByModel2[0].label} - ${resultByModel2[0].score} ")
+
+                    if (resultObject2 != null) {
+                        averageModel2 += resultObject2.score
+                        Log.d("NeuralClassifier2_Score", resultObject2.score.toString())
+                    }
+
+                   //                    Log.d("NEURAL", resultByModel.toString())
+//                    Log.d("NEURAL-Classifier2", resultByModel2.toString())
 
                     if (resultClassId == line.first.toInt()) {
                         correctId++
@@ -502,11 +498,11 @@ class NeuralNetworkFragment : Fragment() {
                 }
                 Log.d(
                     "NEURAL",
-                    "Ossz: ${csvLines.size}  |  Helyes: $correctId  --- Atlag Megtalalasi szazalek: ${averageModel / 201}"
+                    "Ossz: ${csvLines.size}  |  Helyes: $correctId  --- Atlag Megtalalasi szazalek: ${averageModel / csvLines.size}"
                 )
                 Log.d(
                     "NEURAL-2",
-                    "Ossz: ${csvLines.size}  |  Helyes: $correctId2  --- Atlag Megtalalasi szazalek: ${averageModel2 / 201}\""
+                    "Ossz: ${csvLines.size}  |  Helyes: $correctId2  --- Atlag Megtalalasi szazalek: ${averageModel2 / csvLines.size}\""
                 )
             }
         }

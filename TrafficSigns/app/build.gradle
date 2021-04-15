@@ -125,5 +125,10 @@ dependencies {
 // Task API
     implementation "com.google.android.gms:play-services-tasks:17.2.1"
 
+    implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly-SNAPSHOT'
+    // This dependency adds the necessary TF op support.
+    implementation 'org.tensorflow:tensorflow-lite-select-tf-ops:0.0.0-nightly-SNAPSHOT'
+
+
 
 }
