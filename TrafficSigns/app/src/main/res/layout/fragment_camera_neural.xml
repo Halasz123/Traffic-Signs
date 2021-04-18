@@ -8,39 +8,33 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.network.CameraNeural">
+    tools:context=".ui.fragments.network.live.CameraNeuralFragment"
+    android:background="@null">
 
-    <TextureView
+    <com.example.trafficsigns.ui.fragments.network.live.AutoFitTextureView
         android:id="@+id/textureView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/rlBottom"
+        app:layout_constraintBottom_toTopOf="@+id/predictedTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <RelativeLayout
-        android:id="@+id/rlBottom"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@color/blue_gray_600"
+    <TextView
+        android:id="@+id/predictedTextView"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_centerInParent="true"
+        android:background="@color/blue_gray_400"
+        android:gravity="center"
+        android:text="asd"
+        android:textColor="@android:color/white"
+        android:textSize="26sp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textureView">
-
-        <TextView
-            android:id="@+id/predictedTextView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:text="asd"
-            android:textColor="@android:color/white"
-            android:textSize="26sp" />
-
-    </RelativeLayout>
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

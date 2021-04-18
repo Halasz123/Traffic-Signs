@@ -64,7 +64,6 @@ class NeuralNetworkFragment : Fragment() {
     private lateinit var networkResultRecyclerView: RecyclerView
     private lateinit var networkResultAdapter: NetworkResult
     private lateinit var classifier: Classifier
-    private lateinit var sensorOrientation: Integer
 
     /** Input image size of the model along x axis.  */
     private var imageSizeX = 0
@@ -110,7 +109,7 @@ class NeuralNetworkFragment : Fragment() {
              tfLiteClassifier
                         .classifyAsync(bitmap)
                         .addOnSuccessListener { resultText -> Log.d("Neural-TFliteClass", resultText) }
-                        .addOnFailureListener { error ->  }
+                        .addOnFailureListener {   }
 
 
         }

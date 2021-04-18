@@ -152,7 +152,7 @@
     </fragment>
     <fragment
         android:id="@+id/cameraNeural"
-        android:name="com.example.trafficsigns.ui.fragments.network.CameraNeural"
+        android:name="com.example.trafficsigns.ui.fragments.network.live.CameraNeuralFragment"
         android:label="CameraNeural"
         tools:layout="@layout/fragment_camera_neural"/>
 </navigation>
