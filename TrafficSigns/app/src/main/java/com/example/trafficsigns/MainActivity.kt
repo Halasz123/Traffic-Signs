@@ -22,36 +22,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-//        val outputs = TensorBuffer.createFixedSize(intArrayOf(1, 1024), DataType.FLOAT32)
-//
-//        val options: ImageClassifier.ImageClassifierOptions =
-//            ImageClassifier.ImageClassifierOptions.builder().setMaxResults(3).build()
-//        val imageClassifier = ImageClassifier.createFromFileAndOptions(
-//            this,
-//            "src/main/ml/second.tflite", options
-//        )
-//
-//        val inputImage = TensorImage.fromBitmap(bitmap)
-//        val width: Int = bitmap.getWidth()
-//        val height: Int = bitmap.getHeight()
-//        val cropSize: Int = min(width, height)
-//        val imageOptions = ImageProcessingOptions.builder()
-//            .setOrientation(getOrientation(sensorOrientation)) // Set the ROI to the center of the image.
-//            .setRoi(
-//                Rect( /*left=*/
-//                    (width - cropSize) / 2,  /*top=*/
-//                    (height - cropSize) / 2,  /*right=*/
-//                    (width + cropSize) / 2,  /*bottom=*/
-//                    (height + cropSize) / 2
-//                )
-//            )
-//            .build()
-//
-//        val results = imageClassifier.classify(
-//            inputImage,
-//            imageOptions
-//        )
-
     }
 
 }

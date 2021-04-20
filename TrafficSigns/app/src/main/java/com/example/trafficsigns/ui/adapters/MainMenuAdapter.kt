@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.example.trafficsigns.R
 import com.example.trafficsigns.data.TrafficSignsCollection
 import com.example.trafficsigns.ui.constants.General
-import com.example.trafficsigns.ui.fragments.List.CollectionListFragment
+import com.example.trafficsigns.ui.fragments.list.CollectionListFragment
 import kotlinx.android.synthetic.main.group_item.view.*
 
 
