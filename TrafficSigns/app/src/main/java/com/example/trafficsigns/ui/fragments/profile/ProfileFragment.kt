@@ -51,10 +51,6 @@ class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
     private lateinit var saveButton: Button
     private lateinit var name: EditText
-    private lateinit var age: EditText
-    private lateinit var address: EditText
-    private lateinit var email: EditText
-    private lateinit var phoneNumber: EditText
     private lateinit var photoFile: File
 
     override fun onCreateView(
@@ -64,24 +60,20 @@ class ProfileFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
         saveButton = binding.saveButton
         name = binding.nameEditText
-        age = binding.ageEditText
-        address = binding.addressEditText
-        email = binding.emailEditText
-        phoneNumber = binding.phoneNumber
         mMyProfileViewModel = ViewModelProvider(this).get(MyProfileViewModel::class.java)
 
         mMyProfileViewModel.myProfile.observe(viewLifecycleOwner, { profile ->
             this.myProfile = profile
             Log.d(PROFILE_TAG, profile.toString())
             name.setText(myProfile?.name)
-            age.setText(myProfile?.age.toString())
-            address.setText(myProfile?.address)
-            email.setText(myProfile?.email)
-            phoneNumber.setText(myProfile?.phoneNumber)
-
-            binding.averageScoreValue.text =
-                DecimalFormat("##.##").format(myProfile?.scores?.average())
-            binding.maxScoreValue.text = myProfile?.scores?.maxOrNull().toString()
+            val (scoreValue, maxScore )= if(myProfile?.scores !=  null && myProfile?.scores?.size!! > 0) {
+                Pair( DecimalFormat("##.##").format(myProfile?.scores?.average()), myProfile?.scores?.maxOrNull().toString() )
+            }
+            else{
+                Pair("-","-")
+            }
+            binding.averageScoreValue.text = scoreValue
+            binding.maxScoreValue.text = maxScore
             if (myProfile?.picturePath != "") {
                     val profileImage = BitmapFactory.decodeFile(myProfile?.picturePath)
                     binding.profilePicture.setImageBitmap(profileImage)
@@ -123,10 +115,6 @@ class ProfileFragment : Fragment() {
 
     private fun editTextsChangeCheck() {
         name.afterTextChanged { saveButton.isEnabled = true }
-        age.afterTextChanged { saveButton.isEnabled = true }
-        address.afterTextChanged { saveButton.isEnabled = true }
-        email.afterTextChanged { saveButton.isEnabled = true }
-        phoneNumber.afterTextChanged { saveButton.isEnabled = true }
     }
 
     private fun checkPermission() {
@@ -158,10 +146,6 @@ class ProfileFragment : Fragment() {
     private fun updateProfile(){
         mMyProfileViewModel.myProfile.observeOnce(viewLifecycleOwner, { profile ->
             profile.name = name.text.toString()
-            profile.age = age.text.toString().toInt()
-            profile.address = address.text.toString()
-            profile.email = email.text.toString()
-            profile.phoneNumber = phoneNumber.text.toString()
             mMyProfileViewModel.updateProfile(profile)
             Toast.makeText(requireContext(), ToastMessage.DATA_SAVED, Toast.LENGTH_SHORT).show()
         })
