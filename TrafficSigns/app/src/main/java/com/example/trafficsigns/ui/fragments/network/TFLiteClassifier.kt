@@ -170,7 +170,7 @@ class TFLiteClassifier(private val context: Context) {
         private const val TAG = "TfliteClassifier"
         private const val FLOAT_TYPE_SIZE = 4
         private const val CHANNEL_SIZE = 3
-        private const val IMAGE_MEAN = 0.0f
+        private const val IMAGE_MEAN = 0f
         private const val IMAGE_STD = 1.0f
     }
 }

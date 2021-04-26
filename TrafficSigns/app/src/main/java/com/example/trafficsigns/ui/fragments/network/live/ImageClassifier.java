@@ -80,7 +80,7 @@ public class ImageClassifier {
           });
 
   /** Initializes an {@code ImageClassifier}. */
-  ImageClassifier(Activity activity) throws IOException {
+  public ImageClassifier(Activity activity) throws IOException {
     tflite = new Interpreter(loadModelFile(activity));
     labelList = loadLabelList(activity);
     imgData =
@@ -112,6 +112,24 @@ public class ImageClassifier {
     String textToShow = printTopKLabels();
     textToShow = Long.toString(endTime - startTime) + "ms" + textToShow;
     return textToShow;
+  }
+
+  PriorityQueue<Map.Entry<String, Float>> classifyImage(Bitmap bitmap) {
+    if (tflite == null) {
+      Log.e(TAG, "Image classifier has not been initialized; Skipped.");
+      return null;
+    }
+    convertBitmapToByteBuffer(bitmap);
+    // Here's where the magic happens!!!
+    long startTime = SystemClock.uptimeMillis();
+    tflite.run(imgData, labelProbArray);
+    long endTime = SystemClock.uptimeMillis();
+    Log.d(TAG, "Timecost to run model inference: " + Long.toString(endTime - startTime));
+
+    // smooth the results
+    applyFilter();
+
+    return getKLabels();
   }
 
   void applyFilter(){
@@ -205,5 +223,16 @@ public class ImageClassifier {
       textToShow = String.format("\n%s: %4.2f",label.getKey(),label.getValue()) + textToShow;
     }
     return textToShow;
+  }
+
+  private PriorityQueue<Map.Entry<String, Float>> getKLabels(){
+    for (int i = 0; i < labelList.size(); ++i) {
+      sortedLabels.add(
+              new AbstractMap.SimpleEntry<>(labelList.get(i), labelProbArray[0][i]));
+      if (sortedLabels.size() > RESULTS_TO_SHOW) {
+        sortedLabels.poll();
+      }
+    }
+    return sortedLabels;
   }
 }
