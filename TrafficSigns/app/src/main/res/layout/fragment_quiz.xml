@@ -49,6 +49,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="70dp"
             android:text="@string/start"
+            android:background="@xml/profile_buttonshape"
             android:textColor="@color/white"
             android:textStyle="bold"
             android:enabled="false"
@@ -60,14 +61,16 @@
             android:id="@+id/done_buttond"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="70dp"
+            android:layout_marginBottom="68dp"
+            android:background="@xml/profile_buttonshape"
+            android:enabled="false"
             android:text="@string/done"
             android:textColor="@color/white"
             android:textStyle="bold"
-            android:enabled="false"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.501"
             app:layout_constraintStart_toStartOf="parent" />
 
         <LinearLayout
