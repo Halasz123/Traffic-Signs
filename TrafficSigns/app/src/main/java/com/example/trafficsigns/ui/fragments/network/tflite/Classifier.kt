@@ -170,8 +170,6 @@ abstract class Classifier protected constructor(activity: Activity?, device: Dev
             .add(ResizeOp(imageSizeX, imageSizeY, ResizeMethod.NEAREST_NEIGHBOR))
           //  .add(Rot90Op(numRotation))
             .add(preprocessNormalizeOp)
-           // .add(NormalizeOp(127.5f, 127.5f))
-         //s   .add(QuantizeOp(128.0f, 1/128.0f))
             .build()
         return imageProcessor.process(inputImageBuffer)
     }

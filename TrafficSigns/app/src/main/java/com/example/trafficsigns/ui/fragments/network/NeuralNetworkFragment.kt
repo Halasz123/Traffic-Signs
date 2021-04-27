@@ -52,6 +52,7 @@ import java.io.File
 import java.io.FileReader
 import java.io.IOException
 import java.io.InputStream
+import com.example.trafficsigns.ui.fragments.network.live.ImageClassifier as MyClassifier
 
 class NeuralNetworkFragment : Fragment() {
 
@@ -61,6 +62,7 @@ class NeuralNetworkFragment : Fragment() {
     private lateinit var resultTextView: TextView
     private lateinit var gtsrbClassifier: GtsrbClassifier
     private lateinit var tfLiteClassifier: TFLiteClassifier
+    private var myClassifier: MyClassifier? = null
     private lateinit var networkResultRecyclerView: RecyclerView
     private lateinit var networkResultAdapter: NetworkResult
     private lateinit var classifier: Classifier
@@ -113,6 +115,8 @@ class NeuralNetworkFragment : Fragment() {
 
 
         }
+        //init ImageClassifier
+        myClassifier= MyClassifier(requireActivity())
         // createClassifier(getModel())
         classifier = ClassifierQuantizedMobileNet(requireActivity(), Classifier.Device.CPU, 8)
         tfLiteClassifier = TFLiteClassifier(requireContext())
@@ -203,9 +207,12 @@ class NeuralNetworkFragment : Fragment() {
                 )
             }
         }
-
     }
 
+    override fun onDestroy() {
+        myClassifier?.close()
+        super.onDestroy()
+    }
 
     private fun loadGtsrbClassifier() {
         try {
@@ -272,6 +279,7 @@ class NeuralNetworkFragment : Fragment() {
                     binding.profilePicture.setImageBitmap(BitmapFactory.decodeFile(photoFile.absolutePath))
                     val bitmap: Bitmap = BitmapFactory.decodeFile(photoFile.absolutePath)
                     val result = processImage(bitmap)
+                  //  val resultImageClassifier = classifiImage(bitmap)
                     Log.d("Neural-Lib", result.toString())
 
                     // tfLiteClassifier
@@ -316,6 +324,11 @@ class NeuralNetworkFragment : Fragment() {
         }
     }
 
+//    private fun classifiImage(bitmap: Bitmap): Any {
+//
+//
+//    }
+
     private fun classifier(bitmap: Bitmap): Classifications {
         val width: Int = bitmap.width
         val height: Int = bitmap.height
@@ -351,8 +364,6 @@ class NeuralNetworkFragment : Fragment() {
         val probability = outputs.probabilityAsCategoryList.sortedByDescending { it.score }
         model.close()
         return probability
-
-
     }
 
     private fun classifyMobilnet(bitmap: Bitmap) {
