@@ -279,7 +279,7 @@ class NeuralNetworkFragment : Fragment() {
                     binding.profilePicture.setImageBitmap(BitmapFactory.decodeFile(photoFile.absolutePath))
                     val bitmap: Bitmap = BitmapFactory.decodeFile(photoFile.absolutePath)
                     val result = processImage(bitmap)
-                    val resultImageClassifier = classifiImage(bitmap)
+                  //  val resultImageClassifier = classifiImage(bitmap)
                     Log.d("Neural-Lib", result.toString())
 
                     // tfLiteClassifier
@@ -324,10 +324,10 @@ class NeuralNetworkFragment : Fragment() {
         }
     }
 
-    private fun classifiImage(bitmap: Bitmap): Any {
-
-
-    }
+//    private fun classifiImage(bitmap: Bitmap): Any {
+//
+//
+//    }
 
     private fun classifier(bitmap: Bitmap): Classifications {
         val width: Int = bitmap.width
