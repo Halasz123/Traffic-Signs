@@ -168,7 +168,7 @@ abstract class Classifier protected constructor(activity: Activity?, device: Dev
             // To get the same inference results as lib_task_api, which is built on top of the Task
             // Library, use ResizeMethod.BILINEAR.
             .add(ResizeOp(imageSizeX, imageSizeY, ResizeMethod.NEAREST_NEIGHBOR))
-          //  .add(Rot90Op(numRotation))
+            //.add(Rot90Op(numRotation))
             .add(preprocessNormalizeOp)
             .build()
         return imageProcessor.process(inputImageBuffer)
