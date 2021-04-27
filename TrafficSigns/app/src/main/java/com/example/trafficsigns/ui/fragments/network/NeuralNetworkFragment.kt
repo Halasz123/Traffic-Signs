@@ -17,9 +17,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import androidx.core.graphics.scale
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -60,19 +62,10 @@ class NeuralNetworkFragment : Fragment() {
     private lateinit var photoFile: File
     private lateinit var imageFromFile: Bitmap
     private lateinit var resultTextView: TextView
-    private lateinit var gtsrbClassifier: GtsrbClassifier
-    private lateinit var tfLiteClassifier: TFLiteClassifier
     private var myClassifier: MyClassifier? = null
     private lateinit var networkResultRecyclerView: RecyclerView
     private lateinit var networkResultAdapter: NetworkResult
     private lateinit var classifier: Classifier
-
-    /** Input image size of the model along x axis.  */
-    private var imageSizeX = 0
-
-    /** Input image size of the model along y axis.  */
-    private var imageSizeY = 0
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -92,121 +85,22 @@ class NeuralNetworkFragment : Fragment() {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())
         }
-
-        val bitmap = BitmapFactory.decodeResource(context?.resources, R.drawable.gyalogos00018)
-
         binding.photo.setOnClickListener {
             startCameraIntent()
         }
-
         binding.galleryPicture.setOnClickListener {
             checkPermission()
         }
-
         binding.button.setOnClickListener {
                // iterateOnTestDirectory()
-             iterateOnTestMicroDirectory()
-            //   iterateOnTestMicroDirectoryWithprocessImage()
-
-             tfLiteClassifier
-                        .classifyAsync(bitmap)
-                        .addOnSuccessListener { resultText -> Log.d("Neural-TFliteClass", resultText) }
-                        .addOnFailureListener {   }
-
-
+             //iterateOnTestMicroDirectory()
+            iterateOnTestMicroDirectoryWithprocessImage()
         }
-        //init ImageClassifier
-        myClassifier= MyClassifier(requireActivity())
-        // createClassifier(getModel())
-        classifier = ClassifierQuantizedMobileNet(requireActivity(), Classifier.Device.CPU, 8)
-        tfLiteClassifier = TFLiteClassifier(requireContext())
-
-         tfLiteClassifier
-                        .initialize()
-                        .addOnSuccessListener { }
-                        .addOnFailureListener { error ->Log.d("TFLiteClassifier", error.toString())  }
-
-
-        // loadGtsrbClassifier()
-
-
-      //  processImage(bitmap)
-
-        lifecycleScope.launch {
-            val result: Classifications
-            withContext(Dispatchers.IO) {
-                result = classifier(bitmap)
-            }
-            networkResultAdapter = NetworkResult(result)
-            networkResultRecyclerView.adapter = networkResultAdapter
-            networkResultRecyclerView.adapter?.notifyDataSetChanged()
-        }
-
-
-        // Log.d("NEURAL", "Gyalogos")
-        // classifier2(bitmap)
+        classifier = ClassifierQuantizedMobileNet(requireActivity(), Classifier.Device.CPU, 4)
     }
 
     private fun processImage(bitmap: Bitmap): List<Classifier.Recognition> {
-        val list = classifier.recognizeImage(bitmap, 0)
-        return list
-        /*
-        lifecycleScope.launch {
-            var list: List<Classifier.Recognition>
-            withContext(Dispatchers.IO) {
-                list = classifier.recognizeImage(bitmap, 0)
-            }
-            Log.d("Neural-Lib-Support", list.toString())
-        }
-
-         */
-    }
-    private fun iterateOnTestMicroDirectoryWithprocessImage()
-    {
-        lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                val dir = "/data/data/com.example.trafficsigns/TestMicro/"
-                var reader = FileReader(dir + "Test.csv")
-                val csvLines = reader.readLines()
-                reader = FileReader(dir + "label43.txt")
-                val labels = reader.readLines()
-                // Log.d("NEURAL", labels.toString())
-                var correctId = 0
-                var correctId2 = 0
-                var averageModel = 0.0
-                var averageModel2 = 0.0
-                csvLines.forEach {
-                    val line = Pair(it.split(",")[6], it.split(",")[7])
-                    val bitmap = BitmapFactory.decodeFile(dir + line.second)
-
-                    val resultByModel = processImage(bitmap)
-
-                    val resultClassId = labels.indexOf(resultByModel[0].title)
-
-                    val searchedLabel = labels[line.first.toInt()]
-                    val resultObject =
-                        resultByModel.firstOrNull { it1 -> it1.title == searchedLabel }
-                    if (resultObject != null) {
-                        averageModel += resultObject.confidence
-                    }
-
-                    Log.d(
-                        "NEURAL-TEST",
-                        "ClassId: ${line.first}... Result: $resultClassId | ${resultByModel[0]} "
-                    )
-
-                    Log.d("NEURAL", resultByModel.toString())
-
-                    if (resultClassId == line.first.toInt()) {
-                        correctId++
-                    }
-                }
-                Log.d(
-                    "NEURAL",
-                    "Ossz: ${csvLines.size}  |  Helyes: $correctId  --- Atlag Megtalalasi szazalek: ${averageModel / 201}"
-                )
-            }
-        }
+        return classifier.recognizeImage(bitmap, 0)
     }
 
     override fun onDestroy() {
@@ -214,22 +108,6 @@ class NeuralNetworkFragment : Fragment() {
         super.onDestroy()
     }
 
-    private fun loadGtsrbClassifier() {
-        try {
-            gtsrbClassifier =
-                GtsrbClassifier.classifier(
-                    requireActivity().assets,
-                    GtsrbModelConfig.MODEL_FILENAME
-                )
-        } catch (e: IOException) {
-            Toast.makeText(
-                requireContext(),
-                "GTSRB model couldn't be loaded. Check logs for details.",
-                Toast.LENGTH_SHORT
-            ).show()
-            e.printStackTrace()
-        }
-    }
 
     private fun startCameraIntent() {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -276,44 +154,19 @@ class NeuralNetworkFragment : Fragment() {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 CAPTURE_PHOTO_CODE -> {
-                    binding.profilePicture.setImageBitmap(BitmapFactory.decodeFile(photoFile.absolutePath))
                     val bitmap: Bitmap = BitmapFactory.decodeFile(photoFile.absolutePath)
-                    val result = processImage(bitmap)
-                  //  val resultImageClassifier = classifiImage(bitmap)
-                    Log.d("Neural-Lib", result.toString())
-
-                    // tfLiteClassifier
-                    //mobilnetet hasznal/ Nem megy a legjobban
-//                        .classifyAsync(bitmap)
-//                        .addOnSuccessListener { resultText -> Log.d("Neural-TFliteClass", resultText) }
-//                        .addOnFailureListener { error ->  }
-
-//                    classifyMobilnet(bitmap)
-                    lifecycleScope.launch {
-                        val result: Classifications
-                        withContext(Dispatchers.IO) {
-                            result = classifier(bitmap)
-                        }
-                        networkResultAdapter = NetworkResult(result)
-                        networkResultRecyclerView.adapter = networkResultAdapter
-                        networkResultRecyclerView.adapter?.notifyDataSetChanged()
-                    }
+                    binding.profilePicture.setImageBitmap(bitmap)
+                    binding.profilePicture.scaleType = ImageView.ScaleType.CENTER_CROP
+                    setUpRecyclerView(bitmap)
                 }
                 IMAGE_PICK_CODE -> {
-                    binding.profilePicture.setImageURI(data?.data)
                     val pickedImage: Uri = data?.data!!
                     val `is`: InputStream? = context?.contentResolver?.openInputStream(pickedImage)
                     val bitmap = BitmapFactory.decodeStream(`is`)
                     `is`?.close()
-                    lifecycleScope.launch {
-                        val result: Classifications
-                        withContext(Dispatchers.IO) {
-                            result = classifier(bitmap)
-                        }
-                        networkResultAdapter = NetworkResult(result)
-                        networkResultRecyclerView.adapter = networkResultAdapter
-                        networkResultRecyclerView.adapter?.notifyDataSetChanged()
-                    }
+                    binding.profilePicture.setImageBitmap(bitmap)
+                    binding.profilePicture.scaleType = ImageView.ScaleType.CENTER_CROP
+                    setUpRecyclerView(bitmap)
                 }
                 else -> {
                     super.onActivityResult(requestCode, resultCode, data)
@@ -324,10 +177,19 @@ class NeuralNetworkFragment : Fragment() {
         }
     }
 
-//    private fun classifiImage(bitmap: Bitmap): Any {
-//
-//
-//    }
+    private fun setUpRecyclerView(bitmap: Bitmap){
+        lifecycleScope.launch {
+            val result: List<Classifier.Recognition>
+            withContext(Dispatchers.IO) {
+                result = processImage(bitmap)
+            }
+            networkResultAdapter = NetworkResult(result)
+            networkResultRecyclerView.adapter = networkResultAdapter
+            networkResultRecyclerView.adapter?.notifyDataSetChanged()
+        }
+    }
+
+    //classifiers and testers, not neccesary
 
     private fun classifier(bitmap: Bitmap): Classifications {
         val width: Int = bitmap.width
@@ -364,24 +226,6 @@ class NeuralNetworkFragment : Fragment() {
         val probability = outputs.probabilityAsCategoryList.sortedByDescending { it.score }
         model.close()
         return probability
-    }
-
-    private fun classifyMobilnet(bitmap: Bitmap) {
-        val squareBitmap = ThumbnailUtils.extractThumbnail(
-            bitmap,
-            getScreenWidth(),
-            getScreenWidth()
-        )
-        val preprocessedImage = ImageUtils.prepareImageForClassification(squareBitmap)
-
-        val recognitions: List<Classification> = gtsrbClassifier.recognizeImage(preprocessedImage)
-        Log.d("Neural-Mobilnet", recognitions.toString())
-    }
-
-    private fun getScreenWidth(): Int {
-        val displayMetrics = DisplayMetrics()
-        requireActivity().windowManager.defaultDisplay.getMetrics(displayMetrics)
-        return displayMetrics.widthPixels
     }
 
     private fun iterateOnTestDirectory() {
@@ -513,6 +357,56 @@ class NeuralNetworkFragment : Fragment() {
                 Log.d(
                     "NEURAL-2",
                     "Ossz: ${csvLines.size}  |  Helyes: $correctId2  --- Atlag Megtalalasi szazalek: ${averageModel2 / csvLines.size}\""
+                )
+            }
+        }
+    }
+
+    private fun iterateOnTestMicroDirectoryWithprocessImage()
+    {
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                val dir = "/data/data/com.example.trafficsigns/TestMicro/"
+                //val dir = "/data/data/com.example.trafficsigns/Test/"
+                var reader = FileReader(dir + "Test.csv")
+                val csvLines = reader.readLines()
+                reader = FileReader(dir + "label43.txt")
+                val labels = reader.readLines()
+                // Log.d("NEURAL", labels.toString())
+                var correctId = 0
+                var correctId2 = 0
+                var averageModel = 0.0
+                var averageModel2 = 0.0
+                csvLines.forEach {
+                    val line = Pair(it.split(",")[6], it.split(",")[7])
+                    //val line = Pair(it.split(",")[0], it.split(",")[1])
+                    val bitmap = BitmapFactory.decodeFile(dir + line.second)
+
+                    val resultByModel = processImage(bitmap)
+
+                    val resultClassId = labels.indexOf(resultByModel[0].title)
+
+                    val searchedLabel = labels[line.first.toInt()]
+                    val resultObject =
+                        resultByModel.firstOrNull { it1 -> it1.title == searchedLabel }
+                    if (resultObject != null) {
+                        averageModel += resultObject.confidence
+                    }
+
+                    Log.d(
+                        "NEURAL-TEST",
+                        "ClassId: ${line.first}... Result: $resultClassId | ${resultByModel[0]} "
+                    )
+
+                    Log.d("NEURAL", resultByModel.toString())
+
+                    if (resultClassId == line.first.toInt()) {
+                        correctId++
+                    }
+                }
+                Log.d(
+                    "NEURAL",
+                    "Ossz: ${csvLines.size}  |  Helyes: $correctId  --- Atlag Megtalalasi szazalek: ${averageModel / csvLines.size}"
                 )
             }
         }

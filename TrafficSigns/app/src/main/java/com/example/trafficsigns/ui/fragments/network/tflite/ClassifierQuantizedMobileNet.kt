@@ -48,7 +48,7 @@ class ClassifierQuantizedMobileNet
          * bypass the normalization.
          */
         private const val IMAGE_MEAN = 0.0f
-        private const val IMAGE_STD = 1.0f
+        private const val IMAGE_STD = 255.0f
 
         /** Quantized MobileNet requires additional dequantization to the output probability.  */
         private const val PROBABILITY_MEAN = 0.0f

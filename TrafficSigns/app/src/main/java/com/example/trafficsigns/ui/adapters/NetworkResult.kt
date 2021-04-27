@@ -6,10 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.trafficsigns.R
 import com.example.trafficsigns.data.TrafficSignsCollection
+import com.example.trafficsigns.ui.fragments.network.tflite.Classifier
 import kotlinx.android.synthetic.main.network_result_item.view.*
 import org.tensorflow.lite.task.vision.classifier.Classifications
 
-class NetworkResult(private var results: Classifications): RecyclerView.Adapter<NetworkResult.MyViewHolder>() {
+class NetworkResult(private var results: List<Classifier.Recognition>): RecyclerView.Adapter<NetworkResult.MyViewHolder>() {
 
     class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
@@ -19,19 +20,19 @@ class NetworkResult(private var results: Classifications): RecyclerView.Adapter<
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val  currentItem = results.categories[position]
+        val  currentItem = results[position]
 
         holder.itemView.index_textView.text = "${position+1}."
-        holder.itemView.label_textView.text = currentItem.label
-        holder.itemView.percentage_textView.text = "${currentItem?.score?.toBigDecimal()}%"
+        holder.itemView.label_textView.text = currentItem.title
+        holder.itemView.percentage_textView.text = "${currentItem?.confidence?.toBigDecimal()}%"
 
     }
 
     override fun getItemCount(): Int {
-            return results.categories?.count()!!
+            return results.count()
     }
 
-    fun changeData(results: Classifications){
+    fun changeData(results: List<Classifier.Recognition>){
         this.results = results
         notifyDataSetChanged()
     }

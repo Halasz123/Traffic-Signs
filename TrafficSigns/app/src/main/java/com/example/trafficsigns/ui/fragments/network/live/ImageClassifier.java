@@ -30,7 +30,7 @@ public class ImageClassifier {
   private static final String TAG = "TfLiteCameraDemo";
 
   /** Name of the model file stored in Assets. */
-  private static final String MODEL_PATH = "FirstModel200EPIL.tflite";
+  private static final String MODEL_PATH = "KagleModel100EPIL.tflite";
 
   /** Name of the label file stored in Assets. */
   private static final String LABEL_PATH = "label43.txt";
@@ -43,11 +43,11 @@ public class ImageClassifier {
 
   private static final int DIM_PIXEL_SIZE = 3;
 
-  static final int DIM_IMG_SIZE_X = 32;
-  static final int DIM_IMG_SIZE_Y = 32;
+  static final int DIM_IMG_SIZE_X = 30;
+  static final int DIM_IMG_SIZE_Y = 30;
 
   private static final int IMAGE_MEAN = 0;
-  private static final float IMAGE_STD = 1.0f;
+  private static final float IMAGE_STD = 255.0f;
 
 
   /* Preallocated buffers for storing image data in. */
@@ -114,7 +114,7 @@ public class ImageClassifier {
     return textToShow;
   }
 
-  PriorityQueue<Map.Entry<String, Float>> classifyImage(Bitmap bitmap) {
+  public PriorityQueue<Map.Entry<String, Float>> classifyImage(Bitmap bitmap) {
     if (tflite == null) {
       Log.e(TAG, "Image classifier has not been initialized; Skipped.");
       return null;

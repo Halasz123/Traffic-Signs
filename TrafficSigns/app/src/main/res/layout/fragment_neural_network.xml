@@ -12,17 +12,18 @@
     <ImageView
         android:id="@+id/profile_picture"
         android:layout_width="0dp"
-        android:layout_height="300dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:contentDescription="@string/add_photo_form_gallery"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_roundabout_splash"
+        app:layout_constraintBottom_toTopOf="@+id/gallery_picture"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars[1]"
-        android:contentDescription="@string/add_photo_form_gallery" />
+        tools:src="@tools:sample/avatars[1]" />
 
 
     <ImageButton
@@ -39,12 +40,13 @@
         android:id="@+id/gallery_picture"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginTop="24dp"
         android:background="@null"
         android:src="@drawable/ic_baseline_add_photo_alternate_24"
+
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/photo"
-        app:layout_constraintTop_toBottomOf="@+id/profile_picture" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/button"

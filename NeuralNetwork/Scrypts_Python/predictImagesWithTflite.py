@@ -64,14 +64,14 @@ def softmax(vector):
 
 
 interpreter = tf.lite.Interpreter(
-    model_path="FirstModel200EPIL.tflite")
+    model_path="/Users/botondhalasz/Desktop/Allamvizsga/NeuralNetwork/TFlites/FirstModel200E_clahe_3232.tflite")
 interpreter.allocate_tensors()
 
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 
-#basePAth = '/Users/botondhalasz/Desktop/Allamvizsga/NeuralNetwork/Scrypts_Python/TestMicro/'
-basePAth = '/Users/botondhalasz/Desktop/Allamvizsga/NeuralNetwork/Test/'
+basePAth = '/Users/botondhalasz/Desktop/Allamvizsga/NeuralNetwork/Scrypts_Python/TestMicro/'
+#basePAth = '/Users/botondhalasz/Desktop/Allamvizsga/NeuralNetwork/Test/'
 
 from csv import reader
 
@@ -85,11 +85,11 @@ with open(basePAth + 'Test.csv', 'r') as read_obj:
     for row in csv_reader:
         i += 1
         # microTest
-        # classId = row[6]
-        # imPath = row[7]
+        classId = row[6]
+        imPath = row[7]
         # big Test
-        classId = row[0]
-        imPath = row[1]
+        # classId = row[0]
+        # imPath = row[1]
 
         # cv2 and clahe, rosszabb megoldas
         # img = cv2.imread(basePAth + imPath)
@@ -104,17 +104,17 @@ with open(basePAth + 'Test.csv', 'r') as read_obj:
         # img = np.expand_dims(img, axis=0)
 
         # read image with cv2
-        img = cv2.imread(basePAth + imPath)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        image_fromarray = PIL.Image.fromarray(img, 'RGB')
-        img = cv2.resize(img, (input_shape[1], input_shape[2]))
-        img = np.expand_dims(img, axis=0)
+        # img = cv2.imread(basePAth + imPath)
+        # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        # image_fromarray = PIL.Image.fromarray(img, 'RGB')
+        # img = cv2.resize(img, (input_shape[1], input_shape[2]))
+        # img = np.expand_dims(img, axis=0)
 
         # read image with pil
-        # img = PIL.Image.open(basePAth + imPath)
-        # resized_image = img.resize((input_shape[1], input_shape[2]))
-        # img = np.expand_dims(resized_image, axis=0)
-        #img = np.reshape(img, input_shape)
+        img = PIL.Image.open(basePAth + imPath)
+        resized_image = img.resize((input_shape[1], input_shape[2]))
+        img = np.expand_dims(resized_image, axis=0)
+        img = np.reshape(img, input_shape)
 
         input_data = np.array(img, dtype=np.float32)
 
