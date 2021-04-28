@@ -16,21 +16,36 @@ import android.util.Log
 import android.util.Size
 import android.view.*
 import android.view.TextureView.SurfaceTextureListener
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.ContextCompat
+import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.trafficsigns.R
+import com.example.trafficsigns.data.TrafficSign
+import com.example.trafficsigns.data.TrafficSignsCollectionViewModel
 import com.example.trafficsigns.databinding.FragmentCameraNeuralBinding
+import com.example.trafficsigns.ui.adapters.LiveAdapter
+import com.example.trafficsigns.ui.adapters.NetworkResult
+import com.example.trafficsigns.ui.fragments.profile.observeOnce
+import org.tensorflow.lite.support.common.FileUtil
+import java.io.FileReader
 import java.io.IOException
 import java.lang.Long.signum
 import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 @Suppress("IMPLICIT_BOXING_IN_IDENTITY_EQUALS")
@@ -50,6 +65,11 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
     private var checkedPermissions = false
     private var textView: TextView? = null
     private var classifier: ImageClassifier? = null
+    private var classifiedTrafficSigns: HashMap<String, TrafficSign> = HashMap()
+    private var trafficViewModel: TrafficSignsCollectionViewModel? = null
+    private var liveSignsRecyclerView: RecyclerView? = null
+    private var liveAdapter: LiveAdapter? = null
+    private var lastFiveTrafficList: ArrayList<TrafficSign>? = null
 
     /** Max preview width that is guaranteed by Camera2 API  */
     private val MAX_PREVIEW_WIDTH = 1920
@@ -155,9 +175,27 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
      *
      * @param text The message to show
      */
-    private fun showToast(text: String) {
+    private fun showToast(labelId: String, confidence: Float) {
         val activity = requireActivity()
-        activity.runOnUiThread { textView!!.text = text }
+
+        activity.runOnUiThread {
+            if(confidence != 0f){
+                val elem = classifiedTrafficSigns[labelId]
+                binding.predictedTextView.text = "${elem?.name} : ${confidence*100}%"
+                Glide
+                    .with(binding.trafficImage)
+                    .load(elem?.image)
+                    .override(binding.trafficImage.width, binding.trafficImage.height)
+                    .placeholder(R.drawable.ic_stop_splash)
+                    .into(binding.trafficImage)
+            }
+            else {
+                binding.predictedTextView.text = labelId
+            }
+
+
+        }
+
     }
 
     /**
@@ -247,7 +285,25 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         textureView = binding.textureView
         textView = binding.predictedTextView
+        lastFiveTrafficList = ArrayList()
+
+        fillTrafficList()
     }
+
+    private fun fillTrafficList() {
+        var labels = FileUtil.loadLabels(requireActivity(), "label43.txt")
+        trafficViewModel = ViewModelProvider(this).get(TrafficSignsCollectionViewModel::class.java)
+        trafficViewModel?.readAllData?.observeOnce(viewLifecycleOwner, { collection ->
+           collection.forEach { collection1 ->
+               collection1.trafficSigns.forEach {
+                   if (labels.contains(it.id)){
+                       classifiedTrafficSigns.put(it.id!!,it)
+                   }
+               }
+           }
+        })
+    }
+
 
     /** Load the model and labels.  */
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -570,7 +626,7 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
                     }
 
                     override fun onConfigureFailed(@NonNull cameraCaptureSession: CameraCaptureSession) {
-                        showToast("Failed")
+                        showToast("Failed", 0f)
                     }
                 },
                 null
@@ -620,13 +676,29 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
     /** Classifies a frame from the preview stream.  */
     private fun classifyFrame() {
         if (classifier == null || activity == null || cameraDevice == null) {
-            showToast("Uninitialized Classifier or invalid context.")
+            showToast("Uninitialized Classifier or invalid context.", 0f)
             return
         }
-        val bitmap: Bitmap = textureView.getBitmap(ImageClassifier.DIM_IMG_SIZE_X, ImageClassifier.DIM_IMG_SIZE_Y)!!
-        val textToShow: String = classifier!!.classifyFrame(bitmap)
+        val bitmap: Bitmap = textureView.getBitmap(
+            ImageClassifier.DIM_IMG_SIZE_X,
+            ImageClassifier.DIM_IMG_SIZE_Y
+        )!!
+        val result = classifier!!.classifyFrame(bitmap)
         bitmap.recycle()
-        showToast(textToShow)
+        val (labelId,value) = result.split("|")
+        if(value.toFloat() > 0.80)
+        {
+            showToast(labelId, value.toFloat())
+            manageLastSigns(labelId, value.toFloat())
+        }
+        //showToast(result)
+    }
+
+    private fun manageLastSigns(labelId: String, value: Float) {
+        //val imageView: ImageView = binding.linerlayoutSigns[0] as ImageView
+       // imageView.setImageDrawable(R.drawable.ic_stop_splash)
+
+
     }
 
     /** Compares two `Size`s based on their areas.  */
@@ -642,30 +714,6 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
             }
         }
     }
-
-    /** Shows an error message dialog.  */
-//    class ErrorDialog : DialogFragment() {
-//        override fun onCreateDialog(savedInstanceState: Bundle): Dialog {
-//            val activity = activity
-//            return AlertDialog.Builder(activity)
-//                .setMessage(arguments.getString(ARG_MESSAGE))
-//                .setPositiveButton(
-//                    R.string.ok
-//                ) { dialogInterface, i -> activity.finish() }
-//                .create()
-//        }
-//
-//        companion object {
-//            private const val ARG_MESSAGE = "message"
-//            fun newInstance(message: String?): ErrorDialog {
-//                val dialog = ErrorDialog()
-//                val args = Bundle()
-//                args.putString(ARG_MESSAGE, message)
-//                dialog.arguments = args
-//                return dialog
-//            }
-//        }
-//    }
 
 
 }

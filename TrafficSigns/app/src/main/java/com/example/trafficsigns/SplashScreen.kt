@@ -143,6 +143,7 @@ class SplashScreen: AppCompatActivity() {
         val type = object : TypeToken<MutableMap<String, TrafficSign>>() {}.type
         val list: MutableMap<String, TrafficSign> = gson.fromJson(myData, type)
         list.forEach {
+            it.value.id = it.key
             if (trafficSigns[it.value.group] != null) {
                 trafficSigns[it.value.group]!!.add(it.value)
             }
