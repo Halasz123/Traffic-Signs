@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.trafficsigns.R
 import com.example.trafficsigns.data.TrafficSignsCollection
+import com.example.trafficsigns.ui.fragments.network.TrafficSignMemoryCache
 import com.example.trafficsigns.ui.fragments.network.tflite.Classifier
 import kotlinx.android.synthetic.main.network_result_item.view.*
 import org.tensorflow.lite.task.vision.classifier.Classifications
@@ -21,10 +22,11 @@ class NetworkResult(private var results: List<Classifier.Recognition>): Recycler
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val  currentItem = results[position]
+        val sign = TrafficSignMemoryCache.instance.getCachedTrafficSign(currentItem.id)
 
         holder.itemView.index_textView.text = "${position+1}."
-        holder.itemView.label_textView.text = currentItem.title
-        holder.itemView.percentage_textView.text = "${currentItem?.confidence?.toBigDecimal()}%"
+        holder.itemView.label_textView.text = sign?.name
+        holder.itemView.percentage_textView.text = (currentItem.confidence * 100).toString()
 
     }
 

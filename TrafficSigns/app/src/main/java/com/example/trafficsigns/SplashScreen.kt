@@ -20,12 +20,15 @@ import com.example.trafficsigns.databinding.SplashScreenBinding
 import com.example.trafficsigns.ui.constants.Data
 import com.example.trafficsigns.ui.constants.SharedPreference
 import com.example.trafficsigns.ui.constants.ToastMessage
+import com.example.trafficsigns.ui.fragments.network.TrafficSignMemoryCache
+import com.example.trafficsigns.ui.fragments.profile.observeOnce
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.*
+import org.tensorflow.lite.support.common.FileUtil
 import java.io.IOException
 import java.util.*
 import kotlin.concurrent.schedule
@@ -142,8 +145,13 @@ class SplashScreen: AppCompatActivity() {
         val gson = Gson()
         val type = object : TypeToken<MutableMap<String, TrafficSign>>() {}.type
         val list: MutableMap<String, TrafficSign> = gson.fromJson(myData, type)
+        var classifierLabels = FileUtil.loadLabels(this, "label43.txt")
+        val cache = TrafficSignMemoryCache.instance
         list.forEach {
             it.value.id = it.key
+            if (classifierLabels.contains(it.key)){
+                cache.cacheTrafficSign(it.value)
+            }
             if (trafficSigns[it.value.group] != null) {
                 trafficSigns[it.value.group]!!.add(it.value)
             }

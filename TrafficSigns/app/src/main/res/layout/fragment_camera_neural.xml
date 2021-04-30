@@ -12,14 +12,28 @@
     android:layout_width="match_parent"
     android:orientation="vertical">
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/capture_photo"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_above="@+id/linear_layout"
+        android:layout_alignEnd="@+id/linear_layout"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:src="@drawable/ic_baseline_photo_camera_24_white"
+        android:focusable="true"
+        android:contentDescription="TODO" />
+
     <com.example.trafficsigns.ui.fragments.network.live.AutoFitTextureView
         android:id="@+id/textureView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"/>
 
-
     <LinearLayout
+        android:id="@+id/linear_layout"
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:layout_alignBottom="@id/textureView"
@@ -39,7 +53,8 @@
                 android:id="@+id/l_elem_0"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:contentDescription="TODO" />
             <ImageView
                 android:id="@+id/l_elem_1"
                 android:layout_width="0dp"

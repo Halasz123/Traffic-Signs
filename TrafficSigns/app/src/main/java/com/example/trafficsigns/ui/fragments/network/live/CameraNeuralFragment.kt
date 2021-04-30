@@ -2,6 +2,7 @@ package com.example.trafficsigns.ui.fragments.network.live
 
 import android.Manifest
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -14,8 +15,10 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
 import android.util.Size
+import android.util.SparseIntArray
 import android.view.*
 import android.view.TextureView.SurfaceTextureListener
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -23,29 +26,23 @@ import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.ContextCompat
-import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.trafficsigns.R
-import com.example.trafficsigns.data.TrafficSign
-import com.example.trafficsigns.data.TrafficSignsCollectionViewModel
 import com.example.trafficsigns.databinding.FragmentCameraNeuralBinding
-import com.example.trafficsigns.ui.adapters.LiveAdapter
 import com.example.trafficsigns.ui.adapters.NetworkResult
-import com.example.trafficsigns.ui.fragments.profile.observeOnce
-import org.tensorflow.lite.support.common.FileUtil
-import java.io.FileReader
+import com.example.trafficsigns.ui.fragments.network.TrafficSignMemoryCache
+import com.example.trafficsigns.ui.fragments.network.tflite.Classifier
+import com.example.trafficsigns.ui.fragments.network.tflite.ClassifierQuantizedMobileNet
 import java.io.IOException
 import java.lang.Long.signum
 import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 
 @Suppress("IMPLICIT_BOXING_IN_IDENTITY_EQUALS")
@@ -65,11 +62,9 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
     private var checkedPermissions = false
     private var textView: TextView? = null
     private var classifier: ImageClassifier? = null
-    private var classifiedTrafficSigns: HashMap<String, TrafficSign> = HashMap()
-    private var trafficViewModel: TrafficSignsCollectionViewModel? = null
-    private var liveSignsRecyclerView: RecyclerView? = null
-    private var liveAdapter: LiveAdapter? = null
-    private var lastFiveTrafficList: ArrayList<TrafficSign>? = null
+    private var classifierForDialog: ClassifierQuantizedMobileNet? = null
+    private var listOfTrafficSignHistory: ArrayList<TrafficHistory> = ArrayList()
+    private val classifierCacheInstance = TrafficSignMemoryCache.instance
 
     /** Max preview width that is guaranteed by Camera2 API  */
     private val MAX_PREVIEW_WIDTH = 1920
@@ -133,6 +128,7 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
             val activity = requireActivity()
             activity.finish()
         }
+
     }
 
     /** An additional thread for running tasks that shouldn't block the UI.  */
@@ -180,7 +176,7 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
 
         activity.runOnUiThread {
             if(confidence != 0f){
-                val elem = classifiedTrafficSigns[labelId]
+                val elem = TrafficSignMemoryCache.instance.getCachedTrafficSign(labelId)
                 binding.predictedTextView.text = "${elem?.name} : ${confidence*100}%"
                 Glide
                     .with(binding.trafficImage)
@@ -192,8 +188,6 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
             else {
                 binding.predictedTextView.text = labelId
             }
-
-
         }
 
     }
@@ -264,6 +258,15 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
             frag.retainInstance = true
             return frag
         }
+
+        val ORIENTATIONS = SparseIntArray()
+
+        fun addOrientations(){
+            ORIENTATIONS.append(Surface.ROTATION_0, 90)
+            ORIENTATIONS.append(Surface.ROTATION_90, 0)
+            ORIENTATIONS.append(Surface.ROTATION_180, 270)
+            ORIENTATIONS.append(Surface.ROTATION_270, 180)
+        }
     }
 
 
@@ -285,23 +288,53 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         textureView = binding.textureView
         textView = binding.predictedTextView
-        lastFiveTrafficList = ArrayList()
+        addOrientations()
+        classifierForDialog = ClassifierQuantizedMobileNet(requireActivity(), Classifier.Device.CPU, 4)
 
-        fillTrafficList()
+        binding.capturePhoto.setOnClickListener {
+            //takePicture()
+            val bitmap: Bitmap = textureView.getBitmap(
+                binding.textureView.width,
+                binding.textureView.height
+            )!!
+            val list = processImage(bitmap)
+            showDialog(bitmap, list)
+        }
     }
 
-    private fun fillTrafficList() {
-        var labels = FileUtil.loadLabels(requireActivity(), "label43.txt")
-        trafficViewModel = ViewModelProvider(this).get(TrafficSignsCollectionViewModel::class.java)
-        trafficViewModel?.readAllData?.observeOnce(viewLifecycleOwner, { collection ->
-           collection.forEach { collection1 ->
-               collection1.trafficSigns.forEach {
-                   if (labels.contains(it.id)){
-                       classifiedTrafficSigns.put(it.id!!,it)
-                   }
-               }
-           }
-        })
+    private fun processImage(bitmap: Bitmap): List<Classifier.Recognition> {
+        return classifierForDialog?.recognizeImage(bitmap, 0)!!
+    }
+
+    private fun takePicture() {
+        if (cameraDevice == null) return
+        // Create a CaptureRequest.Builder for taking photos
+        val captureRequestBuilder: CaptureRequest.Builder
+        try {
+            captureRequestBuilder = cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
+                // The imageReader surface as the target of CaptureRequest.Builder
+            captureRequestBuilder.addTarget(imageReader!!.surface)
+            // auto focus
+            captureRequestBuilder.set(
+                CaptureRequest.CONTROL_AF_MODE,
+                CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE
+            )
+            // automatic exposure
+            captureRequestBuilder.set(
+                CaptureRequest.CONTROL_AE_MODE,
+                CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH
+            )
+            // Get the phone direction
+            var rotation = requireActivity().display!!.rotation
+            // Calculate the direction of the photo based on the device orientation
+            captureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation))
+            //photograph
+            var mCaptureRequest = captureRequestBuilder.build();
+            captureSession?.capture(mCaptureRequest, null, backgroundHandler);
+        } catch (e: CameraAccessException) {
+            e.printStackTrace()
+        }
+
     }
 
 
@@ -504,6 +537,32 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
         }
     }
 
+    private fun showDialog(bitmap: Bitmap, list: List<Classifier.Recognition>) {
+        val dialog = Dialog(requireActivity())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setCancelable(false)
+        dialog.setContentView(R.layout.custom_dialog_layout)
+        val imageView = dialog.findViewById(R.id.actual_frame) as ImageView
+        imageView.setImageBitmap(bitmap)
+        val recyclerView = dialog.findViewById(R.id.dialog_result_recyclerview) as RecyclerView
+        recyclerView.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = NetworkResult(list)
+            adapter?.notifyDataSetChanged()
+        }
+
+        val yesBtn = dialog.findViewById(R.id.dismiss_button) as Button
+//        val noBtn = dialog.findViewById(R.id.noBtn) as TextView
+        yesBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+//        noBtn.setOnClickListener { dialog.dismiss() }
+        dialog.show()
+
+    }
+
+
     private fun allPermissionsGranted(): Boolean {
         for (permission in getRequiredPermissions()) {
             if (permission?.let { ContextCompat.checkSelfPermission(requireContext(), it) }
@@ -685,8 +744,8 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
         )!!
         val result = classifier!!.classifyFrame(bitmap)
         bitmap.recycle()
-        val (labelId,value) = result.split("|")
-        if(value.toFloat() > 0.80)
+        val (labelId, value) = result.split("|")
+        if(value.toFloat() > Settings.MINIM_CONFIDENCE)
         {
             showToast(labelId, value.toFloat())
             manageLastSigns(labelId, value.toFloat())
@@ -695,10 +754,30 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
     }
 
     private fun manageLastSigns(labelId: String, value: Float) {
-        //val imageView: ImageView = binding.linerlayoutSigns[0] as ImageView
-       // imageView.setImageDrawable(R.drawable.ic_stop_splash)
+        val elem = classifierCacheInstance.getCachedTrafficSign(labelId)
+        val now = System.currentTimeMillis()/1000
+        if (listOfTrafficSignHistory.count() == 0){
+            listOfTrafficSignHistory.add(TrafficHistory(labelId, now, value))
+        }
+        else if (elem != null && !elem.id.equals(listOfTrafficSignHistory[0].id) && (now - listOfTrafficSignHistory[0].timeStamp) >= 2 ){
+          listOfTrafficSignHistory.add(0, TrafficHistory(labelId, now, value))
+        }
 
+        val imageViews = listOf(binding.lElem0, binding.lElem1, binding.lElem2, binding.lElem3)
 
+        val activity = requireActivity()
+        var i=0
+        activity.runOnUiThread {
+            while (i < 4 && i< listOfTrafficSignHistory.count() ){
+                Glide
+                    .with(requireView())
+                    .load(classifierCacheInstance.getCachedTrafficSign(listOfTrafficSignHistory[i].id)?.image)
+                    .override(imageViews[i].width, imageViews[i].height)
+                    .placeholder(R.drawable.ic_stop_splash)
+                    .into(imageViews[i])
+                i +=1
+            }
+        }
     }
 
     /** Compares two `Size`s based on their areas.  */
