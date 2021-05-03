@@ -94,7 +94,7 @@ class SampleListFragment : Fragment() {
         Log.d(SAMPLE_LIST, trafficSignList.toString())
         recyclerView = binding.recyclerview
 
-        sampleListAdapter = SampleListAdapter(R.id.action_collectionListFragment_to_detailFragment,null)
+        sampleListAdapter = SampleListAdapter(R.id.action_collectionListFragment_to_detailFragment,null, context)
         sampleListAdapter.changeData(trafficSignList)
 
         recyclerView.apply {

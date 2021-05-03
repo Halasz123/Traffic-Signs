@@ -30,7 +30,9 @@
         android:id="@+id/textureView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"/>
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp" />
 
     <LinearLayout
         android:id="@+id/linear_layout"
@@ -51,22 +53,38 @@
 
             <ImageView
                 android:id="@+id/l_elem_0"
+                android:layout_marginBottom="3dp"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp"
+                android:layout_marginTop="3dp"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:contentDescription="TODO" />
             <ImageView
                 android:id="@+id/l_elem_1"
+                android:layout_marginBottom="3dp"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp"
+                android:layout_marginTop="3dp"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"/>
             <ImageView
                 android:id="@+id/l_elem_2"
+                android:layout_marginBottom="3dp"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp"
+                android:layout_marginTop="3dp"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"/>
             <ImageView
                 android:id="@+id/l_elem_3"
+                android:layout_marginBottom="3dp"
+                android:layout_marginStart="3dp"
+                android:layout_marginEnd="3dp"
+                android:layout_marginTop="3dp"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"/>

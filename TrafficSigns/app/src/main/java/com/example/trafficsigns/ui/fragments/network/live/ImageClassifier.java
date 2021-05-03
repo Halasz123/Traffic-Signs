@@ -187,7 +187,7 @@ public class ImageClassifier {
 
   /** Writes Image data into a {@code ByteBuffer}. */
   private void convertBitmapToByteBuffer(Bitmap bitmap) {
-    if (imgData == null) {
+    if (imgData == null || bitmap == null) {
       return;
     }
     imgData.rewind();

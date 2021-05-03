@@ -42,7 +42,7 @@ class KnownSigns : Fragment(), ItemLongClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Settings.isGrid = false
-        trafficSignListAdapter = SampleListAdapter(R.id.action_knownSigns_to_detailFragment, this)
+        trafficSignListAdapter = SampleListAdapter(R.id.action_knownSigns_to_detailFragment, this, context)
         binding.recyclerview.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())

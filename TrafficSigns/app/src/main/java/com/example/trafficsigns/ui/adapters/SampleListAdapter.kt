@@ -1,5 +1,6 @@
 package com.example.trafficsigns.ui.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,7 @@ import com.example.trafficsigns.ui.interfaces.ItemLongClickListener
 import com.example.trafficsigns.ui.utils.Settings
 import kotlinx.android.synthetic.main.sample_list_item.view.*
 
-class SampleListAdapter(private val onClickNavigateAction: Int, private val itemLongClickListener: ItemLongClickListener?): RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filterable {
+class SampleListAdapter(private val onClickNavigateAction: Int, private val itemLongClickListener: ItemLongClickListener?, val context: Context?): RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filterable {
 
     class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     class GridViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -44,7 +45,7 @@ class SampleListAdapter(private val onClickNavigateAction: Int, private val item
         if (!Settings.isGrid) {
             holder.itemView.name_textView.text = currentItem.name
         }
-        Glide.with(holder.itemView).load(currentItem.image).override(holder.itemView.width, holder.itemView.height).into(holder.itemView.sign_imageView)
+        context?.let { Glide.with(it).load(currentItem.image).override(holder.itemView.width, holder.itemView.height).into(holder.itemView.sign_imageView) }
 
         holder.itemView.setOnClickListener {
             it.findNavController().navigate(onClickNavigateAction, DetailFragment.newInstanceBundle(currentItem))

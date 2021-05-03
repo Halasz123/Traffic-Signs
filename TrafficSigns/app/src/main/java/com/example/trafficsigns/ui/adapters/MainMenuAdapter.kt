@@ -1,6 +1,7 @@
 package com.example.trafficsigns.ui.adapters
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,7 @@ import com.example.trafficsigns.ui.fragments.list.CollectionListFragment
 import kotlinx.android.synthetic.main.group_item.view.*
 
 
-class MainMenuAdapter : RecyclerView.Adapter<MainMenuAdapter.MyViewHolder>(){
+class MainMenuAdapter(val context: Context?) : RecyclerView.Adapter<MainMenuAdapter.MyViewHolder>(){
 
     private var collectionList =  emptyList<TrafficSignsCollection>()
 
@@ -34,8 +35,8 @@ class MainMenuAdapter : RecyclerView.Adapter<MainMenuAdapter.MyViewHolder>(){
         val  currentItem = collectionList[position]
 
         holder.itemView.text_view_list_item.text = currentItem.groupId.capitalize() + General.SIGNS
-        loadImageWithGlide(holder.itemView, currentItem.trafficSigns[0].image, holder.itemView.image_view_list_item)
-        loadImageWithGlide(holder.itemView, currentItem.trafficSigns[1].image, holder.itemView.imageView)
+        loadImageWithGlide(currentItem.trafficSigns[0].image, holder.itemView.image_view_list_item)
+        loadImageWithGlide(currentItem.trafficSigns[1].image, holder.itemView.imageView)
 
         holder.itemView.setOnClickListener {
             it.findNavController().navigate(R.id.action_mainScreenFragment_to_collectionListFragment,
@@ -50,12 +51,14 @@ class MainMenuAdapter : RecyclerView.Adapter<MainMenuAdapter.MyViewHolder>(){
         notifyDataSetChanged()
     }
 
-    private fun loadImageWithGlide(view: View, url: String?, imageView: ImageView) {
-        Glide
-            .with(view)
-            .load(url)
-            .override(imageView.width, imageView.height)
-            .placeholder(R.drawable.ic_launcher_background)
-            .into(imageView)
+    private fun loadImageWithGlide(url: String?, imageView: ImageView) {
+        context?.let {
+            Glide
+                .with(it)
+                .load(url)
+                .override(imageView.width, imageView.height)
+                .placeholder(R.drawable.ic_launcher_background)
+                .into(imageView)
+        }
     }
 }
