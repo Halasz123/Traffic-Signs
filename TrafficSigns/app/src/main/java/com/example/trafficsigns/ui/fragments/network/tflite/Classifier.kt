@@ -198,7 +198,7 @@ abstract class Classifier protected constructor(activity: Activity?, device: Dev
         const val TAG = "ClassifierWithSupport"
 
         /** Number of results to show in the UI.  */
-        private const val MAX_RESULTS = 20
+        private const val MAX_RESULTS = 5
 
         /**
          * Creates a classifier with the provided configuration.

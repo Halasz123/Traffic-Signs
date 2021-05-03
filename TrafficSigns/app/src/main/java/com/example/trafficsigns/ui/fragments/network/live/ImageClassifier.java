@@ -20,6 +20,7 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.PriorityQueue;
 
@@ -110,11 +111,10 @@ public class ImageClassifier {
 
     // print the results
     String textToShow = printTopKLabels();
-    textToShow = Long.toString(endTime - startTime) + "ms" + textToShow;
     return textToShow;
   }
 
-  public PriorityQueue<Map.Entry<String, Float>> classifyImage(Bitmap bitmap) {
+  PriorityQueue<Map.Entry<String, Float>> classifyImage(Bitmap bitmap) {
     if (tflite == null) {
       Log.e(TAG, "Image classifier has not been initialized; Skipped.");
       return null;
@@ -187,7 +187,7 @@ public class ImageClassifier {
 
   /** Writes Image data into a {@code ByteBuffer}. */
   private void convertBitmapToByteBuffer(Bitmap bitmap) {
-    if (imgData == null) {
+    if (imgData == null || bitmap == null) {
       return;
     }
     imgData.rewind();
@@ -220,7 +220,7 @@ public class ImageClassifier {
     final int size = sortedLabels.size();
     for (int i = 0; i < size; ++i) {
       Map.Entry<String, Float> label = sortedLabels.poll();
-      textToShow = String.format("\n%s: %4.2f",label.getKey(),label.getValue()) + textToShow;
+      textToShow = String.format(Locale.ROOT,"%s|%4.2f",label.getKey(),label.getValue());
     }
     return textToShow;
   }
@@ -233,6 +233,10 @@ public class ImageClassifier {
         sortedLabels.poll();
       }
     }
+//    final int size = sortedLabels.size();
+//    for (int i = 0; i < size; ++i) {
+//      Map.Entry<String, Float> label = sortedLabels.poll();
+//    }
     return sortedLabels;
   }
 }

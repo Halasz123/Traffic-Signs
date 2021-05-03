@@ -48,13 +48,13 @@ from keras.models import load_model
 import cv2
 import numpy as np
 
-model = load_model('/Users/botondhalasz/Desktop/Allamvizsga/NeuralNetwork/Kagle_trye/KagleModel100EPIL.h5')
+model = load_model('/Users/botondhalasz/Desktop/Allamvizsga/NeuralNetwork/Kagle_trye/KagleModel200EPIL_aug.h5')
 
 # model.compile(loss='binary_crossentropy',
 #               optimizer='rmsprop',
 #               metrics=['accuracy'])
 
-basePAth = '/Users/botondhalasz/Desktop/Allamvizsga/NeuralNetwork/Test/TestMicro/'
+basePAth = '/Users/botondhalasz/Desktop/Allamvizsga/NeuralNetwork/Scrypts_Python/TestMicro/'
 
 from csv import reader
 

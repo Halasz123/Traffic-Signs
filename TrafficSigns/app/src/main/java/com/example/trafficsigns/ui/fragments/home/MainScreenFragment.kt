@@ -48,8 +48,8 @@ class MainScreenFragment : Fragment(), NavigationView.OnNavigationItemSelectedLi
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        sampleListAdapter = SampleListAdapter(R.id.action_mainScreenFragment_to_detailFragment, null)
-        menuAdapter = MainMenuAdapter()
+        sampleListAdapter = SampleListAdapter(R.id.action_mainScreenFragment_to_detailFragment, null,context)
+        menuAdapter = MainMenuAdapter(context)
 
         trafficRecyclerView = binding.recyclerview.apply {
             setHasFixedSize(true)

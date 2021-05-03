@@ -13,7 +13,7 @@ import seaborn as sns
 import warnings
 
 from keras_preprocessing.image import ImageDataGenerator
-from skimage.exposure import exposure
+from sklearn.model_selection import train_test_split
 from tensorflow.python.keras.optimizer_v2.adam import Adam
 
 from trafficsignmodel import TrafficSignNet
@@ -231,12 +231,10 @@ np.random.shuffle(s)
 Cells = Cells[s]
 labels = labels[s]
 
-(X_train, X_val) = Cells[int(0.20 * len(labels)):], Cells[:int(0.20 * len(labels))]
+X_train, X_val, y_train, y_val = train_test_split(Cells, labels, test_size=0.3, random_state=42, shuffle=True)
 
-X_train = X_train.astype('float32') / 255.0
-X_val = X_val.astype('float32') / 255.0
-
-(y_train, y_val) = labels[int(0.20 * len(labels)):], labels[:int(0.20 * len(labels))]
+X_train = X_train/255
+X_val = X_val/255
 
 from keras.utils import to_categorical
 
@@ -245,22 +243,42 @@ y_val = to_categorical(y_val, classes)
 
 print("Trains shape:  ", X_train.shape[1:])
 
-
+#myModel
 def get_model():
     model = Sequential()
     model.add(Conv2D(filters=32, kernel_size=(5, 5), activation='relu', input_shape=X_train.shape[1:]))
     model.add(Conv2D(filters=32, kernel_size=(5, 5), activation='relu'))
     model.add(MaxPool2D(pool_size=(2, 2)))
-    model.add(Dropout(rate=0.3))
+    model.add(BatchNormalization(axis=-1))
+
     model.add(Conv2D(filters=64, kernel_size=(3, 3), activation='relu'))
     model.add(Conv2D(filters=128, kernel_size=(2, 2), activation='relu'))
     model.add(MaxPool2D(pool_size=(2, 2)))
-    model.add(Dropout(rate=0.3))
+    model.add(BatchNormalization(axis=-1))
+
     model.add(Flatten())
     model.add(Dense(512, activation='relu'))
+    model.add(BatchNormalization())
     model.add(Dropout(rate=0.5))
+
     model.add(Dense(classes, activation='softmax'))
     return model
+
+# def get_model():
+#     model = Sequential()
+#     model.add(Conv2D(filters=32, kernel_size=(5, 5), activation='relu', input_shape=X_train.shape[1:]))
+#     model.add(Conv2D(filters=32, kernel_size=(5, 5), activation='relu'))
+#     model.add(MaxPool2D(pool_size=(2, 2)))
+#     model.add(Dropout(rate=0.3))
+#     model.add(Conv2D(filters=64, kernel_size=(3, 3), activation='relu'))
+#     model.add(Conv2D(filters=128, kernel_size=(2, 2), activation='relu'))
+#     model.add(MaxPool2D(pool_size=(2, 2)))
+#     model.add(Dropout(rate=0.3))
+#     model.add(Flatten())
+#     model.add(Dense(512, activation='relu'))
+#     model.add(Dropout(rate=0.5))
+#     model.add(Dense(classes, activation='softmax'))
+#     return model
 
 
 aug = ImageDataGenerator(
@@ -281,7 +299,7 @@ INIT_LR = 1e-5
 BS = 32
 
 cnn_model = get_model()
-cnn_model.save(filepath='/Users/botondhalasz/Desktop/Allamvizsga/NeuralNetwork/SavedModels/FirstModel200EPIL.model')
+cnn_model.save(filepath='/Users/botondhalasz/Desktop/Allamvizsga/NeuralNetwork/SavedModels/MyModel200.model')
 opt = Adam(lr=INIT_LR, decay=INIT_LR / (NUM_EPOCHS * 0.5))
 
 cnn_model.compile(
@@ -312,7 +330,7 @@ history = cnn_model.fit(X_train,
                         validation_data=(X_test, y_test),
                         verbose=1)
 
-cnn_model.save("FirstModel200EPIL.h5")
+cnn_model.save("MyModel200.h5")
 
 scores = cnn_model.evaluate(X_test, y_test, verbose=0)
 print("%s: %.2f%%" % (cnn_model.metrics_names[1], scores[1] * 100))

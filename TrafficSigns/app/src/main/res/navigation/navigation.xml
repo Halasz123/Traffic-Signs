@@ -154,5 +154,9 @@
         android:id="@+id/cameraNeural"
         android:name="com.example.trafficsigns.ui.fragments.network.live.CameraNeuralFragment"
         android:label="CameraNeural"
-        tools:layout="@layout/fragment_camera_neural"/>
+        tools:layout="@layout/fragment_camera_neural">
+        <action
+            android:id="@+id/action_cameraNeural_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
 </navigation>

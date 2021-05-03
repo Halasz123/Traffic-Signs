@@ -3,6 +3,7 @@ package com.example.trafficsigns.data
 import java.io.Serializable
 
 data class TrafficSign(
+        var id: String? = null,
         var name: String? = null,
         var image: String? = null,
         var group: String? = null,

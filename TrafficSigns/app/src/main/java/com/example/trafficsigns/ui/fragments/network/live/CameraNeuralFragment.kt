@@ -2,6 +2,7 @@ package com.example.trafficsigns.ui.fragments.network.live
 
 import android.Manifest
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -14,8 +15,11 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
 import android.util.Size
+import android.util.SparseIntArray
 import android.view.*
 import android.view.TextureView.SurfaceTextureListener
+import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.NonNull
@@ -24,25 +28,28 @@ import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.trafficsigns.R
 import com.example.trafficsigns.databinding.FragmentCameraNeuralBinding
+import com.example.trafficsigns.ui.adapters.NetworkResult
+import com.example.trafficsigns.ui.fragments.network.TrafficSignMemoryCache
+import com.example.trafficsigns.ui.fragments.network.tflite.Classifier
+import com.example.trafficsigns.ui.fragments.network.tflite.ClassifierQuantizedMobileNet
 import java.io.IOException
 import java.lang.Long.signum
 import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 
 @Suppress("IMPLICIT_BOXING_IN_IDENTITY_EQUALS")
 class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallback {
 
-    /** Tag for the [Log].  */
-    private val TAG = "TfLiteCameraDemo"
-
-    private val FRAGMENT_DIALOG = "dialog"
-
+    private val TAG = "TfLiteCameraTraffic"
     private val HANDLE_THREAD_NAME = "CameraBackground"
-
     private val PERMISSIONS_REQUEST_CODE = 1
 
     private val lock = Any()
@@ -50,11 +57,11 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
     private var checkedPermissions = false
     private var textView: TextView? = null
     private var classifier: ImageClassifier? = null
+    private var classifierForDialog: ClassifierQuantizedMobileNet? = null
+    private var listOfTrafficSignHistory: ArrayList<TrafficHistory> = ArrayList()
+    private val classifierCacheInstance = TrafficSignMemoryCache.instance
 
-    /** Max preview width that is guaranteed by Camera2 API  */
     private val MAX_PREVIEW_WIDTH = 1920
-
-    /** Max preview height that is guaranteed by Camera2 API  */
     private val MAX_PREVIEW_HEIGHT = 1080
 
     /**
@@ -76,20 +83,11 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
         override fun onSurfaceTextureUpdated(texture: SurfaceTexture) {}
     }
 
-    /** ID of the current [CameraDevice].  */
-    private var cameraId: String? = null
-
-    /** An [AutoFitTextureView] for camera preview.  */
+    private lateinit var cameraId: String
     private lateinit var textureView: AutoFitTextureView
-
-    /** A [CameraCaptureSession] for camera preview.  */
-    private var captureSession: CameraCaptureSession? = null
-
-    /** A reference to the opened [CameraDevice].  */
+    private lateinit var captureSession: CameraCaptureSession
     private var cameraDevice: CameraDevice? = null
-
-    /** The [android.util.Size] of camera preview.  */
-    private var previewSize: Size? = null
+    private lateinit var previewSize: Size
 
     /** [CameraDevice.StateCallback] is called when [CameraDevice] changes its state.  */
     private val stateCallback: CameraDevice.StateCallback = object : CameraDevice.StateCallback() {
@@ -103,34 +101,21 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
         override fun onDisconnected(@NonNull currentCameraDevice: CameraDevice) {
             cameraOpenCloseLock.release()
             currentCameraDevice.close()
-            cameraDevice = null
         }
 
         override fun onError(@NonNull currentCameraDevice: CameraDevice, error: Int) {
             cameraOpenCloseLock.release()
             currentCameraDevice.close()
-            cameraDevice = null
-            val activity = requireActivity()
-            activity.finish()
+            activity?.finish()
         }
+
     }
 
-    /** An additional thread for running tasks that shouldn't block the UI.  */
-    private var backgroundThread: HandlerThread? = null
-
-    /** A [Handler] for running tasks in the background.  */
-    private var backgroundHandler: Handler? = null
-
-    /** An [ImageReader] that handles image capture.  */
-    private var imageReader: ImageReader? = null
-
-    /** [CaptureRequest.Builder] for the camera preview  */
-    private var previewRequestBuilder: CaptureRequest.Builder? = null
-
-    /** [CaptureRequest] generated by [.previewRequestBuilder]  */
-    private var previewRequest: CaptureRequest? = null
-
-    /** A [Semaphore] to prevent the app from exiting before closing the camera.  */
+    private lateinit var backgroundThread: HandlerThread
+    private lateinit var backgroundHandler: Handler
+    private lateinit var imageReader: ImageReader
+    private lateinit var previewRequestBuilder: CaptureRequest.Builder
+    private lateinit var previewRequest: CaptureRequest
     private val cameraOpenCloseLock = Semaphore(1)
 
     /** A [CameraCaptureSession.CaptureCallback] that handles events related to capture.  */
@@ -150,14 +135,25 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
         }
     }
 
-    /**
-     * Shows a [Toast] on the UI thread for the classification results.
-     *
-     * @param text The message to show
-     */
-    private fun showToast(text: String) {
-        val activity = requireActivity()
-        activity.runOnUiThread { textView!!.text = text }
+    private fun showToast(labelId: String, confidence: Float) {
+     activity?.runOnUiThread {
+            if(confidence != 0f){
+                val elem = TrafficSignMemoryCache.instance.getCachedTrafficSign(labelId)
+                binding.predictedTextView.text = "${elem?.name} : ${confidence*100}%"
+                context?.let {
+                    Glide
+                        .with(it)
+                        .load(elem?.image)
+                        .override(binding.trafficImage.width, binding.trafficImage.height)
+                        .placeholder(R.drawable.ic_stop_splash)
+                        .into(binding.trafficImage)
+                }
+            }
+            else {
+                binding.predictedTextView.text = labelId
+            }
+        }
+
     }
 
     /**
@@ -226,6 +222,15 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
             frag.retainInstance = true
             return frag
         }
+
+        val ORIENTATIONS = SparseIntArray()
+
+        fun addOrientations(){
+            ORIENTATIONS.append(Surface.ROTATION_0, 90)
+            ORIENTATIONS.append(Surface.ROTATION_90, 0)
+            ORIENTATIONS.append(Surface.ROTATION_180, 270)
+            ORIENTATIONS.append(Surface.ROTATION_270, 180)
+        }
     }
 
 
@@ -247,6 +252,21 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         textureView = binding.textureView
         textView = binding.predictedTextView
+        addOrientations()
+        classifierForDialog = ClassifierQuantizedMobileNet(requireActivity(), Classifier.Device.CPU, 4)
+
+        binding.capturePhoto.setOnClickListener {
+            val bitmap: Bitmap? = textureView.getBitmap(
+                binding.textureView.width,
+                binding.textureView.height
+            )
+            val list = processImage(bitmap)
+            showDialog(bitmap, list)
+        }
+    }
+
+    private fun processImage(bitmap: Bitmap?): List<Classifier.Recognition> {
+        return bitmap?.let { classifierForDialog?.recognizeImage(it, 0) }!!
     }
 
     /** Load the model and labels.  */
@@ -358,14 +378,14 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
                     maxPreviewWidth,
                     maxPreviewHeight,
                     largest
-                )
+                )!!
 
                 // We fit the aspect ratio of TextureView to the size of preview we picked.
                 val orientation = resources.configuration.orientation
                 if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    textureView.setAspectRatio(previewSize!!.width, previewSize!!.height)
+                    textureView.setAspectRatio(previewSize.width, previewSize.height)
                 } else {
-                    textureView.setAspectRatio(previewSize!!.height, previewSize!!.width)
+                    textureView.setAspectRatio(previewSize.height, previewSize.width)
                 }
                 this.cameraId = cameraId
                 return
@@ -432,7 +452,7 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
                 // for ActivityCompat#requestPermissions for more details.
                 return
             }
-            cameraId?.let {
+            cameraId.let {
                 manager.openCamera(
                     it,
                     stateCallback,
@@ -447,6 +467,32 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
             throw RuntimeException("Interrupted while trying to lock camera opening.", e)
         }
     }
+
+    private fun showDialog(bitmap: Bitmap?, list: List<Classifier.Recognition>) {
+        val dialog = activity?.let { Dialog(it) }
+        dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog?.setCancelable(false)
+        dialog?.setContentView(R.layout.custom_dialog_layout)
+        val imageView = dialog?.findViewById(R.id.actual_frame) as ImageView
+        imageView.setImageBitmap(bitmap)
+        val recyclerView = dialog.findViewById(R.id.dialog_result_recyclerview) as RecyclerView
+        recyclerView.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = view?.let { NetworkResult(list, it, dialog) }
+            adapter?.notifyDataSetChanged()
+        }
+
+        val yesBtn = dialog.findViewById(R.id.dismiss_button) as Button
+//        val noBtn = dialog.findViewById(R.id.noBtn) as TextView
+        yesBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+//        noBtn.setOnClickListener { dialog.dismiss() }
+        dialog.show()
+
+    }
+
 
     private fun allPermissionsGranted(): Boolean {
         for (permission in getRequiredPermissions()) {
@@ -471,18 +517,9 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
     private fun closeCamera() {
         try {
             cameraOpenCloseLock.acquire()
-            if (null != captureSession) {
-                captureSession!!.close()
-                captureSession = null
-            }
-            if (null != cameraDevice) {
-                cameraDevice!!.close()
-                cameraDevice = null
-            }
-            if (null != imageReader) {
-                imageReader!!.close()
-                imageReader = null
-            }
+            captureSession.close()
+            cameraDevice?.close()
+            imageReader.close()
         } catch (e: InterruptedException) {
             throw RuntimeException("Interrupted while trying to lock camera closing.", e)
         } finally {
@@ -493,19 +530,17 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
     /** Starts a background thread and its [Handler].  */
     private fun startBackgroundThread() {
         backgroundThread = HandlerThread(HANDLE_THREAD_NAME)
-        backgroundThread!!.start()
-        backgroundHandler = Handler(backgroundThread!!.looper)
+        backgroundThread.start()
+        backgroundHandler = Handler(backgroundThread.looper)
         synchronized(lock) { runClassifier = true }
-        backgroundHandler!!.post(periodicClassify)
+        backgroundHandler.post(periodicClassify)
     }
 
     /** Stops the background thread and its [Handler].  */
     private fun stopBackgroundThread() {
-        backgroundThread!!.quitSafely()
+        backgroundThread.quitSafely()
         try {
-            backgroundThread!!.join()
-            backgroundThread = null
-            backgroundHandler = null
+            backgroundThread.join()
             synchronized(lock) { runClassifier = false }
         } catch (e: InterruptedException) {
             e.printStackTrace()
@@ -520,7 +555,7 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
                     classifyFrame()
                 }
             }
-            backgroundHandler!!.post(this)
+            backgroundHandler.post(this)
         }
     }
 
@@ -530,7 +565,7 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
             val texture: SurfaceTexture = textureView.surfaceTexture!!
 
             // We configure the size of default buffer to be the size of camera preview we want.
-            texture.setDefaultBufferSize(previewSize!!.width, previewSize!!.height)
+            texture.setDefaultBufferSize(previewSize.width, previewSize.height)
 
             // This is the output Surface we need to start preview.
             val surface = Surface(texture)
@@ -538,10 +573,10 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
             // We set up a CaptureRequest.Builder with the output Surface.
             previewRequestBuilder =
                 cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
-            previewRequestBuilder!!.addTarget(surface)
+            previewRequestBuilder.addTarget(surface)
 
             // Here, we create a CameraCaptureSession for camera preview.
-            cameraDevice!!.createCaptureSession(
+            cameraDevice?.createCaptureSession(
                 listOf(surface),
                 object : CameraCaptureSession.StateCallback() {
                     override fun onConfigured(@NonNull cameraCaptureSession: CameraCaptureSession) {
@@ -554,15 +589,15 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
                         captureSession = cameraCaptureSession
                         try {
                             // Auto focus should be continuous for camera preview.
-                            previewRequestBuilder!!.set(
+                            previewRequestBuilder.set(
                                 CaptureRequest.CONTROL_AF_MODE,
                                 CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE
                             )
 
                             // Finally, we start displaying the camera preview.
                             previewRequest = previewRequestBuilder!!.build()
-                            captureSession!!.setRepeatingRequest(
-                                previewRequest!!, captureCallback, backgroundHandler
+                            captureSession.setRepeatingRequest(
+                                previewRequest, captureCallback, backgroundHandler
                             )
                         } catch (e: CameraAccessException) {
                             e.printStackTrace()
@@ -570,7 +605,7 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
                     }
 
                     override fun onConfigureFailed(@NonNull cameraCaptureSession: CameraCaptureSession) {
-                        showToast("Failed")
+                        showToast("Failed", 0f)
                     }
                 },
                 null
@@ -589,16 +624,12 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
      * @param viewHeight The height of `textureView`
      */
     private fun configureTransform(viewWidth: Int, viewHeight: Int) {
-        val activity = requireActivity()
-        if (null == previewSize) {
-            return
-        }
-        val rotation = activity.display?.rotation
+        val rotation = activity?.display?.rotation
         val matrix = Matrix()
         val viewRect = RectF(0F, 0F, viewWidth.toFloat(), viewHeight.toFloat())
         val bufferRect = RectF(
-            0F, 0F, previewSize!!.height.toFloat(),
-            previewSize!!.width.toFloat()
+            0F, 0F, previewSize.height.toFloat(),
+            previewSize.width.toFloat()
         )
         val centerX = viewRect.centerX()
         val centerY = viewRect.centerY()
@@ -606,8 +637,8 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
             bufferRect.offset(centerX - bufferRect.centerX(), centerY - bufferRect.centerY())
             matrix.setRectToRect(viewRect, bufferRect, Matrix.ScaleToFit.FILL)
             val scale = Math.max(
-                viewHeight.toFloat() / previewSize!!.height,
-                viewWidth.toFloat() / previewSize!!.width
+                viewHeight.toFloat() / previewSize.height,
+                viewWidth.toFloat() / previewSize.width
             )
             matrix.postScale(scale, scale, centerX, centerY)
             matrix.postRotate((90 * (rotation - 2)).toFloat(), centerX, centerY)
@@ -620,13 +651,51 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
     /** Classifies a frame from the preview stream.  */
     private fun classifyFrame() {
         if (classifier == null || activity == null || cameraDevice == null) {
-            showToast("Uninitialized Classifier or invalid context.")
+            showToast("Uninitialized Classifier or invalid context.", 0f)
             return
         }
-        val bitmap: Bitmap = textureView.getBitmap(ImageClassifier.DIM_IMG_SIZE_X, ImageClassifier.DIM_IMG_SIZE_Y)!!
-        val textToShow: String = classifier!!.classifyFrame(bitmap)
-        bitmap.recycle()
-        showToast(textToShow)
+        val bitmap: Bitmap? = textureView.getBitmap(
+            ImageClassifier.DIM_IMG_SIZE_X,
+            ImageClassifier.DIM_IMG_SIZE_Y
+        )
+        val result = classifier!!.classifyFrame(bitmap)
+        bitmap?.recycle()
+        val (labelId, value) = result.split("|")
+        if(value.toFloat() > Settings.MINIM_CONFIDENCE)
+        {
+            showToast(labelId, value.toFloat())
+            manageLastSigns(labelId, value.toFloat())
+        }
+        //showToast(result)
+    }
+
+    private fun manageLastSigns(labelId: String, value: Float) {
+        val elem = classifierCacheInstance.getCachedTrafficSign(labelId)
+        val now = System.currentTimeMillis()/1000
+        if (listOfTrafficSignHistory.count() == 0){
+            listOfTrafficSignHistory.add(TrafficHistory(labelId, now, value))
+        }
+        else if (elem != null && !elem.id.equals(listOfTrafficSignHistory[0].id) && (now - listOfTrafficSignHistory[0].timeStamp) >= 2 ){
+          listOfTrafficSignHistory.add(0, TrafficHistory(labelId, now, value))
+        }
+
+        val imageViews = listOf(binding.lElem0, binding.lElem1, binding.lElem2, binding.lElem3)
+
+        val activity = requireActivity()
+        var i=0
+        activity.runOnUiThread {
+            context?.let {
+            while (i < 4 && i< listOfTrafficSignHistory.count() ){
+                    Glide
+                        .with(it)
+                        .load(classifierCacheInstance.getCachedTrafficSign(listOfTrafficSignHistory[i].id)?.image)
+                        .override(imageViews[i].width, imageViews[i].height)
+                        .placeholder(R.drawable.ic_stop_splash)
+                        .into(imageViews[i])
+                    i +=1
+                }
+            }
+        }
     }
 
     /** Compares two `Size`s based on their areas.  */
@@ -642,30 +711,6 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
             }
         }
     }
-
-    /** Shows an error message dialog.  */
-//    class ErrorDialog : DialogFragment() {
-//        override fun onCreateDialog(savedInstanceState: Bundle): Dialog {
-//            val activity = activity
-//            return AlertDialog.Builder(activity)
-//                .setMessage(arguments.getString(ARG_MESSAGE))
-//                .setPositiveButton(
-//                    R.string.ok
-//                ) { dialogInterface, i -> activity.finish() }
-//                .create()
-//        }
-//
-//        companion object {
-//            private const val ARG_MESSAGE = "message"
-//            fun newInstance(message: String?): ErrorDialog {
-//                val dialog = ErrorDialog()
-//                val args = Bundle()
-//                args.putString(ARG_MESSAGE, message)
-//                dialog.arguments = args
-//                return dialog
-//            }
-//        }
-//    }
 
 
 }

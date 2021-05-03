@@ -183,7 +183,7 @@ class NeuralNetworkFragment : Fragment() {
             withContext(Dispatchers.IO) {
                 result = processImage(bitmap)
             }
-            networkResultAdapter = NetworkResult(result)
+            networkResultAdapter = NetworkResult(result,requireView())
             networkResultRecyclerView.adapter = networkResultAdapter
             networkResultRecyclerView.adapter?.notifyDataSetChanged()
         }
