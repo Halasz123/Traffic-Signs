@@ -482,13 +482,10 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
             adapter = view?.let { NetworkResult(list, it, dialog) }
             adapter?.notifyDataSetChanged()
         }
-
-        val yesBtn = dialog.findViewById(R.id.dismiss_button) as Button
-//        val noBtn = dialog.findViewById(R.id.noBtn) as TextView
-        yesBtn.setOnClickListener {
+        val okBtn = dialog.findViewById(R.id.dismiss_button) as Button
+        okBtn.setOnClickListener {
             dialog.dismiss()
         }
-//        noBtn.setOnClickListener { dialog.dismiss() }
         dialog.show()
 
     }
@@ -661,7 +658,7 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
         val result = classifier!!.classifyFrame(bitmap)
         bitmap?.recycle()
         val (labelId, value) = result.split("|")
-        if(value.toFloat() > Settings.MINIM_CONFIDENCE)
+        if(value.toFloat() > Settings.MINIM_CONFIDENCE_DISPLAY)
         {
             showToast(labelId, value.toFloat())
             manageLastSigns(labelId, value.toFloat())
@@ -675,7 +672,7 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
         if (listOfTrafficSignHistory.count() == 0){
             listOfTrafficSignHistory.add(TrafficHistory(labelId, now, value))
         }
-        else if (elem != null && !elem.id.equals(listOfTrafficSignHistory[0].id) && (now - listOfTrafficSignHistory[0].timeStamp) >= 2 ){
+        else if (elem != null && (now - listOfTrafficSignHistory[0].timeStamp) >= 2 ){
           listOfTrafficSignHistory.add(0, TrafficHistory(labelId, now, value))
         }
 

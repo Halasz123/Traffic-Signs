@@ -7,6 +7,7 @@ import android.graphics.RectF
 import android.os.SystemClock
 import android.os.Trace
 import android.util.Log
+import com.example.trafficsigns.ui.fragments.network.live.Settings
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.gpu.GpuDelegate
 import org.tensorflow.lite.nnapi.NnApiDelegate
@@ -237,8 +238,11 @@ abstract class Classifier protected constructor(activity: Activity?, device: Dev
                 Comparator<Recognition?> { o1, o2 -> // Intentionally reversed to put high nfidence at the head of the queue.
                     o2.confidence.compareTo(o1.confidence)
                 })
+
             for ((key, value) in labelProb) {
-                pq.add(Recognition("" + key, key, value, null))
+                if(value > Settings.MINIM_CONFIDENCE_RESULT){
+                    pq.add(Recognition("" + key, key, value, null))
+                }
             }
             val recognitions = ArrayList<Recognition>()
             val recognitionsSize = min(pq.size, MAX_RESULTS)
