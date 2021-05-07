@@ -11,7 +11,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:context=".ui.fragments.profile.ProfileFragment"
+        tools:context=".ui.fragment.profile.ProfileFragment"
         android:background="@color/blue_gray_200">
 
         <ImageView

@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 <RelativeLayout
-    tools:context=".ui.fragments.network.live.CameraNeuralFragment"
+    tools:context=".ui.fragment.CameraNeuralFragment"
     android:background="@color/blue_gray_800"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
@@ -26,7 +26,7 @@
         android:focusable="true"
         android:contentDescription="TODO" />
 
-    <com.example.trafficsigns.ui.fragments.network.live.AutoFitTextureView
+    <com.trafficsigns.ui.network.utils.AutoFitTextureView
         android:id="@+id/textureView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

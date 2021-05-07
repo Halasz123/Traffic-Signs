@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/mainScreenFragment"
         tools:layout="@layout/fragment_main_screen"
-        android:name="com.example.trafficsigns.ui.fragments.home.MainScreenFragment"
+        android:name="com.trafficsigns.ui.fragment.MainScreenFragment"
         android:label="MainScreenFragment" >
         <action
             android:id="@+id/action_mainScreenFragment_to_collectionListFragment"
@@ -26,9 +26,6 @@
         <action
             android:id="@+id/action_mainScreenFragment_to_neuralNetworkFragment"
             app:destination="@id/neuralNetworkFragment" />
-        <action
-            android:id="@+id/action_mainScreenFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
         <action
             android:id="@+id/action_mainScreenFragment_to_knownSigns"
             app:destination="@id/knownSigns" />
@@ -49,7 +46,7 @@
     <fragment
         android:id="@+id/collectionListFragment"
         tools:layout="@layout/fragment_collection_list"
-        android:name="com.example.trafficsigns.ui.fragments.list.CollectionListFragment"
+        android:name="com.trafficsigns.ui.fragment.list.CollectionListFragment"
         android:label="CollectionListFragment" >
         <action
             android:id="@+id/action_collectionListFragment_to_mainScreenFragment"
@@ -68,7 +65,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
-        android:name="com.example.trafficsigns.ui.fragments.detail.DetailFragment"
+        android:name="com.trafficsigns.ui.fragment.DetailFragment"
         android:label="fragment_detail"
         tools:layout="@layout/fragment_detail" >
         <action
@@ -89,7 +86,7 @@
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.trafficsigns.ui.fragments.profile.ProfileFragment"
+        android:name="com.trafficsigns.ui.fragment.profile.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" >
         <action
@@ -109,17 +106,12 @@
     </fragment>
     <fragment
         android:id="@+id/neuralNetworkFragment"
-        android:name="com.example.trafficsigns.ui.fragments.network.NeuralNetworkFragment"
+        android:name="com.trafficsigns.ui.network.NeuralNetworkFragment"
         android:label="fragment_neural_network"
         tools:layout="@layout/fragment_neural_network" />
     <fragment
-        android:id="@+id/settingsFragment"
-        android:name="com.example.trafficsigns.ui.fragments.profile.SettingsFragment"
-        android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
-    <fragment
         android:id="@+id/knownSigns"
-        android:name="com.example.trafficsigns.ui.fragments.profile.KnownSigns"
+        android:name="com.trafficsigns.ui.fragment.profile.KnownSignsFragment"
         android:label="KnownSigns"
         tools:layout="@layout/fragment_known_signs">
         <action
@@ -139,7 +131,7 @@
     </fragment>
     <fragment
         android:id="@+id/quizFragment"
-        android:name="com.example.trafficsigns.ui.fragments.profile.QuizFragment"
+        android:name="com.trafficsigns.ui.fragment.profile.QuizFragment"
         android:label="QuizFragment"
         tools:layout="@layout/fragment_quiz">
         <action
@@ -152,7 +144,7 @@
     </fragment>
     <fragment
         android:id="@+id/cameraNeural"
-        android:name="com.example.trafficsigns.ui.fragments.network.live.CameraNeuralFragment"
+        android:name="com.trafficsigns.ui.fragment.CameraNeuralFragment"
         android:label="CameraNeural"
         tools:layout="@layout/fragment_camera_neural">
         <action
