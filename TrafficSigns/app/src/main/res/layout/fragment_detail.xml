@@ -9,13 +9,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/blue_gray_600"
-    tools:context=".ui.fragments.detail.DetailFragment">
+    tools:context=".ui.fragment.detail.DetailFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/blue_gray_600"
-            tools:context=".ui.fragments.detail.DetailFragment">
+            tools:context=".ui.fragment.detail.DetailFragment">
 
             <ImageView
                 android:id="@+id/traffic_image"

@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.trafficsigns.ui.constants.Data
+import com.trafficsigns.ui.constant.Data
 
 @Database(entities = [MyProfile::class], version = 1, exportSchema = false)
 @TypeConverters(Convertes::class)

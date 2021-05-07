@@ -26,7 +26,7 @@
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
         
         <provider
-            android:authorities="com.trafficsigns.ui.fragments.fileprovider"
+            android:authorities="com.trafficsigns.ui.fragment.fileprovider"
             android:name="androidx.core.content.FileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -34,7 +34,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/fileprovider"/>
         </provider>
-        <activity android:name=".SplashActivity"
+        <activity android:name=".ui.activity.SplashActivity"
                 android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,7 +43,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.activity.MainActivity">
         </activity>
 
         <meta-data
