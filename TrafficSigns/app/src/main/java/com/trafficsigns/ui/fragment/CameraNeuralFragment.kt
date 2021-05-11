@@ -49,6 +49,15 @@ import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
+/**
+ * @author: Halász Botond
+ * @since: 10/05/2021
+ *
+ * Open Camera2 and it classifies every frame with an ImageClassifier object
+ * and shows the result.
+ * Capture one frame by button press and see the more detailed result on Dialog.
+ */
+
 class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallback {
 
     private val TAG = "TfLiteCameraTraffic"

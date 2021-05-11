@@ -51,6 +51,10 @@ import java.io.FileReader
 import java.io.InputStream
 import com.trafficsigns.ui.network.classifiers.ImageClassifier as MyClassifier
 
+/**
+ * Will be Deleted!
+ */
+
 class NeuralNetworkFragment : Fragment() {
 
     private lateinit var binding: FragmentNeuralNetworkBinding
@@ -87,8 +91,8 @@ class NeuralNetworkFragment : Fragment() {
             checkPermission()
         }
         binding.button.setOnClickListener {
-               // iterateOnTestDirectory()
-             //iterateOnTestMicroDirectory()
+            // iterateOnTestDirectory()
+            //iterateOnTestMicroDirectory()
             iterateOnTestMicroDirectoryWithprocessImage()
         }
         classifier = ClassifierInit(requireActivity(), Classifier.Device.CPU, 4)
@@ -172,13 +176,13 @@ class NeuralNetworkFragment : Fragment() {
         }
     }
 
-    private fun setUpRecyclerView(bitmap: Bitmap){
+    private fun setUpRecyclerView(bitmap: Bitmap) {
         lifecycleScope.launch {
             val result: List<Classifier.Recognition>
             withContext(Dispatchers.IO) {
                 result = processImage(bitmap)
             }
-            networkResultAdapter = NetworkResult(result,requireView())
+            networkResultAdapter = NetworkResult(result, requireView())
             networkResultRecyclerView.adapter = networkResultAdapter
             networkResultRecyclerView.adapter?.notifyDataSetChanged()
         }
@@ -194,8 +198,8 @@ class NeuralNetworkFragment : Fragment() {
         val imageProcessor: ImageProcessor = ImageProcessor.Builder()
             //.add(ResizeWithCropOrPadOp(size, size))
             // .add(ResizeOp(30, 30, ResizeOp.ResizeMethod.BILINEAR))
-           // .add(NormalizeOp(127.5f, 127.5f))
-           // .add(QuantizeOp(0.0f, 1.0f))
+            // .add(NormalizeOp(127.5f, 127.5f))
+            // .add(QuantizeOp(0.0f, 1.0f))
             .build()
 
         var tImage = TensorImage(DataType.FLOAT32)
@@ -205,7 +209,7 @@ class NeuralNetworkFragment : Fragment() {
         val options = ImageClassifierOptions.builder().setMaxResults(10).build()
         val imageClassifier = ImageClassifier.createFromFileAndOptions(
             context,
-            "FirstModel200E_clahe_3232.tflite",
+            "MyModel200.tflite",
             options
         )
         val results = imageClassifier.classify(tImage)
@@ -231,7 +235,6 @@ class NeuralNetworkFragment : Fragment() {
                 val csvLines = reader.readLines()
                 reader = FileReader(dir + "classification_labels.txt")
                 val labels = reader.readLines()
-                // Log.d("NEURAL", labels.toString())
                 var correctId = 0
                 var correctId2 = 0
                 var averageModel = 0.0
@@ -247,7 +250,8 @@ class NeuralNetworkFragment : Fragment() {
                     val resultClassId2 = labels.indexOf(resultByModel2[0].label)
 
                     val searchedLabel = labels[line.first.toInt()]
-                    val resultObject = resultByModel.categories.firstOrNull { it1 -> it1.label == searchedLabel }
+                    val resultObject =
+                        resultByModel.categories.firstOrNull { it1 -> it1.label == searchedLabel }
 
                     Log.d(
                         "NEURAL-TEST",
@@ -328,14 +332,17 @@ class NeuralNetworkFragment : Fragment() {
                     }
                     val resultObject2 =
                         resultByModel2.firstOrNull { it1 -> it1.label == searchedLabel }
-                    Log.d("NEURAL-TEST-2", "ClassId: ${line.first}... Result: $resultClassId2 | ${resultByModel2[0].label} - ${resultByModel2[0].score} ")
+                    Log.d(
+                        "NEURAL-TEST-2",
+                        "ClassId: ${line.first}... Result: $resultClassId2 | ${resultByModel2[0].label} - ${resultByModel2[0].score} "
+                    )
 
                     if (resultObject2 != null) {
                         averageModel2 += resultObject2.score
                         Log.d("NeuralClassifier2_Score", resultObject2.score.toString())
                     }
 
-                   //                    Log.d("NEURAL", resultByModel.toString())
+                    //                    Log.d("NEURAL", resultByModel.toString())
 //                    Log.d("NEURAL-Classifier2", resultByModel2.toString())
 
                     if (resultClassId == line.first.toInt()) {
@@ -357,54 +364,50 @@ class NeuralNetworkFragment : Fragment() {
         }
     }
 
-    private fun iterateOnTestMicroDirectoryWithprocessImage()
-    {
-        lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                val dir = "/data/data/com.trafficsigns/TestMicro/"
-                //val dir = "/data/data/com.trafficsigns/Test/"
-                var reader = FileReader(dir + "Test.csv")
-                val csvLines = reader.readLines()
-                reader = FileReader(dir + "classification_labels.txt")
-                val labels = reader.readLines()
-                // Log.d("NEURAL", labels.toString())
-                var correctId = 0
-                var correctId2 = 0
-                var averageModel = 0.0
-                var averageModel2 = 0.0
-                csvLines.forEach {
-                    val line = Pair(it.split(",")[6], it.split(",")[7])
-                    //val line = Pair(it.split(",")[0], it.split(",")[1])
-                    val bitmap = BitmapFactory.decodeFile(dir + line.second)
-
-                    val resultByModel = processImage(bitmap)
-
-                    val resultClassId = labels.indexOf(resultByModel[0].title)
-
-                    val searchedLabel = labels[line.first.toInt()]
-                    val resultObject =
-                        resultByModel.firstOrNull { it1 -> it1.title == searchedLabel }
-                    if (resultObject != null) {
-                        averageModel += resultObject.confidence
-                    }
-
-                    Log.d(
-                        "NEURAL-TEST",
-                        "ClassId: ${line.first}... Result: $resultClassId | ${resultByModel[0]} "
-                    )
-
-                    Log.d("NEURAL", resultByModel.toString())
-
-                    if (resultClassId == line.first.toInt()) {
-                        correctId++
-                    }
+    private fun iterateOnTestMicroDirectoryWithprocessImage() {
+        val dir = "/data/data/com.trafficsigns/TestMicro/"
+        //val dir = "/data/data/com.trafficsigns/Test/"
+        var reader = FileReader(dir + "Test.csv")
+        val csvLines = reader.readLines()
+        reader = FileReader(dir + "classification_labels.txt")
+        val labels = reader.readLines()
+        var correctId = 0
+        var averageModel = 0.0
+        csvLines.forEach {
+            val line = Pair(it.split(",")[6], it.split(",")[7])
+            //val line = Pair(it.split(",")[0], it.split(",")[1])
+            val bitmap = BitmapFactory.decodeFile(dir + line.second)
+            lifecycleScope.launch{
+                var resultByModel = listOf<Classifier.Recognition>()
+                withContext(Dispatchers.IO){
+                    resultByModel = processImage(bitmap)
                 }
+                val resultClassId = labels.indexOf(resultByModel[0].title)
+                val searchedLabel = labels[line.first.toInt()]
+                val resultObject =
+                    resultByModel.firstOrNull { it1 -> it1.title == searchedLabel }
+                if (resultObject != null) {
+                    averageModel += resultObject.confidence
+                }
+
                 Log.d(
-                    "NEURAL",
-                    "Ossz: ${csvLines.size}  |  Helyes: $correctId  --- Atlag Megtalalasi szazalek: ${averageModel / csvLines.size}"
+                    "NEURAL-TEST",
+                    "ClassId: ${line.first}... Result: $resultClassId | ${resultByModel[0]} "
                 )
+
+                Log.d("NEURAL", resultByModel.toString())
+
+                if (resultClassId == line.first.toInt()) {
+                    correctId++
+                }
             }
+
         }
+        Log.d(
+            "NEURAL",
+            "Ossz: ${csvLines.size}  |  Helyes: $correctId  --- Atlag Megtalalasi szazalek: ${averageModel / csvLines.size}"
+        )
+
     }
 
 

@@ -44,6 +44,14 @@ const val FILE_NAME = "photo.jpg"
 const val IMAGE_PICK_CODE = 1000
 const val PERMISSION_CODE = 1001
 
+/**
+ * @author: Halász Botond
+ * @since: 10/05/2021
+ *
+ * We can see and edit our own profile: profile picture, name, scores.
+ * Navigate to the QuizFragment and update the score on the profile,
+ * Check the signs what is already known.
+ */
 class ProfileFragment : Fragment() {
 
     private lateinit var mMyProfileViewModel: MyProfileViewModel

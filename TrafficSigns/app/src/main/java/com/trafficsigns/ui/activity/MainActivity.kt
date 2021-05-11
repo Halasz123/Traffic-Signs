@@ -6,6 +6,12 @@ import androidx.databinding.DataBindingUtil
 import com.trafficsigns.R
 import com.trafficsigns.databinding.ActivityMainBinding
 
+/**
+ * @author: Halász Botond
+ * @since: 10/05/2021
+ *
+ * Initializing the main layout.
+ */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding

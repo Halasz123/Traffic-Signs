@@ -12,7 +12,14 @@ import com.trafficsigns.ui.network.utils.TrafficSignMemoryCache
 import com.trafficsigns.ui.network.classifiers.Classifier
 import kotlinx.android.synthetic.main.network_result_item.view.*
 
-class NetworkResult(private var results: List<Classifier.Recognition>, val view: View, var dialog: Dialog? = null): RecyclerView.Adapter<NetworkResult.MyViewHolder>() {
+/**
+ * @author: Halász Botond
+ * @since: 10/05/2021
+ *
+ * Set elements to the recyclerview on dialog with the result of cnn.
+ */
+class NetworkResult(private var results: List<Classifier.Recognition>, val view: View, var dialog: Dialog? = null):
+    RecyclerView.Adapter<NetworkResult.MyViewHolder>() {
 
     class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
@@ -34,16 +41,9 @@ class NetworkResult(private var results: List<Classifier.Recognition>, val view:
                 sign?.let { it1 -> DetailFragment.newInstanceBundle(it1) })
             dialog?.dismiss()
         }
-
-
     }
 
     override fun getItemCount(): Int {
             return results.count()
-    }
-
-    fun changeData(results: List<Classifier.Recognition>){
-        this.results = results
-        notifyDataSetChanged()
     }
 }

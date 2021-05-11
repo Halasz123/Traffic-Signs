@@ -23,7 +23,11 @@ import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import java.util.*
 import kotlin.math.min
 
-/** A classifier specialized to label images using TensorFlow Lite.  */
+/** @author: Halász Botond
+ *  @since: 10/05/2021
+ *
+ * A classifier specialized to label images using TensorFlow Lite.
+ * */
 abstract class Classifier protected constructor(activity: Activity?, device: Device?, numThreads: Int) {
 
     /** The runtime device type used for executing classification.  */
@@ -112,24 +116,24 @@ abstract class Classifier protected constructor(activity: Activity?, device: Dev
 
         /** Number of results to show in the UI.  */
         const val MAX_RESULTS = 5
+    }
 
-        fun getTopKProbability(labelProb: Map<String, Float>): List<Recognition> {
-            val pq = PriorityQueue(
-                MAX_RESULTS,
-                Comparator<Recognition?> { o1, o2 -> o2.confidence.compareTo(o1.confidence) })
+    fun getTopKProbability(labelProb: Map<String, Float>): List<Recognition> {
+        val pq = PriorityQueue(
+            MAX_RESULTS,
+            Comparator<Recognition?> { o1, o2 -> o2.confidence.compareTo(o1.confidence) })
 
-            for ((key, value) in labelProb) {
-                if(value > Settings.MINIM_CONFIDENCE_RESULT){
-                    pq.add(Recognition("" + key, key, value, null))
-                }
+        for ((key, value) in labelProb) {
+            if(value > Settings.MINIM_CONFIDENCE_RESULT){
+                pq.add(Recognition("" + key, key, value, null))
             }
-            val recognitions = ArrayList<Recognition>()
-            val recognitionsSize = min(pq.size, MAX_RESULTS)
-            for (i in 0 until recognitionsSize) {
-                pq.poll()?.let { recognitions.add(it) }
-            }
-            return recognitions
         }
+        val recognitions = ArrayList<Recognition>()
+        val recognitionsSize = min(pq.size, MAX_RESULTS)
+        for (i in 0 until recognitionsSize) {
+            pq.poll()?.let { recognitions.add(it) }
+        }
+        return recognitions
     }
 
     /** Initializes a `Classifier`.  */

@@ -21,6 +21,15 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 const val QUIZ_TAG = "QuizFragment"
+
+/**
+ * @author: Halász Botond
+ * @since: 05/10/2021
+ *
+ * Quiz logic implemented. The user can solve a test what is generated from known signs.
+ * The only criteria is that the user need to know minimum 5 sign.
+ * The end of the test, we get a score what will be updated in database.
+ */
 class QuizFragment : Fragment() {
 
     private lateinit var binding: FragmentQuizBinding

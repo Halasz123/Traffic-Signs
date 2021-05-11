@@ -17,8 +17,10 @@ import com.trafficsigns.ui.fragment.list.CollectionListFragment
 import kotlinx.android.synthetic.main.group_item.view.*
 
 /**
- * @author Halasz Botond
- * @since
+ * @author: Halász Botond
+ * @since: 10/05/2021
+ *
+ * Set elements to the recyclerview on the main screen.
  */
 class MainMenuAdapter(val context: Context?) : RecyclerView.Adapter<MainMenuAdapter.MyViewHolder>(){
 

@@ -16,6 +16,14 @@ import com.trafficsigns.ui.interfaces.ItemLongClickListener
 import com.trafficsigns.ui.util.Settings
 import kotlinx.android.synthetic.main.sample_list_item.view.*
 
+/**
+ * @author: Halász Botond
+ * @since: 10/05/2021
+ *
+ * Set elements to recyclerview on SimpleListFragment,
+ * the layout can be switched dynamically.
+ */
+
 class SampleListAdapter(private val onClickNavigateAction: Int, private val itemLongClickListener: ItemLongClickListener?, val context: Context?): RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filterable {
 
     class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

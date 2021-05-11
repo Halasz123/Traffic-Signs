@@ -18,7 +18,13 @@ import com.trafficsigns.ui.constant.Key
 import com.trafficsigns.ui.util.Settings
 import com.google.android.material.tabs.TabLayoutMediator
 
-
+/**
+ * @author: Halász Botond
+ * @since: 10/05/2021
+ *
+ * It contains a view pager and a tab layout with types of Traffic Signs.
+ * For every type initialize a SampleListFragment what contains the specific signs.
+ */
 class CollectionListFragment : Fragment() {
 
     companion object {

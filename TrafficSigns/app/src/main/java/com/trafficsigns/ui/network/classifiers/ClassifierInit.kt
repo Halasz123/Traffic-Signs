@@ -5,7 +5,11 @@ import com.trafficsigns.ui.constant.General
 import org.tensorflow.lite.support.common.TensorOperator
 import org.tensorflow.lite.support.common.ops.NormalizeOp
 
-/** This TensorFlow Lite classifier works with the quantized MobileNet model.  */
+/** @author: Halász Botond
+ * @since: 10/05/2021
+ *
+ * This TensorFlow Lite classifier initialize model.
+ * */
 class ClassifierInit (activity: Activity?, device: Device?, numThreads: Int) : Classifier(activity, device, numThreads) {
 
     override val modelPath: String

@@ -25,7 +25,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-/** Classifies images with Tensorflow Lite. */
+/**
+ * @author Halász Botond
+ * @since 10/05/2021
+ *
+ * Classifies images with Tensorflow Lite.
+ * */
 public class ImageClassifier {
 
   private static final String TAG = "TfLiteCameraDemo";

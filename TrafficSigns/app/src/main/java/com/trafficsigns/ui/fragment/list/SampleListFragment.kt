@@ -24,10 +24,19 @@ import com.trafficsigns.ui.util.Settings
 
 
 const val ARG_OBJECT = "object"
-const val SAMPLE_LIST = "List"
 
+/**
+ * @author: Halász Botond
+ * @since: 10/05/2021
+ *
+ * Display a list of traffic signs on the same type.
+ * The recyclerview can be switched to Grid Layout from Linear layout and back.
+ * Search by name of sign.
+ * By pressing the sign, navigate to the DetailFragment for details about the touched sign.
+ */
 class SampleListFragment : Fragment() {
 
+    val SAMPLE_LIST = "List"
     companion object {
         @JvmStatic
         fun newInstance(trafficSignList: List<TrafficSign>): SampleListFragment {
@@ -58,10 +67,14 @@ class SampleListFragment : Fragment() {
                     container,
                     false
             )
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         localBroadcastGridReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 if (intent != null) {
-                     Settings.isGrid = intent.getBooleanExtra(Key.GRID, false)
+                    Settings.isGrid = intent.getBooleanExtra(Key.GRID, false)
                     recyclerView.layoutManager = if (! Settings.isGrid) {
                         LinearLayoutManager(activity)
                     } else {
@@ -83,11 +96,7 @@ class SampleListFragment : Fragment() {
         LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(localBroadcastGridReceiver as BroadcastReceiver, IntentFilter ("sendGridOnMessage"))
         LocalBroadcastManager.getInstance(this.requireContext()).registerReceiver(localBroadcastSearchReceiver as BroadcastReceiver, IntentFilter ("sendSearchText"))
 
-        return binding.root
-    }
 
-    @Suppress("UNCHECKED_CAST")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         arguments?.takeIf { it.containsKey(ARG_OBJECT) }?.apply {
             trafficSignList= getSerializable(ARG_OBJECT) as List<TrafficSign>
         }
