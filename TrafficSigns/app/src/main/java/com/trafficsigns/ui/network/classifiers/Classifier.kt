@@ -6,7 +6,7 @@ import android.graphics.RectF
 import android.os.SystemClock
 import android.os.Trace
 import android.util.Log
-import com.trafficsigns.ui.network.utils.Settings
+import com.trafficsigns.ui.constant.Network
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.gpu.GpuDelegate
 import org.tensorflow.lite.nnapi.NnApiDelegate
@@ -113,7 +113,7 @@ abstract class Classifier protected constructor(activity: Activity?, device: Dev
             Comparator<Recognition?> { o1, o2 -> o2.confidence.compareTo(o1.confidence) })
 
         for ((key, value) in labelProb) {
-            if(value > Settings.MINIM_CONFIDENCE_RESULT){
+            if(value > Network.MINIM_CONFIDENCE_RESULT){
                 pq.add(Recognition("" + key, key, value, null))
             }
         }

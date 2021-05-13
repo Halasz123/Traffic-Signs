@@ -1,4 +1,4 @@
-package com.trafficsigns.ui.network.utils;
+package com.trafficsigns.ui.network;
 
 import android.content.Context;
 import android.util.AttributeSet;

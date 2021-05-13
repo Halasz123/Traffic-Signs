@@ -1,4 +1,4 @@
-package com.trafficsigns.data
+package com.trafficsigns.data.dataclass
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -1,8 +1,9 @@
-package com.trafficsigns.data
+package com.trafficsigns.data.database
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.trafficsigns.data.dataclass.TrafficSign
 
 class Convertes {
 

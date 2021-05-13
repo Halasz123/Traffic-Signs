@@ -1,6 +1,6 @@
-package com.trafficsigns.ui.network.utils
+package com.trafficsigns.ui.singleton
 
-import com.trafficsigns.data.TrafficSign
+import com.trafficsigns.data.dataclass.TrafficSign
 
 /**
  * @author: Halász Botond

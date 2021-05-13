@@ -1,10 +1,13 @@
-package com.trafficsigns.data
+package com.trafficsigns.data.database.room
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.trafficsigns.data.database.Convertes
+import com.trafficsigns.data.database.dao.MyProfileDao
+import com.trafficsigns.data.dataclass.MyProfile
 import com.trafficsigns.ui.constant.Data
 
 @Database(entities = [MyProfile::class], version = 1, exportSchema = false)

@@ -35,11 +35,11 @@ import com.bumptech.glide.Glide
 import com.trafficsigns.R
 import com.trafficsigns.databinding.FragmentCameraNeuralBinding
 import com.trafficsigns.ui.adapter.NetworkResult
-import com.trafficsigns.ui.network.utils.TrafficSignMemoryCache
-import com.trafficsigns.ui.network.utils.AutoFitTextureView
+import com.trafficsigns.ui.singleton.TrafficSignMemoryCache
+import com.trafficsigns.ui.network.AutoFitTextureView
 import com.trafficsigns.ui.network.classifiers.ImageClassifier
-import com.trafficsigns.ui.network.utils.Settings
-import com.trafficsigns.ui.network.utils.TrafficHistory
+import com.trafficsigns.ui.constant.Network
+import com.trafficsigns.data.dataclass.TrafficHistory
 import com.trafficsigns.ui.network.classifiers.Classifier
 import com.trafficsigns.ui.network.classifiers.ClassifierInit
 import java.io.IOException
@@ -582,7 +582,7 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
         val result = classifier.classifyFrame(bitmap)
         bitmap?.recycle()
         val (labelId, value) = result.split("|")
-        if (value.toFloat() > Settings.MINIM_CONFIDENCE_DISPLAY) {
+        if (value.toFloat() > Network.MINIM_CONFIDENCE_DISPLAY) {
             showToast(labelId, value.toFloat())
             manageLastSigns(labelId, value.toFloat())
         }

@@ -11,7 +11,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.trafficsigns.R
-import com.trafficsigns.data.TrafficSignsCollection
+import com.trafficsigns.data.dataclass.TrafficSignsCollection
 import com.trafficsigns.ui.constant.General
 import com.trafficsigns.ui.fragment.list.CollectionListFragment
 import kotlinx.android.synthetic.main.group_item.view.*

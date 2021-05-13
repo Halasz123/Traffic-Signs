@@ -2,7 +2,7 @@ package com.trafficsigns.ui.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.trafficsigns.data.TrafficSignsCollection
+import com.trafficsigns.data.dataclass.TrafficSignsCollection
 import com.trafficsigns.ui.fragment.list.SampleListFragment
 
 /**

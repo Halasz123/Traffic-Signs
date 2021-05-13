@@ -1,4 +1,4 @@
-package com.trafficsigns.data
+package com.trafficsigns.data.dataclass
 
 import java.io.Serializable
 

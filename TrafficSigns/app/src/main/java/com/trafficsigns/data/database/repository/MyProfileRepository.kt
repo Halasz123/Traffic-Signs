@@ -1,6 +1,8 @@
-package com.trafficsigns.data
+package com.trafficsigns.data.database.repository
 
 import androidx.lifecycle.LiveData
+import com.trafficsigns.data.database.dao.MyProfileDao
+import com.trafficsigns.data.dataclass.MyProfile
 
 class MyProfileRepository(private val myProfileDao: MyProfileDao) {
 

@@ -1,9 +1,12 @@
-package com.trafficsigns.data
+package com.trafficsigns.data.database.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.*
+import com.trafficsigns.data.database.room.TrafficSignsCollectionDatabase
+import com.trafficsigns.data.database.repository.TrafficSignsCollectionRepository
+import com.trafficsigns.data.dataclass.TrafficSignsCollection
 import kotlinx.coroutines.*
 
 class TrafficSignsCollectionViewModel(application: Application): AndroidViewModel(application) {

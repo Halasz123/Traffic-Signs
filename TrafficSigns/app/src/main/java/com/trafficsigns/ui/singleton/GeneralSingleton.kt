@@ -1,14 +1,15 @@
-package com.trafficsigns.ui.util
+package com.trafficsigns.ui.singleton
 
 import com.google.gson.Gson
-import com.trafficsigns.data.TrafficSign
+import com.trafficsigns.data.dataclass.TrafficSign
 import java.lang.reflect.Type
 
 
-class GeneralFunction {
+class GeneralSingleton {
 
-    companion object {
-        val instance = GeneralFunction()
+    companion object{
+        var isGrid = false
+        val instance = GeneralSingleton()
     }
 
     fun parseJson(json: String, type: Type): MutableMap<String, TrafficSign> {

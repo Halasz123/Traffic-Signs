@@ -10,10 +10,10 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.trafficsigns.R
-import com.trafficsigns.data.TrafficSign
+import com.trafficsigns.data.dataclass.TrafficSign
 import com.trafficsigns.ui.fragment.DetailFragment
 import com.trafficsigns.ui.interfaces.ItemLongClickListener
-import com.trafficsigns.ui.util.Settings
+import com.trafficsigns.ui.singleton.GeneralSingleton
 import kotlinx.android.synthetic.main.sample_list_item.view.*
 
 /**
@@ -36,7 +36,7 @@ class SampleListAdapter(private val onClickNavigateAction: Int, private val item
             parent: ViewGroup,
             viewType: Int
     ): RecyclerView.ViewHolder {
-        return when (Settings.isGrid) {
+        return when (GeneralSingleton.isGrid) {
             true -> {
                 val itemView = LayoutInflater.from(parent.context).inflate(R.layout.sample_grid_item, parent, false)
                 GridViewHolder(itemView)
@@ -50,7 +50,7 @@ class SampleListAdapter(private val onClickNavigateAction: Int, private val item
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val currentItem = mTrafficList[position]
-        if (!Settings.isGrid) {
+        if (!GeneralSingleton.isGrid) {
             holder.itemView.name_textView.text = currentItem.name
         }
         context?.let { Glide.with(it).load(currentItem.image).override(holder.itemView.width, holder.itemView.height).into(holder.itemView.sign_imageView) }

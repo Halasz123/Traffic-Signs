@@ -1,8 +1,9 @@
-package com.trafficsigns.data
+package com.trafficsigns.data.database.dao
 
 import androidx.room.Dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.trafficsigns.data.dataclass.TrafficSignsCollection
 
 @Dao
 interface TrafficSignsCollectionDao {

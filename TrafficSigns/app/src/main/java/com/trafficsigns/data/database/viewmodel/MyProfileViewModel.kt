@@ -1,9 +1,12 @@
-package com.trafficsigns.data
+package com.trafficsigns.data.database.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.trafficsigns.data.database.room.MyProfileDatabase
+import com.trafficsigns.data.database.repository.MyProfileRepository
+import com.trafficsigns.data.dataclass.MyProfile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

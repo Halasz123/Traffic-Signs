@@ -30,8 +30,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.trafficsigns.R
-import com.trafficsigns.data.MyProfile
-import com.trafficsigns.data.MyProfileViewModel
+import com.trafficsigns.data.dataclass.MyProfile
+import com.trafficsigns.data.database.viewmodel.MyProfileViewModel
 import com.trafficsigns.databinding.FragmentProfileBinding
 import com.trafficsigns.ui.constant.Data
 import com.trafficsigns.ui.constant.ToastMessage
