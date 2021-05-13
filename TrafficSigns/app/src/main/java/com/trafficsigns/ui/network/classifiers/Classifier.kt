@@ -99,17 +99,7 @@ abstract class Classifier protected constructor(activity: Activity?, device: Dev
     protected abstract val modelPath: String
     protected abstract val labelPath: String
     protected abstract val preprocessNormalizeOp: TensorOperator
-
-    /**
-     * Gets the TensorOperator to dequantize the output probability in post processing.
-     *
-     *
-     * For quantized model, we need de-quantize the prediction with NormalizeOp (as they are all
-     * essentially linear transformation). For float model, de-quantize is not required. But to
-     * uniform the API, de-quantize is added to float model too. Mean and std are set to 0.0f and
-     * 1.0f, respectively.
-     */
-    protected abstract val postprocessNormalizeOp: TensorOperator?
+    protected abstract val postprocessNormalizeOp: TensorOperator
 
     companion object {
         const val TAG = "ClassifierWithSupport"
@@ -119,8 +109,7 @@ abstract class Classifier protected constructor(activity: Activity?, device: Dev
     }
 
     fun getTopKProbability(labelProb: Map<String, Float>): List<Recognition> {
-        val pq = PriorityQueue(
-            MAX_RESULTS,
+        val pq = PriorityQueue(MAX_RESULTS,
             Comparator<Recognition?> { o1, o2 -> o2.confidence.compareTo(o1.confidence) })
 
         for ((key, value) in labelProb) {

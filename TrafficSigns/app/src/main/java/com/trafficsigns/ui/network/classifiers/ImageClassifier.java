@@ -47,66 +47,42 @@ public class ImageClassifier {
 
   private final int[] intValues = new int[DIM_IMG_SIZE_X * DIM_IMG_SIZE_Y];
 
-  /** An instance of the driver class to run model inference with Tensorflow Lite. */
-  private Interpreter tflite;
-  private List<String> labelList;
-
-  /** A ByteBuffer to hold image data, to be feed into Tensorflow Lite as inputs. */
-  private ByteBuffer imgData;
-
-  /** An array to hold inference results, to be feed into Tensorflow Lite as outputs. */
-  private float[][] labelProbArray ;
+  private Interpreter tfliteInterpreter;
+  private final List<String> labelList;
+  private final ByteBuffer imgDataByteBuffer;
+  private final float[][] labelProbArray ;
   /** multi-stage low pass filter **/
   private float[][] filterLabelProbArray = null;
   private static final int FILTER_STAGES = 3;
   private static final float FILTER_FACTOR = 0.4f;
 
-  private PriorityQueue<Map.Entry<String, Float>> sortedLabels =
+  private final PriorityQueue<Map.Entry<String, Float>> sortedLabels =
           new PriorityQueue<>(RESULTS_TO_SHOW, (o1, o2) -> (o1.getValue()).compareTo(o2.getValue()));
 
   /** Initializes an {@code ImageClassifier}. */
   public ImageClassifier(Activity activity) throws IOException {
-    tflite = new Interpreter(loadModelFile(activity));
+    tfliteInterpreter = new Interpreter(loadModelFile(activity));
     labelList = loadLabelList(activity);
-    imgData = ByteBuffer.allocateDirect( 4 * DIM_BATCH_SIZE * DIM_IMG_SIZE_X * DIM_IMG_SIZE_Y * DIM_PIXEL_SIZE);
-    imgData.order(ByteOrder.nativeOrder());
+    imgDataByteBuffer = ByteBuffer.allocateDirect( 4 * DIM_BATCH_SIZE * DIM_IMG_SIZE_X * DIM_IMG_SIZE_Y * DIM_PIXEL_SIZE);
+    imgDataByteBuffer.order(ByteOrder.nativeOrder());
     labelProbArray = new float[1][labelList.size()];
     filterLabelProbArray = new float[FILTER_STAGES][labelList.size()];
     Log.d(TAG, "Created a Tensorflow Lite Image Classifier.");
   }
 
-  /** Classifies a frame from the preview stream. */
   public String classifyFrame(Bitmap bitmap) {
-    if (tflite == null) {
+    if (tfliteInterpreter == null) {
       Log.e(TAG, "Image classifier has not been initialized; Skipped.");
       return "Uninitialized Classifier.";
     }
     convertBitmapToByteBuffer(bitmap);
     long startTime = SystemClock.uptimeMillis();
-    tflite.run(imgData, labelProbArray);
+    tfliteInterpreter.run(imgDataByteBuffer, labelProbArray);
     long endTime = SystemClock.uptimeMillis();
-    Log.d(TAG, "Timecost to run model inference: " + Long.toString(endTime - startTime));
+    Log.d(TAG, "Time: " + Long.toString(endTime - startTime));
 
     applyFilter();
     return printTopKLabels();
-  }
-
-  PriorityQueue<Map.Entry<String, Float>> classifyImage(Bitmap bitmap) {
-    if (tflite == null) {
-      Log.e(TAG, "Image classifier has not been initialized; Skipped.");
-      return null;
-    }
-    convertBitmapToByteBuffer(bitmap);
-    // Here's where the magic happens!!!
-    long startTime = SystemClock.uptimeMillis();
-    tflite.run(imgData, labelProbArray);
-    long endTime = SystemClock.uptimeMillis();
-    Log.d(TAG, "Timecost to run model inference: " + Long.toString(endTime - startTime));
-
-    // smooth the results
-    applyFilter();
-
-    return getKLabels();
   }
 
   void applyFilter(){
@@ -130,8 +106,8 @@ public class ImageClassifier {
 
   /** Closes tflite to release resources. */
   public void close() {
-    tflite.close();
-    tflite = null;
+    tfliteInterpreter.close();
+    tfliteInterpreter = null;
   }
 
   /** Reads label list from Assets. */
@@ -159,19 +135,19 @@ public class ImageClassifier {
 
   /** Writes Image data into a {@code ByteBuffer}. */
   private void convertBitmapToByteBuffer(Bitmap bitmap) {
-    if (imgData == null || bitmap == null) {
+    if (imgDataByteBuffer == null || bitmap == null) {
       return;
     }
-    imgData.rewind();
+    imgDataByteBuffer.rewind();
     bitmap.getPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
     int pixel = 0;
     long startTime = SystemClock.uptimeMillis();
     for (int i = 0; i < DIM_IMG_SIZE_X; ++i) {
       for (int j = 0; j < DIM_IMG_SIZE_Y; ++j) {
         final int val = intValues[pixel++];
-        imgData.putFloat((((val >> 16) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);
-        imgData.putFloat((((val >> 8) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);
-        imgData.putFloat((((val) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);
+        imgDataByteBuffer.putFloat((((val >> 16) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);
+        imgDataByteBuffer.putFloat((((val >> 8) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);
+        imgDataByteBuffer.putFloat((((val) & 0xFF)-IMAGE_MEAN)/IMAGE_STD);
       }
     }
     long endTime = SystemClock.uptimeMillis();
@@ -196,14 +172,4 @@ public class ImageClassifier {
     return textToShow;
   }
 
-  private PriorityQueue<Map.Entry<String, Float>> getKLabels(){
-    for (int i = 0; i < labelList.size(); ++i) {
-      sortedLabels.add(
-              new AbstractMap.SimpleEntry<>(labelList.get(i), labelProbArray[0][i]));
-      if (sortedLabels.size() > RESULTS_TO_SHOW) {
-        sortedLabels.poll();
-      }
-    }
-    return sortedLabels;
-  }
 }
