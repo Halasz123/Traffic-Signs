@@ -23,7 +23,18 @@ import com.trafficsigns.ui.adapter.SampleListAdapter
 import com.trafficsigns.ui.util.Settings
 import com.google.android.material.navigation.NavigationView
 
-
+/**
+ * @author: Halász Botond
+ * @since: 10/05/2021
+ *
+ * This is the home screen of the application,
+ * here is the base of the navigation system.
+ * Display a list of traffic sign types, after touching one of them,
+ * we are navigating to the CollectionListFragment. Search field on the top with
+ * onChange event for refreshing recyclerview and adapter. Basically the adapter is
+ * replaced after text change.
+ * Navigation drawer menu on the left side.
+**/
 class MainScreenFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
 
     lateinit var trafficViewModel: TrafficSignsCollectionViewModel

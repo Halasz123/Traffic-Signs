@@ -22,10 +22,18 @@ import com.trafficsigns.ui.util.Settings
 
 const val KNOWN_TAG = "knownsigns"
 
+/**
+ * @author: Halász Botond
+ * @since: 05/10/2021
+ *
+ * Display a list of known traffic signs, read data from database.
+ * The elements can be deleted by long click.
+ */
+
 class KnownSignsFragment : Fragment(), ItemLongClickListener {
 
     private lateinit var binding: FragmentKnownSignsBinding
-    lateinit var mProfileViewModel: MyProfileViewModel
+    private lateinit var mProfileViewModel: MyProfileViewModel
     private lateinit var trafficSignListAdapter: SampleListAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

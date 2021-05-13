@@ -49,6 +49,15 @@ import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
+/**
+ * @author: Halász Botond
+ * @since: 10/05/2021
+ *
+ * Open Camera2 and it classifies every frame with an ImageClassifier object
+ * and shows the result.
+ * Capture one frame by button press and see the more detailed result on Dialog.
+ */
+
 class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResultCallback {
 
     private val TAG = "TfLiteCameraTraffic"
@@ -138,10 +147,10 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
 
     @SuppressLint("SetTextI18n")
     private fun showToast(labelId: String, confidence: Float) {
-     activity?.runOnUiThread {
-            if(confidence != 0f){
+        activity?.runOnUiThread {
+            if (confidence != 0f) {
                 val elem = TrafficSignMemoryCache.instance.getCachedTrafficSign(labelId)
-                binding.predictedTextView.text = "${elem?.name} : ${confidence*100}%"
+                binding.predictedTextView.text = "${elem?.name} : ${confidence * 100}%"
                 context?.let {
                     Glide
                         .with(it)
@@ -150,8 +159,7 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
                         .placeholder(R.drawable.ic_stop_splash)
                         .into(binding.trafficImage)
                 }
-            }
-            else {
+            } else {
                 binding.predictedTextView.text = labelId
             }
         }
@@ -178,7 +186,14 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
      * @param aspectRatio The aspect ratio
      * @return The optimal `Size`, or an arbitrary one if none were big enough
      */
-    private fun chooseOptimalSize(choices: Array<Size>, textureViewWidth: Int, textureViewHeight: Int, maxWidth: Int, maxHeight: Int, aspectRatio: Size): Size? {
+    private fun chooseOptimalSize(
+        choices: Array<Size>,
+        textureViewWidth: Int,
+        textureViewHeight: Int,
+        maxWidth: Int,
+        maxHeight: Int,
+        aspectRatio: Size
+    ): Size? {
         val bigEnough: MutableList<Size> = ArrayList()
         val notBigEnough: MutableList<Size> = ArrayList()
         val w = aspectRatio.width
@@ -205,10 +220,11 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
             }
         }
     }
+
     companion object {
         private val ORIENTATIONS = SparseIntArray()
 
-        fun addOrientations(){
+        fun addOrientations() {
             ORIENTATIONS.append(Surface.ROTATION_0, 90)
             ORIENTATIONS.append(Surface.ROTATION_90, 0)
             ORIENTATIONS.append(Surface.ROTATION_180, 270)
@@ -216,8 +232,8 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
         }
     }
 
-
     private lateinit var binding: FragmentCameraNeuralBinding
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -244,10 +260,6 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
             val list = processImage(bitmap)
             showDialog(bitmap, list)
         }
-    }
-
-    private fun processImage(bitmap: Bitmap?): List<Classifier.Recognition> {
-        return bitmap?.let { classifierForDialog.recognizeImage(it) }!!
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -283,6 +295,14 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
         super.onDestroy()
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    private fun processImage(bitmap: Bitmap?): List<Classifier.Recognition> {
+        return bitmap?.let { classifierForDialog.recognizeImage(it) }!!
+    }
+
     /**
      * Sets up member variables related to camera.
      *
@@ -290,8 +310,7 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
      * @param height The height of available size for camera preview
      */
     private fun setUpCameraOutputs(width: Int, height: Int) {
-        val activity  = requireActivity()
-        val manager = activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+        val manager = activity?.getSystemService(Context.CAMERA_SERVICE) as CameraManager
         try {
             for (cameraId in manager.cameraIdList) {
                 val characteristics = manager.getCameraCharacteristics(cameraId)
@@ -299,13 +318,14 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
                 if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
                     continue
                 }
-                val map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP) ?: continue
+                val map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
+                    ?: continue
                 val largest = Collections.max(
                     listOf(*map.getOutputSizes(ImageFormat.JPEG)), CompareSizesByArea()
                 )
-                imageReader = ImageReader.newInstance(largest.width, largest.height, ImageFormat.JPEG,2)
-                val displayRotation = activity.display?.rotation
-                val sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION)!!
+                imageReader = ImageReader.newInstance(largest.width, largest.height, ImageFormat.JPEG, 2)
+                val displayRotation = activity?.display?.rotation
+                val sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION)
                 var swappedDimensions = false
                 when (displayRotation) {
                     Surface.ROTATION_0, Surface.ROTATION_180 -> if (sensorOrientation == 90 || sensorOrientation == 270) {
@@ -317,7 +337,7 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
                     else -> Log.e(TAG, "Display rotation is invalid: $displayRotation")
                 }
                 val displaySize = Point()
-                activity.display?.getRealSize(displaySize)
+                activity?.display?.getRealSize(displaySize)
                 var rotatedPreviewWidth = width
                 var rotatedPreviewHeight = height
                 var maxPreviewWidth = displaySize.x
@@ -378,33 +398,30 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
 
     private fun openCamera(width: Int, height: Int) {
         checkedPermissions = if (!checkedPermissions && !allPermissionsGranted()) {
-            requestPermissions(requireActivity(), getRequiredPermissions(), PERMISSIONS_REQUEST_CODE)
+            requestPermissions(
+                requireActivity(),
+                getRequiredPermissions(),
+                PERMISSIONS_REQUEST_CODE
+            )
             return
         } else {
             true
         }
         setUpCameraOutputs(width, height)
         configureTransform(width, height)
-        val activity: Activity = requireActivity()
-        val manager = activity.getSystemService(Context.CAMERA_SERVICE) as CameraManager
+        val manager = activity?.getSystemService(Context.CAMERA_SERVICE) as CameraManager
         try {
             if (!cameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
                 throw RuntimeException("Time out waiting to lock camera opening.")
             }
-            if (ActivityCompat.checkSelfPermission( requireContext(), Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED
-            ) {
-
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return
-            }
             cameraId.let {
+                if (context?.let { it1 ->
+                        ActivityCompat.checkSelfPermission(it1, Manifest.permission.CAMERA)
+                    } != PackageManager.PERMISSION_GRANTED) {
+                    activity?.let { activity ->
+                        requestPermissions(activity, getRequiredPermissions(), PERMISSIONS_REQUEST_CODE)}
+                    return
+                }
                 manager.openCamera(it, stateCallback, backgroundHandler)
             }
         } catch (e: CameraAccessException) {
@@ -436,24 +453,13 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
 
     }
 
-
     private fun allPermissionsGranted(): Boolean {
         for (permission in getRequiredPermissions()) {
-            if (permission?.let { ContextCompat.checkSelfPermission(requireContext(), it) }
-                != PackageManager.PERMISSION_GRANTED
-            ) {
+            if (permission?.let { ContextCompat.checkSelfPermission(requireContext(), it) } != PackageManager.PERMISSION_GRANTED) {
                 return false
             }
         }
         return true
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     private fun closeCamera() {
@@ -504,7 +510,8 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
             val texture: SurfaceTexture? = textureView.surfaceTexture
             texture?.setDefaultBufferSize(previewSize.width, previewSize.height)
             val surface = Surface(texture)
-            previewRequestBuilder = cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
+            previewRequestBuilder =
+                cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
             previewRequestBuilder.addTarget(surface)
 
             cameraDevice?.createCaptureSession(
@@ -516,15 +523,9 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
                         }
                         captureSession = cameraCaptureSession
                         try {
-                            previewRequestBuilder.set(
-                                CaptureRequest.CONTROL_AF_MODE,
-                                CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE
-                            )
-
+                            previewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
                             previewRequest = previewRequestBuilder.build()
-                            captureSession?.setRepeatingRequest(
-                                previewRequest, captureCallback, backgroundHandler
-                            )
+                            captureSession?.setRepeatingRequest(previewRequest, captureCallback, backgroundHandler)
                         } catch (e: CameraAccessException) {
                             e.printStackTrace()
                         }
@@ -553,19 +554,13 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
         val rotation = activity?.display?.rotation
         val matrix = Matrix()
         val viewRect = RectF(0F, 0F, viewWidth.toFloat(), viewHeight.toFloat())
-        val bufferRect = RectF(
-            0F, 0F, previewSize.height.toFloat(),
-            previewSize.width.toFloat()
-        )
+        val bufferRect = RectF(0F, 0F, previewSize.height.toFloat(), previewSize.width.toFloat())
         val centerX = viewRect.centerX()
         val centerY = viewRect.centerY()
         if (Surface.ROTATION_90 == rotation || Surface.ROTATION_270 == rotation) {
             bufferRect.offset(centerX - bufferRect.centerX(), centerY - bufferRect.centerY())
             matrix.setRectToRect(viewRect, bufferRect, Matrix.ScaleToFit.FILL)
-            val scale = Math.max(
-                viewHeight.toFloat() / previewSize.height,
-                viewWidth.toFloat() / previewSize.width
-            )
+            val scale = Math.max(viewHeight.toFloat() / previewSize.height, viewWidth.toFloat() / previewSize.width)
             matrix.postScale(scale, scale, centerX, centerY)
             matrix.postRotate((90 * (rotation - 2)).toFloat(), centerX, centerY)
         } else if (Surface.ROTATION_180 == rotation) {
@@ -587,8 +582,7 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
         val result = classifier.classifyFrame(bitmap)
         bitmap?.recycle()
         val (labelId, value) = result.split("|")
-        if(value.toFloat() > Settings.MINIM_CONFIDENCE_DISPLAY)
-        {
+        if (value.toFloat() > Settings.MINIM_CONFIDENCE_DISPLAY) {
             showToast(labelId, value.toFloat())
             manageLastSigns(labelId, value.toFloat())
         }
@@ -596,28 +590,26 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
 
     private fun manageLastSigns(labelId: String, value: Float) {
         val elem = classifierCacheInstance.getCachedTrafficSign(labelId)
-        val now = System.currentTimeMillis()/1000
-        if (listOfTrafficSignHistory.count() == 0){
+        val now = System.currentTimeMillis() / 1000
+        if (listOfTrafficSignHistory.count() == 0) {
             listOfTrafficSignHistory.add(TrafficHistory(labelId, now, value))
-        }
-        else if (elem != null && (now - listOfTrafficSignHistory[0].timeStamp) >= 2 ){
-          listOfTrafficSignHistory.add(0, TrafficHistory(labelId, now, value))
+        } else if (elem != null && (now - listOfTrafficSignHistory[0].timeStamp) >= 2) {
+            listOfTrafficSignHistory.add(0, TrafficHistory(labelId, now, value))
         }
 
         val imageViews = listOf(binding.lElem0, binding.lElem1, binding.lElem2, binding.lElem3)
-
         val activity = requireActivity()
-        var i=0
+        var i = 0
         activity.runOnUiThread {
             context?.let {
-            while (i < 4 && i< listOfTrafficSignHistory.count() ){
+                while (i < 4 && i < listOfTrafficSignHistory.count()) {
                     Glide
                         .with(it)
                         .load(classifierCacheInstance.getCachedTrafficSign(listOfTrafficSignHistory[i].id)?.image)
                         .override(imageViews[i].width, imageViews[i].height)
                         .placeholder(R.drawable.ic_stop_splash)
                         .into(imageViews[i])
-                    i +=1
+                    i += 1
                 }
             }
         }

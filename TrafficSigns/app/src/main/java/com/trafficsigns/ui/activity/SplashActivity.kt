@@ -5,12 +5,10 @@ import android.animation.ObjectAnimator.ofFloat
 import android.animation.ValueAnimator
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.animation.Animation
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -22,9 +20,9 @@ import com.trafficsigns.ui.constant.General
 import com.trafficsigns.ui.constant.SharedPreference
 import com.trafficsigns.ui.constant.ToastMessage
 import com.trafficsigns.ui.network.utils.TrafficSignMemoryCache
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.trafficsigns.R
+import com.trafficsigns.ui.util.GeneralFunction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -35,10 +33,10 @@ import java.util.*
 import kotlin.concurrent.schedule
 
 
-const val PREFS_NAME = "MyPrefsFile"
-const val SLASH_TAG = "Splash"
-
 class SplashActivity: AppCompatActivity() {
+
+    private val PREFS_NAME = "MyPrefsFile"
+    private val SLASH_TAG = "Splash"
 
     private lateinit var binding: SplashScreenBinding
     private var myData = ""
@@ -48,7 +46,14 @@ class SplashActivity: AppCompatActivity() {
     private lateinit var internetErrorToast: Toast
     private lateinit var firstTimeSH: SharedPreferences
 
-    @RequiresApi(Build.VERSION_CODES.KITKAT)
+    /**
+     * @author: Halász Botond
+     * @since: 10/05/2021
+     *
+     * First screen visible after application start.
+     * Animation is taking place until json data is downloaded from Dropbox.
+     * After json Parse write data to Room Database.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.splash_screen)
@@ -119,18 +124,18 @@ class SplashActivity: AppCompatActivity() {
     private fun startDownloadProcess() {
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
-                downloadDataBlocking()
+                downloadData()
             }
         }
     }
 
-    private fun downloadDataBlocking(){
+    private fun downloadData(){
         val client = OkHttpClient()
         val request = Request.Builder().url(Data.URL).build()
         return client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 myData = response.body()?.string() ?: ""
-                parseJson()
+                writeDataToDatabase()
                 goToMain()
             }
 
@@ -142,10 +147,8 @@ class SplashActivity: AppCompatActivity() {
         })
     }
 
-    private fun parseJson() {
-        val gson = Gson()
-        val type = object : TypeToken<MutableMap<String, TrafficSign>>() {}.type
-        val list: MutableMap<String, TrafficSign> = gson.fromJson(myData, type)
+    private fun writeDataToDatabase() {
+        val list = GeneralFunction.instance.parseJson(myData, object : TypeToken<MutableMap<String, TrafficSign>>() {}.type)
         val classifierLabels = FileUtil.loadLabels(this, General.CLASSIFICATION_LABELS_FILE_NAME)
         val cache = TrafficSignMemoryCache.instance
         list.forEach {

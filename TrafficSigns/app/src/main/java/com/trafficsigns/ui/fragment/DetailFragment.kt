@@ -24,6 +24,15 @@ import com.trafficsigns.ui.constant.ToastMessage
 
 const val DETAIL_TAG = "detailFragment"
 
+/**
+ * @author: Halász Botond
+ * @since: 10/05/2021
+ *
+ * Display some details about the specific sign.
+ * Star button press - the sign will be know as "KnownSign", add to the RoomDatabase
+ * and it will be visible in the KnownSignsFragment
+ * Also we can navigate back to the home fragment.
+ */
 class DetailFragment : Fragment(){
 
     companion object {
