@@ -10,6 +10,7 @@ import android.widget.SearchView
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -69,14 +70,14 @@ class MainScreenFragment : Fragment(), NavigationView.OnNavigationItemSelectedLi
         }
 
         trafficViewModel = ViewModelProvider(this).get(TrafficSignsCollectionViewModel::class.java)
-        trafficViewModel.readAllData.observe(viewLifecycleOwner, { collection ->
+        trafficViewModel.readAllData.observe(viewLifecycleOwner) { collection ->
             menuAdapter.changeData(collection)
             collectionList = collection
             allTrafficSign = ArrayList<TrafficSign>()
             collection.forEach {
                 allTrafficSign.addAll(it.trafficSigns)
             }
-        })
+        }
 
         binding.search.setOnQueryTextListener( object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -128,9 +129,6 @@ class MainScreenFragment : Fragment(), NavigationView.OnNavigationItemSelectedLi
             }
             R.id.quizFragment -> {
                 binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_quizFragment)
-            }
-            R.id.neuralNetworkFragment -> {
-                binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_neuralNetworkFragment)
             }
             R.id.cameraNeural -> {
                 binding.root.findNavController().navigate(R.id.action_mainScreenFragment_to_cameraNeural)

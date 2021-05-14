@@ -300,7 +300,7 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
     }
 
     private fun processImage(bitmap: Bitmap?): List<Classifier.Recognition> {
-        return bitmap?.let { classifierForDialog.recognizeImage(it,0) }!!
+        return bitmap?.let { classifierForDialog.recognizeImage(it) }!!
     }
 
     /**

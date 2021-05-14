@@ -24,9 +24,6 @@
             app:popEnterAnim="@anim/from_right"
             app:popExitAnim="@anim/to_left" />
         <action
-            android:id="@+id/action_mainScreenFragment_to_neuralNetworkFragment"
-            app:destination="@id/neuralNetworkFragment" />
-        <action
             android:id="@+id/action_mainScreenFragment_to_knownSigns"
             app:destination="@id/knownSigns" />
         <action
@@ -104,11 +101,6 @@
             app:popExitAnim="@anim/to_down"
             app:destination="@id/quizFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/neuralNetworkFragment"
-        android:name="com.trafficsigns.ui.network.NeuralNetworkFragment"
-        android:label="fragment_neural_network"
-        tools:layout="@layout/fragment_neural_network" />
     <fragment
         android:id="@+id/knownSigns"
         android:name="com.trafficsigns.ui.fragment.profile.KnownSignsFragment"
