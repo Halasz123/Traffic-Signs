@@ -99,7 +99,7 @@ class NeuralNetworkFragment : Fragment() {
     }
 
     private fun processImage(bitmap: Bitmap): List<Classifier.Recognition> {
-        return classifier.recognizeImage(bitmap)
+        return classifier.recognizeImage(bitmap,0)
     }
 
     override fun onDestroy() {
