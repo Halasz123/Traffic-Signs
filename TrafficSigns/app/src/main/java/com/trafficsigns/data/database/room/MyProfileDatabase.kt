@@ -10,6 +10,13 @@ import com.trafficsigns.data.database.dao.MyProfileDao
 import com.trafficsigns.data.dataclass.MyProfile
 import com.trafficsigns.ui.constant.Data
 
+/**
+ * @author Halász Botond
+ * @since 14/05/2021
+ *
+ * Contains the database holder and serves as the main access point
+ * for the underlying connection to your app's persisted, relational data.
+ */
 @Database(entities = [MyProfile::class], version = 1, exportSchema = false)
 @TypeConverters(Convertes::class)
 abstract  class MyProfileDatabase: RoomDatabase() {

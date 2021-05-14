@@ -26,7 +26,8 @@ import kotlin.math.min
 /** @author: Halász Botond
  *  @since: 10/05/2021
  *
- * A classifier specialized to label images using TensorFlow Lite.
+ * A classifier specialized to classify images with Tensorflow Lite models.
+ * For an input image it can decide what it is. Depends on neural network.
  * */
 abstract class Classifier protected constructor(activity: Activity?, device: Device?, numThreads: Int) {
 

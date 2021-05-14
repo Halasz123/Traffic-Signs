@@ -9,6 +9,13 @@ import com.trafficsigns.data.database.repository.TrafficSignsCollectionRepositor
 import com.trafficsigns.data.dataclass.TrafficSignsCollection
 import kotlinx.coroutines.*
 
+/**
+ * @author Halász Botond
+ * @since 14/05/2021
+ *
+ * Provide data to the UI and survive configuration changes.
+ * Acts as a communication center between the Repository and the UI.
+ */
 class TrafficSignsCollectionViewModel(application: Application): AndroidViewModel(application) {
 
     val readAllData: LiveData<List<TrafficSignsCollection>>

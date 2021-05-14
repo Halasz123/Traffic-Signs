@@ -1,21 +1,21 @@
 package com.trafficsigns.ui.network.classifiers
 
 import android.app.Activity
-import com.trafficsigns.ui.constant.General
+import com.trafficsigns.ui.constant.Network
 import org.tensorflow.lite.support.common.TensorOperator
 import org.tensorflow.lite.support.common.ops.NormalizeOp
 
 /** @author: Halász Botond
  * @since: 10/05/2021
  *
- * This TensorFlow Lite classifier initialize model.
+ * Set the parameters of Tensorflow Lite Classifier.
  * */
 class ClassifierInit (activity: Activity?, device: Device?, numThreads: Int) : Classifier(activity, device, numThreads) {
 
     override val modelPath: String
          get() = "MyModel200.tflite"
     override val labelPath: String
-         get() = General.CLASSIFICATION_LABELS_FILE_NAME
+         get() = Network.CLASSIFICATION_LABELS_FILE_NAME
     override val preprocessNormalizeOp: TensorOperator
          get() = NormalizeOp(IMAGE_MEAN, IMAGE_STD)
     override val postprocessNormalizeOp: TensorOperator

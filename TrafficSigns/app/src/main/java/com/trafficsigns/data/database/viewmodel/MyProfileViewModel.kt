@@ -10,6 +10,13 @@ import com.trafficsigns.data.dataclass.MyProfile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * @author Halász Botond
+ * @since 14/05/2021
+ *
+ * Provide data to the UI and survive configuration changes.
+ * Acts as a communication center between the Repository and the UI.
+ */
 class MyProfileViewModel(application: Application): AndroidViewModel(application) {
 
     val myProfile: LiveData<MyProfile>

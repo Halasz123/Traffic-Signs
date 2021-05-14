@@ -4,6 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.trafficsigns.data.dataclass.MyProfile
 
+/**
+ * @author Halász Botond
+ * @since 14/05/2021
+ *
+ * It is an interface of MyProfileDatabase and his queries.
+ * Contains the methods used for accessing the database.
+ */
 @Dao
 interface MyProfileDao {
 

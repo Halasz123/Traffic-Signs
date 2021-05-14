@@ -5,6 +5,14 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.trafficsigns.data.dataclass.TrafficSign
 
+
+/**
+ * @author Halász Botond
+ * @since 14/05/2021
+ *
+ * Converts objects to Json and back.
+ * It is used before upload data to the database and after get data from database.
+ */
 class Convertes {
 
     @TypeConverter

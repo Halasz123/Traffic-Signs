@@ -1,5 +1,11 @@
 package com.trafficsigns.ui.constant
 
+/**
+ * @author Halász Botond
+ * @since 14/05/2021
+ *
+ * Contains alert messages.
+ */
 object Alert {
     const val YES = "yes"
     const val NO = "no"
