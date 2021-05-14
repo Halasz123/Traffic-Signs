@@ -12,13 +12,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.trafficsigns.R
-import com.trafficsigns.data.MyProfileViewModel
-import com.trafficsigns.data.TrafficSign
+import com.trafficsigns.data.database.viewmodel.MyProfileViewModel
+import com.trafficsigns.data.dataclass.TrafficSign
 import com.trafficsigns.databinding.FragmentKnownSignsBinding
 import com.trafficsigns.ui.adapter.SampleListAdapter
 import com.trafficsigns.ui.constant.Alert
 import com.trafficsigns.ui.interfaces.ItemLongClickListener
-import com.trafficsigns.ui.util.Settings
+import com.trafficsigns.ui.singleton.GeneralSingleton
 
 const val KNOWN_TAG = "knownsigns"
 
@@ -49,7 +49,7 @@ class KnownSignsFragment : Fragment(), ItemLongClickListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Settings.isGrid = false
+        GeneralSingleton.isGrid = false
         trafficSignListAdapter = SampleListAdapter(R.id.action_knownSigns_to_detailFragment, this, context)
         binding.recyclerview.apply {
             setHasFixedSize(true)

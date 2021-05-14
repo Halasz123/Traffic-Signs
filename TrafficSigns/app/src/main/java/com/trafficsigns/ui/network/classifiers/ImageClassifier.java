@@ -6,10 +6,9 @@ import android.graphics.Bitmap;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.trafficsigns.ui.constant.General;
+import com.trafficsigns.ui.constant.Network;
 
 import org.tensorflow.lite.Interpreter;
-
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,13 +33,13 @@ import java.util.PriorityQueue;
 public class ImageClassifier {
 
   private static final String TAG = "TfLiteCameraDemo";
-  private static final String MODEL_PATH = "KagleModel100EPIL.tflite";
-  private static final String LABEL_PATH = General.CLASSIFICATION_LABELS_FILE_NAME;
+  private static final String MODEL_PATH = "MyModel200.tflite";
+  private static final String LABEL_PATH = Network.CLASSIFICATION_LABELS_FILE_NAME;
   private static final int RESULTS_TO_SHOW = 1;
   private static final int DIM_BATCH_SIZE = 1;
   private static final int DIM_PIXEL_SIZE = 3;
-  public static final int DIM_IMG_SIZE_X = 30;
-  public static final int DIM_IMG_SIZE_Y = 30;
+  public static final int DIM_IMG_SIZE_X = 32;
+  public static final int DIM_IMG_SIZE_Y = 32;
   private static final int IMAGE_MEAN = 0;
   private static final float IMAGE_STD = 255.0f;
 

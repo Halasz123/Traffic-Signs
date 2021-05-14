@@ -1,5 +1,11 @@
 package com.trafficsigns.ui.constant
 
+/**
+ * @author Halasz Botond
+ * @since 14/05/2021
+ *
+ * Contains all toast messages what is used in project.
+ */
 object ToastMessage {
     const val INTERNET = "Please turn on the internet!"
     const val QUIZ_WARNING = "You have to learn minimum 5 traffic sign!"

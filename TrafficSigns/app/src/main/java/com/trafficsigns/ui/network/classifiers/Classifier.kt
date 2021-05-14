@@ -6,7 +6,7 @@ import android.graphics.RectF
 import android.os.SystemClock
 import android.os.Trace
 import android.util.Log
-import com.trafficsigns.ui.network.utils.Settings
+import com.trafficsigns.ui.constant.Network
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.gpu.GpuDelegate
 import org.tensorflow.lite.nnapi.NnApiDelegate
@@ -26,7 +26,8 @@ import kotlin.math.min
 /** @author: Halász Botond
  *  @since: 10/05/2021
  *
- * A classifier specialized to label images using TensorFlow Lite.
+ * A classifier specialized to classify images with Tensorflow Lite models.
+ * For an input image it can decide what it is. Depends on neural network.
  * */
 abstract class Classifier protected constructor(activity: Activity?, device: Device?, numThreads: Int) {
 
@@ -113,7 +114,7 @@ abstract class Classifier protected constructor(activity: Activity?, device: Dev
             Comparator<Recognition?> { o1, o2 -> o2.confidence.compareTo(o1.confidence) })
 
         for ((key, value) in labelProb) {
-            if(value > Settings.MINIM_CONFIDENCE_RESULT){
+            if(value > Network.MINIM_CONFIDENCE_RESULT){
                 pq.add(Recognition("" + key, key, value, null))
             }
         }

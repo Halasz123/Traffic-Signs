@@ -13,8 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.trafficsigns.R
-import com.trafficsigns.data.MyProfileViewModel
-import com.trafficsigns.data.TrafficSign
+import com.trafficsigns.data.database.viewmodel.MyProfileViewModel
+import com.trafficsigns.data.dataclass.TrafficSign
 import com.trafficsigns.databinding.FragmentQuizBinding
 import com.trafficsigns.ui.constant.ToastMessage
 import java.util.*

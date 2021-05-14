@@ -16,11 +16,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.trafficsigns.R
-import com.trafficsigns.data.TrafficSign
+import com.trafficsigns.data.dataclass.TrafficSign
 import com.trafficsigns.databinding.FragmentSampleListBinding
 import com.trafficsigns.ui.adapter.SampleListAdapter
 import com.trafficsigns.ui.constant.Key
-import com.trafficsigns.ui.util.Settings
+import com.trafficsigns.ui.singleton.GeneralSingleton
 
 
 const val ARG_OBJECT = "object"
@@ -74,8 +74,8 @@ class SampleListFragment : Fragment() {
         localBroadcastGridReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 if (intent != null) {
-                    Settings.isGrid = intent.getBooleanExtra(Key.GRID, false)
-                    recyclerView.layoutManager = if (! Settings.isGrid) {
+                    GeneralSingleton.isGrid = intent.getBooleanExtra(Key.GRID, false)
+                    recyclerView.layoutManager = if (! GeneralSingleton.isGrid) {
                         LinearLayoutManager(activity)
                     } else {
                         GridLayoutManager(activity,2 )
@@ -108,7 +108,7 @@ class SampleListFragment : Fragment() {
 
         recyclerView.apply {
             setHasFixedSize(true)
-            layoutManager = if (!Settings.isGrid) {
+            layoutManager = if (!GeneralSingleton.isGrid) {
                 LinearLayoutManager(requireContext())
             } else {
                 GridLayoutManager(requireContext(),2 )

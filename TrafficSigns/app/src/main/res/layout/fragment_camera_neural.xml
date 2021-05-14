@@ -26,7 +26,7 @@
         android:focusable="true"
         android:contentDescription="TODO" />
 
-    <com.trafficsigns.ui.network.utils.AutoFitTextureView
+    <com.trafficsigns.ui.network.AutoFitTextureView
         android:id="@+id/textureView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

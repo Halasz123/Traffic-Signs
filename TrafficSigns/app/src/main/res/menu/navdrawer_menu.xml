@@ -16,10 +16,6 @@
         android:icon="@drawable/ic_baseline_bubble_chart_24"
         android:title="@string/quiz" />
 
-    <item android:id="@+id/neuralNetworkFragment"
-        android:title="@string/photo"
-        android:icon="@drawable/ic_baseline_photo_camera_24"/>
-
     <item android:id="@+id/cameraNeural"
         android:title="@string/live"
         android:icon="@drawable/ic_baseline_live_tv_24"/>

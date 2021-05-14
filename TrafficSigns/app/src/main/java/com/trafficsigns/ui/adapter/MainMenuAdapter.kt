@@ -11,8 +11,8 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.trafficsigns.R
-import com.trafficsigns.data.TrafficSignsCollection
-import com.trafficsigns.ui.constant.General
+import com.trafficsigns.data.dataclass.TrafficSignsCollection
+import com.trafficsigns.ui.constant.Network
 import com.trafficsigns.ui.fragment.list.CollectionListFragment
 import kotlinx.android.synthetic.main.group_item.view.*
 
@@ -40,7 +40,7 @@ class MainMenuAdapter(val context: Context?) : RecyclerView.Adapter<MainMenuAdap
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val  currentItem = collectionList[position]
 
-        holder.itemView.text_view_list_item.text = currentItem.groupId.capitalize() + General.SIGNS
+        holder.itemView.text_view_list_item.text = currentItem.groupId.capitalize() + Network.SIGNS
         loadImageWithGlide(currentItem.trafficSigns[0].image, holder.itemView.image_view_list_item)
         loadImageWithGlide(currentItem.trafficSigns[1].image, holder.itemView.imageView)
 

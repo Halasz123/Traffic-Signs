@@ -13,16 +13,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.trafficsigns.data.*
 import com.trafficsigns.databinding.SplashScreenBinding
 import com.trafficsigns.ui.constant.Data
-import com.trafficsigns.ui.constant.General
-import com.trafficsigns.ui.constant.SharedPreference
 import com.trafficsigns.ui.constant.ToastMessage
-import com.trafficsigns.ui.network.utils.TrafficSignMemoryCache
+import com.trafficsigns.ui.singleton.TrafficSignMemoryCache
 import com.google.gson.reflect.TypeToken
 import com.trafficsigns.R
-import com.trafficsigns.ui.util.GeneralFunction
+import com.trafficsigns.data.database.viewmodel.MyProfileViewModel
+import com.trafficsigns.data.database.viewmodel.TrafficSignsCollectionViewModel
+import com.trafficsigns.data.dataclass.MyProfile
+import com.trafficsigns.data.dataclass.TrafficSign
+import com.trafficsigns.data.dataclass.TrafficSignsCollection
+import com.trafficsigns.ui.constant.Key
+import com.trafficsigns.ui.constant.Network
+import com.trafficsigns.ui.singleton.GeneralSingleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -66,10 +70,10 @@ class SplashActivity: AppCompatActivity() {
         animateLogo()
 
         firstTimeSH = getSharedPreferences(PREFS_NAME, 0)
-        if (firstTimeSH.getBoolean(SharedPreference.FIRST_TIME_USE_KEY, true)) {
+        if (firstTimeSH.getBoolean(Key.FIRST_TIME_USE_KEY, true)) {
             Log.d(SLASH_TAG, "First time")
             createNullProfile()
-            firstTimeSH.edit().putBoolean(SharedPreference.FIRST_TIME_USE_KEY, false).apply()
+            firstTimeSH.edit().putBoolean(Key.FIRST_TIME_USE_KEY, false).apply()
         }
 
 
@@ -148,8 +152,8 @@ class SplashActivity: AppCompatActivity() {
     }
 
     private fun writeDataToDatabase() {
-        val list = GeneralFunction.instance.parseJson(myData, object : TypeToken<MutableMap<String, TrafficSign>>() {}.type)
-        val classifierLabels = FileUtil.loadLabels(this, General.CLASSIFICATION_LABELS_FILE_NAME)
+        val list = GeneralSingleton.instance.parseJson(myData, object : TypeToken<MutableMap<String, TrafficSign>>() {}.type)
+        val classifierLabels = FileUtil.loadLabels(this, Network.CLASSIFICATION_LABELS_FILE_NAME)
         val cache = TrafficSignMemoryCache.instance
         list.forEach {
             it.value.id = it.key

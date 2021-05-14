@@ -8,7 +8,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.trafficsigns.R
 import com.trafficsigns.ui.fragment.DetailFragment
-import com.trafficsigns.ui.network.utils.TrafficSignMemoryCache
+import com.trafficsigns.ui.singleton.TrafficSignMemoryCache
 import com.trafficsigns.ui.network.classifiers.Classifier
 import kotlinx.android.synthetic.main.network_result_item.view.*
 

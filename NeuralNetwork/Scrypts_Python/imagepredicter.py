@@ -48,7 +48,7 @@ from keras.models import load_model
 import cv2
 import numpy as np
 
-model = load_model('/Users/botondhalasz/Desktop/Allamvizsga/NeuralNetwork/Kagle_trye/KagleModel200EPIL_aug.h5')
+model = load_model('/SavedModels/KagleModel200EPIL_aug.h5')
 
 # model.compile(loss='binary_crossentropy',
 #               optimizer='rmsprop',

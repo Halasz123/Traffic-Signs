@@ -11,12 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager2.widget.ViewPager2
 import com.trafficsigns.R
-import com.trafficsigns.data.TrafficSignsCollection
+import com.trafficsigns.data.dataclass.TrafficSignsCollection
 import com.trafficsigns.databinding.FragmentCollectionListBinding
 import com.trafficsigns.ui.adapter.TrafficCollectionListAdapter
 import com.trafficsigns.ui.constant.Key
-import com.trafficsigns.ui.util.Settings
 import com.google.android.material.tabs.TabLayoutMediator
+import com.trafficsigns.ui.singleton.GeneralSingleton
 
 /**
  * @author: Halász Botond
@@ -57,7 +57,7 @@ class CollectionListFragment : Fragment() {
             startPosition = bundle.getInt(Key.START_POSITION, 1)
             collectionList = bundle.getSerializable(Key.CURRENT_LIST) as List<TrafficSignsCollection>
         }
-        binding.switchToGrid.isChecked = Settings.isGrid
+        binding.switchToGrid.isChecked = GeneralSingleton.isGrid
 
         binding.switchToGrid.setOnCheckedChangeListener { _, isChecked ->
             sendGridOnData(isChecked)
