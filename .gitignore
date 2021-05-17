@@ -1,3 +1,16 @@
 TrafficSigns/.gradle/
 TrafficSigns/local.properties
 TrafficSigns/.idea/
+.gradle/6.5/javaCompile/classAnalysis.bin
+.gradle/6.5/javaCompile/javaCompile.lock
+.gradle/6.5/javaCompile/taskHistory.bin
+.gradle/buildOutputCleanup/buildOutputCleanup.lock
+.gradle/buildOutputCleanup/cache.properties
+.gradle/buildOutputCleanup/outputFiles.bin
+.gradle/checksums/checksums.lock
+.gradle/vcs-1/gc.properties
+.idea/.name
+.idea/Allamvizsga.iml
+.idea/gradle.xml
+.idea/modules.xml
+.idea/vcs.xml
