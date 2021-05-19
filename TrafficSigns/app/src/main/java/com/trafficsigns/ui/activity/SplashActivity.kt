@@ -138,7 +138,7 @@ class SplashActivity: AppCompatActivity() {
         val request = Request.Builder().url(Data.URL).build()
         return client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
-                jsonData = response.body()?.string() ?: ""
+                jsonData = response.body?.string() ?: ""
                 writeDataToDatabase()
                 goToMain()
             }
