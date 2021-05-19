@@ -67,7 +67,7 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
     private val lock = Any()
     private var runClassifier = false
     private var checkedPermissions = false
-    private lateinit var textView: TextView
+    private lateinit var resultTextView: TextView
     private lateinit var classifier: ImageClassifier
     private lateinit var classifierForDialog: ClassifierInit
     private var listOfTrafficSignHistory: ArrayList<TrafficHistory> = ArrayList()
@@ -248,7 +248,7 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         textureView = binding.textureView
-        textView = binding.predictedTextView
+        resultTextView = binding.predictedTextView
         addOrientations()
         classifierForDialog = ClassifierInit(requireActivity(), Classifier.Device.CPU, 4)
 

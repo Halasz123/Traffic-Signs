@@ -80,7 +80,7 @@ class DetailFragment : Fragment(){
         })
 
         binding.starButton.setOnClickListener {
-            updateMyTrafficSignList()
+            addNewToKnownSignList()
             binding.starButton.setColorFilter(ContextCompat.getColor(requireContext(), R.color.yellow), android.graphics.PorterDuff.Mode.MULTIPLY)
             Toast.makeText(requireContext(), ToastMessage.KNOWN_SIGN, Toast.LENGTH_SHORT).show()
         }
@@ -96,7 +96,7 @@ class DetailFragment : Fragment(){
         }
     }
 
-    private fun updateMyTrafficSignList(){
+    private fun addNewToKnownSignList(){
         myProfileViewModel.myProfile.observe(viewLifecycleOwner, { profile ->
             Log.d(DETAIL_TAG, profile.toString())
             if (profile.knownTrafficSigns?.contains(trafficSign) == false){

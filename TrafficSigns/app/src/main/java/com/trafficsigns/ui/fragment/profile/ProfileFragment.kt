@@ -21,6 +21,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -36,7 +37,10 @@ import com.trafficsigns.databinding.FragmentProfileBinding
 import com.trafficsigns.ui.constant.Data
 import com.trafficsigns.ui.constant.ToastMessage
 import java.io.File
+import java.io.IOException
 import java.text.DecimalFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 const val PROFILE_TAG = "profile"
 const val CAPTURE_PHOTO_CODE = 42
@@ -54,12 +58,12 @@ const val PERMISSION_CODE = 1001
  */
 class ProfileFragment : Fragment() {
 
-    private lateinit var mMyProfileViewModel: MyProfileViewModel
+    private lateinit var myProfileViewModel: MyProfileViewModel
     private var myProfile: MyProfile? = null
     private lateinit var binding: FragmentProfileBinding
     private lateinit var saveButton: Button
     private lateinit var name: EditText
-    private lateinit var photoFile: File
+    lateinit var currentPhotoPath: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,9 +72,9 @@ class ProfileFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profile, container, false)
         saveButton = binding.saveButton
         name = binding.nameEditText
-        mMyProfileViewModel = ViewModelProvider(this).get(MyProfileViewModel::class.java)
+        myProfileViewModel = ViewModelProvider(this).get(MyProfileViewModel::class.java)
 
-        mMyProfileViewModel.myProfile.observe(viewLifecycleOwner, { profile ->
+        myProfileViewModel.myProfile.observe(viewLifecycleOwner, { profile ->
             this.myProfile = profile
             Log.d(PROFILE_TAG, profile.toString())
             name.setText(myProfile?.name)
@@ -111,7 +115,7 @@ class ProfileFragment : Fragment() {
         }
 
         binding.createPictureButton.setOnClickListener {
-            startCameraIntent()
+            dispatchTakePictureIntent()
         }
 
         binding.galleryPicture.setOnClickListener {
@@ -145,45 +149,87 @@ class ProfileFragment : Fragment() {
         startActivityForResult(intent, IMAGE_PICK_CODE)
     }
 
-    private fun getPhotoFile(fileName: String): File {
-        val storageDirectory = activity?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return  File.createTempFile(fileName, ".jpg", storageDirectory)
-
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val storageDir: File? = activity?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "JPEG_${timeStamp}_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir /* directory */
+        ).apply {
+            // Save a file: path for use with ACTION_VIEW intents
+            currentPhotoPath = absolutePath
+        }
     }
 
     private fun updateProfile(){
-        mMyProfileViewModel.myProfile.observeOnce(viewLifecycleOwner, { profile ->
+        myProfileViewModel.myProfile.observeOnce(viewLifecycleOwner, { profile ->
             profile.name = name.text.toString()
-            mMyProfileViewModel.updateProfile(profile)
+            myProfileViewModel.updateProfile(profile)
             Toast.makeText(requireContext(), ToastMessage.DATA_SAVED, Toast.LENGTH_SHORT).show()
         })
     }
 
-    private fun startCameraIntent() {
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        photoFile = getPhotoFile(FILE_NAME)
-
-        val fileProvider = FileProvider.getUriForFile(
-            requireContext(),
-            Data.PACKAGE_FILEPROVIDER_PATH,
-            photoFile
-        )
-        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
-        if (activity?.let { it1 -> takePictureIntent.resolveActivity(it1.packageManager) } != null){
-            startActivityForResult(takePictureIntent, CAPTURE_PHOTO_CODE)
-        }
-        else {
-            Toast.makeText(requireContext(), ToastMessage.UNABLE_OPEN_CAMERA, Toast.LENGTH_LONG).show()
+    private fun getRequiredPermissions(): Array<String?> {
+        val activity: Activity? = activity
+        return try {
+            val info = activity?.packageManager?.getPackageInfo(
+                activity.packageName,
+                PackageManager.GET_PERMISSIONS
+            )
+            val ps = info?.requestedPermissions
+            if (ps != null && ps.isNotEmpty()) {
+                ps
+            } else {
+                arrayOfNulls(0)
+            }
+        } catch (e: Exception) {
+            arrayOfNulls(0)
         }
     }
+
+    private fun dispatchTakePictureIntent() {
+        if (context?.let { it1 ->
+                ActivityCompat.checkSelfPermission(it1, Manifest.permission.CAMERA)
+            } != PackageManager.PERMISSION_GRANTED) {
+            activity?.let { activity ->
+                ActivityCompat.requestPermissions(activity, getRequiredPermissions(), PERMISSION_CODE)
+            }
+            return
+        }
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            context?.let {
+                takePictureIntent.resolveActivity(it.packageManager)?.also {
+                    val photoFile: File? = try {
+                        createImageFile()
+                    } catch (ex: IOException) {
+                        Toast.makeText(requireContext(), ToastMessage.DATA_SAVED, Toast.LENGTH_SHORT).show()
+                        null
+                    }
+                    photoFile?.also {
+                        val photoURI: Uri = FileProvider.getUriForFile(
+                            requireContext(),
+                            Data.PACKAGE_FILEPROVIDER_PATH,
+                            it
+                        )
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                        startActivityForResult(takePictureIntent, CAPTURE_PHOTO_CODE)
+                    }
+                }
+            }
+        }
+    }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
             var path: String = ""
             when (requestCode) {
                 CAPTURE_PHOTO_CODE -> {
-                    binding.profilePicture.setImageBitmap(BitmapFactory.decodeFile(photoFile.absolutePath))
-                    path = photoFile.absolutePath
+                    binding.profilePicture.setImageBitmap(BitmapFactory.decodeFile(currentPhotoPath))
+                    path = currentPhotoPath
                 }
                 IMAGE_PICK_CODE -> {
                     binding.profilePicture.setImageURI(data?.data)
@@ -193,9 +239,9 @@ class ProfileFragment : Fragment() {
                     super.onActivityResult(requestCode, resultCode, data)
                 }
             }
-            mMyProfileViewModel.myProfile.observeOnce(viewLifecycleOwner, {
+            myProfileViewModel.myProfile.observeOnce(viewLifecycleOwner, {
                 it.picturePath = path
-                mMyProfileViewModel.updateProfile(it)
+                myProfileViewModel.updateProfile(it)
             })
         }
         else {
