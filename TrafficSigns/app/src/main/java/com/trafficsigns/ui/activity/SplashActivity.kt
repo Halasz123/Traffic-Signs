@@ -43,7 +43,7 @@ class SplashActivity: AppCompatActivity() {
     private val SLASH_TAG = "Splash"
 
     private lateinit var binding: SplashScreenBinding
-    private var myData = ""
+    private var jsonData = ""
     private var trafficSigns: HashMap<String, ArrayList<TrafficSign>> = HashMap()
     private lateinit var mTrafficSignsCollectionViewModel: TrafficSignsCollectionViewModel
     private lateinit var mMyProfileViewModel: MyProfileViewModel
@@ -138,7 +138,7 @@ class SplashActivity: AppCompatActivity() {
         val request = Request.Builder().url(Data.URL).build()
         return client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
-                myData = response.body()?.string() ?: ""
+                jsonData = response.body()?.string() ?: ""
                 writeDataToDatabase()
                 goToMain()
             }
@@ -152,7 +152,7 @@ class SplashActivity: AppCompatActivity() {
     }
 
     private fun writeDataToDatabase() {
-        val list = GeneralSingleton.instance.parseJson(myData, object : TypeToken<MutableMap<String, TrafficSign>>() {}.type)
+        val list = GeneralSingleton.instance.parseJson(jsonData, object : TypeToken<MutableMap<String, TrafficSign>>() {}.type)
         val classifierLabels = FileUtil.loadLabels(this, Network.CLASSIFICATION_LABELS_FILE_NAME)
         val cache = TrafficSignMemoryCache.instance
         list.forEach {

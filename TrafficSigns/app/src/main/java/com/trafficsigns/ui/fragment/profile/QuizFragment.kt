@@ -66,7 +66,7 @@ class QuizFragment : Fragment() {
     }
 
     private fun startTest() {
-        quizVisible()
+        setQuizToVisible()
 
         mProfileViewModel.myProfile.observeOnce(viewLifecycleOwner, {
             val signs = it.knownTrafficSigns?.shuffled()
@@ -82,12 +82,12 @@ class QuizFragment : Fragment() {
                         loadQuizLayout(answers, signs, i)
                     }
                     else {
-                     quizInvisible()
+                     setQuizToInvisible()
                     }
                 }
         })
     }
-    private fun quizVisible() {
+    private fun setQuizToVisible() {
         binding.start.isEnabled = false
         binding.start.visibility = View.INVISIBLE
         binding.quiz.visibility = View.VISIBLE
@@ -95,7 +95,7 @@ class QuizFragment : Fragment() {
         binding.nextButton.isEnabled = true
     }
 
-    private fun quizInvisible() {
+    private fun setQuizToInvisible() {
         binding.nextButton.visibility = View.INVISIBLE
         binding.nextButton.isEnabled = false
         binding.quiz.visibility = View.INVISIBLE
