@@ -21,6 +21,7 @@ import org.tensorflow.lite.support.image.ops.ResizeWithCropOrPadOp
 import org.tensorflow.lite.support.label.TensorLabel
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import java.util.*
+import kotlin.collections.HashMap
 import kotlin.math.min
 
 /** @author: Halász Botond
@@ -29,7 +30,11 @@ import kotlin.math.min
  * A classifier specialized to classify images with Tensorflow Lite models.
  * For an input image it can decide what it is. Depends on neural network.
  * */
-abstract class Classifier protected constructor(activity: Activity?, device: Device?, numThreads: Int) {
+abstract class Classifier protected constructor(
+    activity: Activity?,
+    device: Device?,
+    numThreads: Int
+) {
 
     /** The runtime device type used for executing classification.  */
     enum class Device {
@@ -47,7 +52,12 @@ abstract class Classifier protected constructor(activity: Activity?, device: Dev
     private val outputProbabilityBuffer: TensorBuffer
     private val probabilityProcessor: TensorProcessor
 
-    class Recognition(val id: String, val title: String, val confidence: Float, private var location: RectF?) {
+    class Recognition(
+        val id: String,
+        val title: String,
+        val confidence: Float,
+        private var location: RectF?
+    ) {
 
         override fun toString(): String {
             var resultString = "("
@@ -71,13 +81,27 @@ abstract class Classifier protected constructor(activity: Activity?, device: Dev
         tfLiteInterpreter.run(inputImageBuffer.buffer, outputProbabilityBuffer.buffer.rewind())
         val endTimeForReference = SystemClock.uptimeMillis()
         Trace.endSection()
-        Log.v(TAG, "Timecost to run model inference: " + (endTimeForReference - startTimeForReference) )
+        Log.v(
+            TAG,
+            "Timecost to run model inference: " + (endTimeForReference - startTimeForReference)
+        )
 
-        val labeledProbability = TensorLabel(labels, probabilityProcessor.process(outputProbabilityBuffer))
-                .mapWithFloatValue
+        val labeledProbability =
+            TensorLabel(labels, probabilityProcessor.process(outputProbabilityBuffer))
+                .categoryList
         Trace.endSection()
-
-        return getTopKProbability(labeledProbability)
+        val map = HashMap<String, Float>()
+        labeledProbability.forEach {
+            if (map.containsKey(it.label)) {
+                if (map[it.label]!! < it.score) {
+                    map[it.label] = it.score
+                }
+            }
+            else {
+                map.put(it.label, it.score)
+            }
+        }
+        return getTopKProbability(map)
     }
 
     fun close() {
@@ -114,7 +138,7 @@ abstract class Classifier protected constructor(activity: Activity?, device: Dev
             Comparator<Recognition?> { o1, o2 -> o2.confidence.compareTo(o1.confidence) })
 
         for ((key, value) in labelProb) {
-            if(value > Network.MINIM_CONFIDENCE_RESULT){
+            if (value > Network.MINIM_CONFIDENCE_RESULT) {
                 pq.add(Recognition("" + key, key, value, null))
             }
         }
@@ -128,7 +152,7 @@ abstract class Classifier protected constructor(activity: Activity?, device: Dev
 
     /** Initializes a `Classifier`.  */
     init {
-        val tfliteModel = FileUtil.loadMappedFile(activity!!, modelPath )
+        val tfliteModel = FileUtil.loadMappedFile(activity!!, modelPath)
         when (device) {
             Device.NNAPI -> {
                 nnApiDelegate = NnApiDelegate()
@@ -145,16 +169,20 @@ abstract class Classifier protected constructor(activity: Activity?, device: Dev
         labels = FileUtil.loadLabels(activity, labelPath)
 
         val imageTensorIndex = 0
-        val imageShape = tfLiteInterpreter.getInputTensor(imageTensorIndex).shape() // {1, height, width, 3}
+        val imageShape =
+            tfLiteInterpreter.getInputTensor(imageTensorIndex).shape() // {1, height, width, 3}
         imageSizeY = imageShape[1]
         imageSizeX = imageShape[2]
         val imageDataType = tfLiteInterpreter.getInputTensor(imageTensorIndex).dataType()
         val probabilityTensorIndex = 0
-        val probabilityShape = tfLiteInterpreter.getOutputTensor(probabilityTensorIndex).shape() // {1, NUM_CLASSES}
-        val probabilityDataType = tfLiteInterpreter.getOutputTensor(probabilityTensorIndex).dataType()
+        val probabilityShape =
+            tfLiteInterpreter.getOutputTensor(probabilityTensorIndex).shape() // {1, NUM_CLASSES}
+        val probabilityDataType =
+            tfLiteInterpreter.getOutputTensor(probabilityTensorIndex).dataType()
 
         inputImageBuffer = TensorImage(imageDataType)
-        outputProbabilityBuffer = TensorBuffer.createFixedSize(probabilityShape, probabilityDataType)
+        outputProbabilityBuffer =
+            TensorBuffer.createFixedSize(probabilityShape, probabilityDataType)
 
         probabilityProcessor = TensorProcessor.Builder().add(postprocessNormalizeOp).build()
         Log.d(TAG, "Created a Tensorflow Lite Image Classifier.")
