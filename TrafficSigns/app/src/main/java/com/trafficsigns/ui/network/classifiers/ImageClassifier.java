@@ -75,6 +75,7 @@ public class ImageClassifier {
       return "Uninitialized Classifier.";
     }
     convertBitmapToByteBuffer(bitmap);
+    bitmap.recycle();
     long startTime = SystemClock.uptimeMillis();
     tfliteInterpreter.run(imgDataByteBuffer, labelProbArray);
     long endTime = SystemClock.uptimeMillis();

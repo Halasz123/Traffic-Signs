@@ -18,6 +18,7 @@ import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.support.image.ops.ResizeOp
 import org.tensorflow.lite.support.image.ops.ResizeOp.ResizeMethod
 import org.tensorflow.lite.support.image.ops.ResizeWithCropOrPadOp
+import org.tensorflow.lite.support.label.Category
 import org.tensorflow.lite.support.label.TensorLabel
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import java.util.*
@@ -53,7 +54,7 @@ abstract class Classifier protected constructor(
     private val probabilityProcessor: TensorProcessor
 
     class Recognition(
-        val id: String,
+        val id: Int,
         val title: String,
         val confidence: Float,
         private var location: RectF?
@@ -87,21 +88,9 @@ abstract class Classifier protected constructor(
         )
 
         val labeledProbability =
-            TensorLabel(labels, probabilityProcessor.process(outputProbabilityBuffer))
-                .categoryList
+            TensorLabel(labels, probabilityProcessor.process(outputProbabilityBuffer)).categoryList
         Trace.endSection()
-        val map = HashMap<String, Float>()
-        labeledProbability.forEach {
-            if (map.containsKey(it.label)) {
-                if (map[it.label]!! < it.score) {
-                    map[it.label] = it.score
-                }
-            }
-            else {
-                map.put(it.label, it.score)
-            }
-        }
-        return getTopKProbability(map)
+        return getTopKProbability(labeledProbability)
     }
 
     fun close() {
@@ -133,13 +122,13 @@ abstract class Classifier protected constructor(
         const val MAX_RESULTS = 5
     }
 
-    fun getTopKProbability(labelProb: Map<String, Float>): List<Recognition> {
+    fun getTopKProbability(labelProb: List<Category>): List<Recognition> {
         val pq = PriorityQueue(MAX_RESULTS,
             Comparator<Recognition?> { o1, o2 -> o2.confidence.compareTo(o1.confidence) })
 
-        for ((key, value) in labelProb) {
-            if (value > Network.MINIM_CONFIDENCE_RESULT) {
-                pq.add(Recognition("" + key, key, value, null))
+        for (i in 0..(labelProb.size-1)) {
+            if (labelProb[i].score > Network.MINIM_CONFIDENCE_RESULT) {
+                pq.add(Recognition(i, labelProb[i].label, labelProb[i].score, null))
             }
         }
         val recognitions = ArrayList<Recognition>()

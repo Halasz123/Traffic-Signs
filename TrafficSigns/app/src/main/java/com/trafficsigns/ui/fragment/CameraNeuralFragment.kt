@@ -448,6 +448,7 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
         val okBtn = dialog.findViewById(R.id.dismiss_button) as Button
         okBtn.setOnClickListener {
             dialog.dismiss()
+            bitmap?.recycle()
         }
         dialog.show()
 
