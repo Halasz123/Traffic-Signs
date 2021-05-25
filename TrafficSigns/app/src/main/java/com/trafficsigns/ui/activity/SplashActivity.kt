@@ -36,7 +36,14 @@ import java.io.IOException
 import java.util.*
 import kotlin.concurrent.schedule
 
-
+/**
+ * @author: Halász Botond
+ * @since: 10/05/2021
+ *
+ * First screen visible after application start.
+ * Animation is taking place until json data is downloaded from Dropbox.
+ * After json Parse write data to Room Database.
+ */
 class SplashActivity: AppCompatActivity() {
 
     private val PREFS_NAME = "MyPrefsFile"
@@ -50,14 +57,6 @@ class SplashActivity: AppCompatActivity() {
     private lateinit var internetErrorToast: Toast
     private lateinit var firstTimeSH: SharedPreferences
 
-    /**
-     * @author: Halász Botond
-     * @since: 10/05/2021
-     *
-     * First screen visible after application start.
-     * Animation is taking place until json data is downloaded from Dropbox.
-     * After json Parse write data to Room Database.
-     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.splash_screen)
