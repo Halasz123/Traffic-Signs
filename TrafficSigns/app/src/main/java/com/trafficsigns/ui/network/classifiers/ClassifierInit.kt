@@ -13,7 +13,7 @@ import org.tensorflow.lite.support.common.ops.NormalizeOp
 class ClassifierInit (activity: Activity?, device: Device?, numThreads: Int) : Classifier(activity, device, numThreads) {
 
     override val modelPath: String
-         get() = "MyModel200.tflite"
+         get() = "KagleModel100EPIL.tflite"
     override val labelPath: String
          get() = Network.CLASSIFICATION_LABELS_FILE_NAME
     override val preprocessNormalizeOp: TensorOperator
