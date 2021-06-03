@@ -33,21 +33,23 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.trafficsigns.R
+import com.trafficsigns.data.dataclass.TrafficHistory
 import com.trafficsigns.databinding.FragmentCameraNeuralBinding
 import com.trafficsigns.ui.adapter.NetworkResult
-import com.trafficsigns.ui.singleton.TrafficSignMemoryCache
-import com.trafficsigns.ui.network.AutoFitTextureView
-import com.trafficsigns.ui.network.classifiers.ImageClassifier
+import com.trafficsigns.ui.adapter.TrafficSignHistoryAdapter
 import com.trafficsigns.ui.constant.Network
-import com.trafficsigns.data.dataclass.TrafficHistory
+import com.trafficsigns.ui.network.AutoFitTextureView
 import com.trafficsigns.ui.network.classifiers.Classifier
 import com.trafficsigns.ui.network.classifiers.ClassifierInit
+import com.trafficsigns.ui.network.classifiers.ImageClassifier
+import com.trafficsigns.ui.singleton.TrafficSignMemoryCache
 import java.io.IOException
 import java.lang.Long.signum
 import java.util.*
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
+
 
 /**
  * @author: Halász Botond
@@ -131,16 +133,16 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
     /** A [CameraCaptureSession.CaptureCallback] that handles events related to capture.  */
     private val captureCallback: CaptureCallback = object : CaptureCallback() {
         override fun onCaptureProgressed(
-            @NonNull session: CameraCaptureSession,
-            @NonNull request: CaptureRequest,
-            @NonNull partialResult: CaptureResult
+                @NonNull session: CameraCaptureSession,
+                @NonNull request: CaptureRequest,
+                @NonNull partialResult: CaptureResult
         ) {
         }
 
         override fun onCaptureCompleted(
-            @NonNull session: CameraCaptureSession,
-            @NonNull request: CaptureRequest,
-            @NonNull result: TotalCaptureResult
+                @NonNull session: CameraCaptureSession,
+                @NonNull request: CaptureRequest,
+                @NonNull result: TotalCaptureResult
         ) {
         }
     }
@@ -187,12 +189,12 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
      * @return The optimal `Size`, or an arbitrary one if none were big enough
      */
     private fun chooseOptimalSize(
-        choices: Array<Size>,
-        textureViewWidth: Int,
-        textureViewHeight: Int,
-        maxWidth: Int,
-        maxHeight: Int,
-        aspectRatio: Size
+            choices: Array<Size>,
+            textureViewWidth: Int,
+            textureViewHeight: Int,
+            maxWidth: Int,
+            maxHeight: Int,
+            aspectRatio: Size
     ): Size? {
         val bigEnough: MutableList<Size> = ArrayList()
         val notBigEnough: MutableList<Size> = ArrayList()
@@ -235,13 +237,13 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
     private lateinit var binding: FragmentCameraNeuralBinding
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.fragment_camera_neural,
-            container,
-            false
+                inflater,
+                R.layout.fragment_camera_neural,
+                container,
+                false
         )
         return binding.root
     }
@@ -254,13 +256,18 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
 
         binding.capturePhoto.setOnClickListener {
             val bitmap: Bitmap? = textureView.getBitmap(
-                binding.textureView.width,
-                binding.textureView.height
+                    binding.textureView.width,
+                    binding.textureView.height
             )
             val list = processImage(bitmap)
             showDialog(bitmap, list)
         }
+
+        binding.linerlayoutSigns.setOnClickListener {
+            showHistoryDialog()
+        }
     }
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -321,7 +328,7 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
                 val map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
                     ?: continue
                 val largest = Collections.max(
-                    listOf(*map.getOutputSizes(ImageFormat.JPEG)), CompareSizesByArea()
+                        listOf(*map.getOutputSizes(ImageFormat.JPEG)), CompareSizesByArea()
                 )
                 imageReader = ImageReader.newInstance(largest.width, largest.height, ImageFormat.JPEG, 2)
                 val displayRotation = activity?.display?.rotation
@@ -355,12 +362,12 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
                     maxPreviewHeight = MAX_PREVIEW_HEIGHT
                 }
                 previewSize = chooseOptimalSize(
-                    map.getOutputSizes(SurfaceTexture::class.java),
-                    rotatedPreviewWidth,
-                    rotatedPreviewHeight,
-                    maxPreviewWidth,
-                    maxPreviewHeight,
-                    largest
+                        map.getOutputSizes(SurfaceTexture::class.java),
+                        rotatedPreviewWidth,
+                        rotatedPreviewHeight,
+                        maxPreviewWidth,
+                        maxPreviewHeight,
+                        largest
                 )!!
                 val orientation = resources.configuration.orientation
                 if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -382,8 +389,8 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
         val activity: Activity? = activity
         return try {
             val info = activity?.packageManager?.getPackageInfo(
-                activity.packageName,
-                PackageManager.GET_PERMISSIONS
+                    activity.packageName,
+                    PackageManager.GET_PERMISSIONS
             )
             val ps = info?.requestedPermissions
             if (ps != null && ps.isNotEmpty()) {
@@ -399,9 +406,9 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
     private fun openCamera(width: Int, height: Int) {
         checkedPermissions = if (!checkedPermissions && !allPermissionsGranted()) {
             requestPermissions(
-                requireActivity(),
-                getRequiredPermissions(),
-                PERMISSIONS_REQUEST_CODE
+                    requireActivity(),
+                    getRequiredPermissions(),
+                    PERMISSIONS_REQUEST_CODE
             )
             return
         } else {
@@ -429,6 +436,30 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
         } catch (e: InterruptedException) {
             throw RuntimeException("Interrupted while trying to lock camera opening.", e)
         }
+    }
+
+    private fun showHistoryDialog() {
+        val dialog = activity?.let{ Dialog(it) }
+        dialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog?.setCancelable(false)
+        dialog?.setContentView(R.layout.custom_history_dialog_layout)
+        val recyclerView = dialog?.findViewById(R.id.dialog_history_recyclerview) as RecyclerView
+        recyclerView.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = view?.let { TrafficSignHistoryAdapter(listOfTrafficSignHistory, it.context, it, dialog) }
+            adapter?.notifyDataSetChanged()
+        }
+
+        val okBtn = dialog.findViewById(R.id.dismiss_button_history) as Button
+        okBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+        val metrics = resources.displayMetrics
+        val width = metrics.widthPixels
+        val height = metrics.heightPixels
+        dialog.show()
+        dialog.window?.setLayout(width, height)
     }
 
     private fun showDialog(bitmap: Bitmap?, list: List<Classifier.Recognition>) {
@@ -516,27 +547,27 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
             previewRequestBuilder.addTarget(surface)
 
             cameraDevice?.createCaptureSession(
-                listOf(surface),
-                object : CameraCaptureSession.StateCallback() {
-                    override fun onConfigured(@NonNull cameraCaptureSession: CameraCaptureSession) {
-                        if (null == cameraDevice) {
-                            return
+                    listOf(surface),
+                    object : CameraCaptureSession.StateCallback() {
+                        override fun onConfigured(@NonNull cameraCaptureSession: CameraCaptureSession) {
+                            if (null == cameraDevice) {
+                                return
+                            }
+                            captureSession = cameraCaptureSession
+                            try {
+                                previewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
+                                previewRequest = previewRequestBuilder.build()
+                                captureSession?.setRepeatingRequest(previewRequest, captureCallback, backgroundHandler)
+                            } catch (e: CameraAccessException) {
+                                e.printStackTrace()
+                            }
                         }
-                        captureSession = cameraCaptureSession
-                        try {
-                            previewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE)
-                            previewRequest = previewRequestBuilder.build()
-                            captureSession?.setRepeatingRequest(previewRequest, captureCallback, backgroundHandler)
-                        } catch (e: CameraAccessException) {
-                            e.printStackTrace()
-                        }
-                    }
 
-                    override fun onConfigureFailed(@NonNull cameraCaptureSession: CameraCaptureSession) {
-                        showToast("Failed", 0f)
-                    }
-                },
-                null
+                        override fun onConfigureFailed(@NonNull cameraCaptureSession: CameraCaptureSession) {
+                            showToast("Failed", 0f)
+                        }
+                    },
+                    null
             )
         } catch (e: CameraAccessException) {
             e.printStackTrace()
@@ -577,8 +608,8 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
             return
         }
         val bitmap: Bitmap? = textureView.getBitmap(
-            ImageClassifier.DIM_IMG_SIZE_X,
-            ImageClassifier.DIM_IMG_SIZE_Y
+                ImageClassifier.DIM_IMG_SIZE_X,
+                ImageClassifier.DIM_IMG_SIZE_Y
         )
         val result = classifier.classifyFrame(bitmap)
         bitmap?.recycle()
@@ -591,11 +622,11 @@ class CameraNeuralFragment : Fragment(), ActivityCompat.OnRequestPermissionsResu
 
     private fun manageLastSigns(labelId: String, value: Float) {
         val elem = classifierCacheInstance.getCachedTrafficSign(labelId)
-        val now = System.currentTimeMillis() / 1000
+        val now = System.currentTimeMillis()
         if (listOfTrafficSignHistory.count() == 0) {
             listOfTrafficSignHistory.add(TrafficHistory(labelId, now, value))
-        } else if (elem != null && (now - listOfTrafficSignHistory[0].timeStamp) >= 2) {
-            listOfTrafficSignHistory.add(0, TrafficHistory(labelId, now, value))
+        } else if (elem != null && (now/1000 - listOfTrafficSignHistory[0].timeStamp/1000) >= 2) {
+            listOfTrafficSignHistory.add(0, TrafficHistory(labelId,  now, value))
         }
 
         val imageViews = listOf(binding.lElem0, binding.lElem1, binding.lElem2, binding.lElem3)

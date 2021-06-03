@@ -89,8 +89,20 @@ abstract class Classifier protected constructor(
 
         val labeledProbability =
             TensorLabel(labels, probabilityProcessor.process(outputProbabilityBuffer)).categoryList
+        val map = HashMap<String, Float>()
+        labeledProbability.forEach {
+            if (map.containsKey(it.label)) {
+                if (map[it.label]!! < it.score) {
+                    map[it.label] = it.score
+                }
+            }
+            else {
+                map.put(it.label, it.score)
+            }
+        }
         Trace.endSection()
-        return getTopKProbability(labeledProbability)
+
+        return getTopKProbability(map)
     }
 
     fun close() {
@@ -122,13 +134,13 @@ abstract class Classifier protected constructor(
         const val MAX_RESULTS = 5
     }
 
-    fun getTopKProbability(labelProb: List<Category>): List<Recognition> {
+    fun getTopKProbability(labelProb: Map<String, Float>): List<Recognition> {
         val pq = PriorityQueue(MAX_RESULTS,
             Comparator<Recognition?> { o1, o2 -> o2.confidence.compareTo(o1.confidence) })
 
-        for (i in 0..(labelProb.size-1)) {
-            if (labelProb[i].score > Network.MINIM_CONFIDENCE_RESULT) {
-                pq.add(Recognition(i, labelProb[i].label, labelProb[i].score, null))
+        for ((key,value) in labelProb) {
+            if (value > Network.MINIM_CONFIDENCE_RESULT ) {
+                pq.add(Recognition(0, key, value, null))
             }
         }
         val recognitions = ArrayList<Recognition>()
