@@ -24,7 +24,7 @@
         android:clickable="true"
         android:src="@drawable/ic_baseline_photo_camera_24_white"
         android:focusable="true"
-        android:contentDescription="TODO" />
+        />
 
     <com.trafficsigns.ui.network.AutoFitTextureView
         android:id="@+id/textureView"
