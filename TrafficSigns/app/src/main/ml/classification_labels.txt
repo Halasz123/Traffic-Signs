@@ -28,9 +28,9 @@ warning-traffic-lights
 warning-pedestrian-crossing
 warning-children
 warning-cyclist
-Beware of ice/snow
+begin_of_snow
 warning-animal-deer
-End of the limits
+end-of-limit-traffic-sign
 mandatory-direction-ahead-turn-right
 mandatory-direction-ahead-turn-left
 mandatory-direction-up
