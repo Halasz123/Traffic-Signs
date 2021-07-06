@@ -56,7 +56,7 @@ Please make sure to update tests as appropriate.
 
 ### Mentors (3SS)
 
-- **Mezei Karetka Zoltán**
+- **Karetka-Mezei Zoltán**
 - **Lőrinczi Zoltán**
 - **Lázár Előd**
 - **Gergely Gerő**
