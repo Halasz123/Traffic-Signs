@@ -56,10 +56,10 @@ Please make sure to update tests as appropriate.
 
 ### Mentors (3SS)
 
-- **Mezei Karetka Zoltán
-- **Lőrinczi Zoltán
-- **Lázár Előd
-- **Gergely Gerő
+- **Mezei Karetka Zoltán**
+- **Lőrinczi Zoltán**
+- **Lázár Előd**
+- **Gergely Gerő**
 
 ### Android teachers in Sapientia
 
