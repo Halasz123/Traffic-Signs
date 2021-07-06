@@ -48,7 +48,7 @@ from keras.models import load_model
 import cv2
 import numpy as np
 
-model = load_model('/SavedModels/KagleModel200EPIL_aug.h5')
+model = load_model('/SavedModels/RoadSignClassifier200E_32.h5')
 
 # model.compile(loss='binary_crossentropy',
 #               optimizer='rmsprop',
@@ -68,8 +68,8 @@ with open(basePAth + 'Test.csv', 'r') as read_obj:
         # img = cv2.imread(basePAth + imPath)
         # img = cv2.resize(img, (30, 30))
         img = PIL.Image.open(basePAth + imPath)
-        resized_image = img.resize((30,30))
-        img = np.reshape(resized_image, [1, 30, 30, 3])
+        resized_image = img.resize((32,32))
+        img = np.reshape(resized_image, [1, 32, 32, 3])
         pred = model.predict(img)
         j = pred.argmax(axis=1)[0]
 
